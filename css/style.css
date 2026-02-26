@@ -1,0 +1,220 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: #fff;
+    color: #333;
+    scroll-behavior: smooth;
+}
+
+/* Fonts */
+
+.text-regular {
+  font-family: "Baloo Bhaijaan 2", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.text-medium {
+  font-family: "Baloo Bhaijaan 2", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 500;
+  font-style: normal;
+}
+
+.text-semi-bold {
+  font-family: "Baloo Bhaijaan 2", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 600;
+  font-style: normal;
+}
+
+.text-bold {
+  font-family: "Baloo Bhaijaan 2", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 700;
+  font-style: normal;
+}
+
+.text-extra-bold {
+  font-family: "Baloo Bhaijaan 2", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 800;
+  font-style: normal;
+}
+
+/* Navbar */
+
+.navbar {
+    position: fixed;
+    width: 100%;
+    top: 0;
+    background: transparent;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 50px;
+    z-index: 1000;
+}
+
+.logo {
+    width: 50px;
+    border-radius: 100%;
+}
+
+.nav-links {
+    background: #ffffff;
+    border-radius: 20px;
+}
+
+.navbar nav a {
+    color: #000;
+    padding: 6px 25px;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.btn-outline {
+    background: #FFAD5B;
+    color: #000;
+    text-decoration: none;
+    padding: 6px 20px;
+    border-radius: 20px;
+}
+
+.btn-outline:hover {
+    background: #fff;
+    color: #BA0000;
+    transition: 0.3s;
+}
+
+/* Hero */
+
+.hero {
+    height: 100vh;
+    background: linear-gradient(#BA0000, #5D0303);
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+}
+
+.hero img {
+    width: 100%;
+    max-width: 600px;
+    display: block;
+    margin: 0 auto;
+    margin-top: 50px;
+    margin-bottom: 50px;
+}
+
+.hero-content h1 {
+    font-size: 3rem;
+    color: #fff;
+}
+
+.hero-content p {
+    color: #fff;
+    margin: 15px 0;
+}
+
+.btn-primary {
+    background: transparent;
+    padding: 10px 20px;
+    border: #fff solid 2px;
+    border-radius: 30px;
+    text-decoration: none;
+    color: #fff;
+    font-weight: bold;
+}
+
+.btn-primary:hover {
+    background: #fff;
+    color: #BA0000;
+    border: 2px solid #000;
+    transition: 0.3s;
+}
+
+/* Sections */
+
+section {
+    padding: 100px 50px;
+}
+
+.section-title {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+/* Menu */
+
+.menu-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+}
+
+.card {
+    background: #fff;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    text-align: center;
+    transition: transform 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-10px);
+}
+
+.card-img {
+    height: 180px;
+    background: #eee;
+    border-radius: 10px;
+    margin-bottom: 15px;
+}
+
+/* Promo */
+
+.promo-section {
+    background: #fcbf49;
+    text-align: center;
+}
+
+.promo-content h2 {
+    margin-bottom: 15px;
+}
+
+/* Footer */
+
+.footer {
+    background: #222;
+    color: #fff;
+    text-align: center;
+    padding: 20px;
+}
+
+/* Animation */
+
+.reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: all 0.8s ease;
+}
+
+.reveal.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Responsive */
+
+@media(max-width: 768px) {
+    .navbar {
+        padding: 15px 20px;
+    }
+}
