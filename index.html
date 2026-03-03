@@ -4,72 +4,126 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Burgerlicious - Fresh & Juicy</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="./src/output.css">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2&display=swap" rel="stylesheet">
 </head>
-<body>
+<body class="bg-white font-sans">
 
-<header class="navbar">
-    <a href=""><img class="logo" src="assets/icon/Logo_Burgerlicious_square.png" alt="Logo Burgerlicious"></a>
-    <nav class="nav-links">
-        <a class="text-regular" href="#home">Home</a>
-        <a class="text-regular" href="#menu">Menu</a>
-        <a class="text-regular" href="#promo">Promo</a>
-        <a class="text-regular" href="#about">About</a>
-    </nav>
-    <a class="btn-outline text-extra-bold" href="login.html">Login</a>
+<!-- Navbar Header -->
+<header class="sticky top-0 z-50 bg-transparent shadow-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
+        <a href="#" class="flex-shrink-0">
+            <img class="h-12 w-12 border border-transparent rounded-full" src="assets/icon/Logo_Burgerlicious_square.png" alt="Logo Burgerlicious">
+        </a>
+        
+        <nav class="hidden md:flex gap-8">
+            <a class="text-gray-700 hover:text-primary transition-colors" href="#home">Home</a>
+            <a class="text-gray-700 hover:text-primary transition-colors" href="#menu">Menu</a>
+            <a class="text-gray-700 hover:text-primary transition-colors" href="#promo">Promo</a>
+            <a class="text-gray-700 hover:text-primary transition-colors" href="#about">About</a>
+        </nav>
+        
+        <a class="btn-outline" href="login.html">Login</a>
+    </div>
 </header>
 
-<section id="home" class="hero">
-    <div class="hero-content reveal">
-        <img src="assets/images/Hero_section.png" alt="">
-        <a class="btn-primary text-extra-bold" href="login.html">View More</a>
-    </div>
-</section>
-
-<section id="promo" class="promo-section">
-    <h2 class="text-extra-bold">Promo Menarik<br><span class="text-regular">Burgerlicious</span></h2>
-    <div class="promo-content">
-        <img class="card" src="assets/images/Promo_ramadhan.png" alt="Promo Ramadhan">
-        <img class="card" src="assets/images/Promo_mantap_kamis.png" alt="Promo Mantap Kamis">
-    </div>
-    <p>Beli 2 Gratis 1 untuk semua varian burger!</p>
-    <a href="login.html" class="btn-primary">Klaim Sekarang</a>
-</section>
-
-<section id="menu" class="menu-section">
-    <h2 class="section-title reveal">Menu Favorit</h2>
-    <div class="menu-grid">
-        <div class="card reveal">
-            <div class="card-img"></div>
-            <h3>Classic Beef</h3>
-            <p>Juicy beef dengan keju premium.</p>
-        </div>
-        <div class="card reveal">
-            <div class="card-img"></div>
-            <h3>Cheese Blast</h3>
-            <p>Keju meleleh melimpah.</p>
-        </div>
-        <div class="card reveal">
-            <div class="card-img"></div>
-            <h3>Spicy Chicken</h3>
-            <p>Ayam crispy dengan saus pedas.</p>
+<!-- Hero Section -->
+<section id="home" class="py-16 md:py-24 bg-gradient-to-b from-orange-50 to-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="reveal flex flex-col md:flex-row items-center justify-between gap-8">
+            <img src="assets/images/Hero_section.png" alt="Hero Burger" class="w-full md:w-1/2">
+            <div class="flex flex-col gap-6 md:w-1/2">
+                <h1 class="text-4xl md:text-5xl font-bold text-gray-900">
+                    Selamat Datang di <span class="text-primary">Burgerlicious</span>
+                </h1>
+                <p class="text-gray-600 text-lg">Nikmati burger segar dengan bahan pilihan berkualitas terbaik</p>
+                <a href="login.html" class="btn-primary w-fit">View More</a>
+            </div>
         </div>
     </div>
 </section>
 
-<section id="about" class="about-section reveal">
-    <h2>Tentang Burgerlicious</h2>
-    <p>Kami menyajikan burger segar dengan bahan pilihan dan kualitas terbaik.</p>
+<!-- Promo Section -->
+<section id="promo" class="py-16 md:py-24 bg-secondary/10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+            <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-2">
+                Promo Menarik
+            </h2>
+            <p class="text-xl text-gray-600">Burgerlicious</p>
+        </div>
+        
+        <div class="grid md:grid-cols-2 gap-8 mb-8">
+            <img class="rounded-lg shadow-lg hover:shadow-xl transition-shadow" src="assets/images/Promo_ramadhan.png" alt="Promo Ramadhan">
+            <img class="rounded-lg shadow-lg hover:shadow-xl transition-shadow" src="assets/images/Promo_mantap_kamis.png" alt="Promo Mantap Kamis">
+        </div>
+        
+        <div class="text-center">
+            <p class="text-xl text-gray-700 mb-6 font-semibold">Beli 2 Gratis 1 untuk semua varian burger!</p>
+            <a href="login.html" class="btn-primary">Klaim Sekarang</a>
+        </div>
+    </div>
 </section>
 
-<footer class="footer">
-    <p>© 2026 Burgerlicious. All Rights Reserved.</p>
+<!-- Menu Section -->
+<section id="menu" class="py-16 md:py-24 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="reveal text-4xl md:text-5xl font-bold text-center text-gray-900 mb-16">Menu Favorit</h2>
+        
+        <div class="grid md:grid-cols-3 gap-8">
+            <!-- Menu Card 1 -->
+            <div class="reveal bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow overflow-hidden">
+                <div class="h-48 bg-gradient-to-br from-orange-400 to-orange-600"></div>
+                <div class="p-6">
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">Classic Beef</h3>
+                    <p class="text-gray-600">Juicy beef dengan keju premium.</p>
+                    <button class="mt-4 w-full btn-primary text-center">Pesan Sekarang</button>
+                </div>
+            </div>
+            
+            <!-- Menu Card 2 -->
+            <div class="reveal bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow overflow-hidden">
+                <div class="h-48 bg-gradient-to-br from-yellow-400 to-yellow-600"></div>
+                <div class="p-6">
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">Cheese Blast</h3>
+                    <p class="text-gray-600">Keju meleleh melimpah.</p>
+                    <button class="mt-4 w-full btn-primary text-center">Pesan Sekarang</button>
+                </div>
+            </div>
+            
+            <!-- Menu Card 3 -->
+            <div class="reveal bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow overflow-hidden">
+                <div class="h-48 bg-gradient-to-br from-red-400 to-red-600"></div>
+                <div class="p-6">
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">Spicy Chicken</h3>
+                    <p class="text-gray-600">Ayam crispy dengan saus pedas.</p>
+                    <button class="mt-4 w-full btn-primary text-center">Pesan Sekarang</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- About Section -->
+<section id="about" class="py-16 md:py-24 bg-light">
+    <div class="reveal max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-6">Tentang Burgerlicious</h2>
+        <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+            Kami menyajikan burger segar dengan bahan pilihan dan kualitas terbaik. Setiap burger dibuat dengan cinta dan perhatian terhadap detail untuk memberikan pengalaman kuliner terbaik bagi Anda.
+        </p>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="bg-gray-900 text-white py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <p>© 2026 Burgerlicious. All Rights Reserved.</p>
+    </div>
 </footer>
 
-<script src="js/script.js"></script>
+<script src="./src/js/script.js"></script>
 </body>
 </html>
