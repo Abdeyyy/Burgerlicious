@@ -13,12 +13,12 @@
 <body class="bg-white font-sans">
 
 <!-- Navbar Header -->
-<header class="w-screen fixed top-0 bg-transparent">
+<header class="w-screen sticky bg-white md:fixed md:bg-transparent sm:bg-transparent z-50">
     <div class="mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
         <a href="#" class="">
             <img class="h-15 w-15 rounded-full" src="assets/icon/Logo_Burgerlicious_square.png" alt="Logo Burgerlicious">
         </a>
-        <nav class="flex bg-white rounded-full">
+        <nav class="hidden md:flex bg-white rounded-full">
             <a class="text-black hover:text-white hover:bg-[#8F0919] px-9 py-2.5 rounded-full transition-colors" href="#home">Home</a>
             <a class="text-black hover:text-white hover:bg-[#8F0919] px-9 py-2.5 rounded-full transition-colors" href="#menu">Menu</a>
             <a class="text-black hover:text-white hover:bg-[#8F0919] px-9 py-2.5 rounded-full transition-colors" href="#promo">Promo</a>
@@ -38,23 +38,28 @@
 </section>
 
 <!-- Promo Section -->
-<section id="promo" class="py-16 md:py-24 bg-secondary/10">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<section id="promo" class="bg-[#FEBB19]">
+    <div class="p-10">
         <div class="text-center mb-12">
-            <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-2">
+            <h2 class="text-5xl font-bold text-white mb-2">
                 Promo Menarik
             </h2>
-            <p class="text-xl text-gray-600">Burgerlicious</p>
+            <p class="text-3xl text-white">Burgerlicious</p>
         </div>
         
-        <div class="grid md:grid-cols-2 gap-8 mb-8">
-            <img class="rounded-lg shadow-lg hover:shadow-xl transition-shadow" src="assets/images/Promo_ramadhan.png" alt="Promo Ramadhan">
-            <img class="rounded-lg shadow-lg hover:shadow-xl transition-shadow" src="assets/images/Promo_mantap_kamis.png" alt="Promo Mantap Kamis">
+        <div class="md:max-w-full md:flex-row max-w-full flex flex-col items-center justify-between gap-8 mb-12">
+            <p class="text-center font-bold text-xl text-white">
+                <img class="w-full rounded-lg shadow-lg hover:shadow-xl transition-shadow" src="assets/images/Promo_ramadhan.png" alt="Promo Ramadhan">
+                Berlaku hingga 18 Maret 2026
+            </p>
+            <p class="text-center font-bold text-xl text-white">
+                <img class="w-full rounded-lg shadow-lg hover:shadow-xl transition-shadow" src="assets/images/Promo_mantap_kamis.png" alt="Promo Mantap Kamis">
+                Berlaku Setiap Hari Kamis
+            </p>
         </div>
         
         <div class="text-center">
-            <p class="text-xl text-gray-700 mb-6 font-semibold">Beli 2 Gratis 1 untuk semua varian burger!</p>
-            <a href="login.html" class="btn-primary">Klaim Sekarang</a>
+            <a href="#menu" class="text-white bg-[#FF0000] font-bold px-9 py-2 rounded-full drop-shadow-2xl">Lihat Menu</a>
         </div>
     </div>
 </section>
@@ -67,7 +72,7 @@
         <div class="grid md:grid-cols-3 gap-8">
             <!-- Menu Card 1 -->
             <div class="reveal bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow overflow-hidden">
-                <div class="h-48 bg-gradient-to-br from-orange-400 to-orange-600"></div>
+                <div class="h-48 bg-linear-to-br from-orange-400 to-orange-600"></div>
                 <div class="p-6">
                     <h3 class="text-xl font-bold text-gray-900 mb-2">Classic Beef</h3>
                     <p class="text-gray-600">Juicy beef dengan keju premium.</p>
@@ -77,7 +82,7 @@
             
             <!-- Menu Card 2 -->
             <div class="reveal bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow overflow-hidden">
-                <div class="h-48 bg-gradient-to-br from-yellow-400 to-yellow-600"></div>
+                <div class="h-48 bg-linear-to-br from-yellow-400 to-yellow-600"></div>
                 <div class="p-6">
                     <h3 class="text-xl font-bold text-gray-900 mb-2">Cheese Blast</h3>
                     <p class="text-gray-600">Keju meleleh melimpah.</p>
@@ -87,7 +92,7 @@
             
             <!-- Menu Card 3 -->
             <div class="reveal bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow overflow-hidden">
-                <div class="h-48 bg-gradient-to-br from-red-400 to-red-600"></div>
+                <div class="h-48 bg-linear-to-br from-red-400 to-red-600"></div>
                 <div class="p-6">
                     <h3 class="text-xl font-bold text-gray-900 mb-2">Spicy Chicken</h3>
                     <p class="text-gray-600">Ayam crispy dengan saus pedas.</p>
