@@ -1,8 +1,8 @@
 <?php
-$host     = 'localhost';
-$db       = 'burgerlicious';
-$user     = 'root';
-$pass     = '';
+$host     = 'sql100.infinityfree.com';
+$db       = 'if0_41496213_burgerlicious'; // cek nama db di MySQL Databases
+$user     = 'if0_41496213';
+$pass     = 'BgEwbUd9M7kd';
 $charset  = 'utf8mb4';
 
 $dsn = "mysql:host=$host;dbname=$db;charset=$charset";
