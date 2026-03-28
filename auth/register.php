@@ -33,15 +33,21 @@ if ($password !== $confirm) {
     exit;
 }
 
-$stmt = $pdo->prepare('SELECT id_user FROM user WHERE email = ?');
-$stmt->execute([$email]);
-if ($stmt->fetch()) {
+$stmt = $conn->prepare('SELECT id_user FROM user WHERE email = ?');
+$stmt->bind_param('s', $email);
+$stmt->execute();
+$stmt->store_result();
+
+if ($stmt->num_rows > 0) {
     echo json_encode(['status' => 'error', 'message' => 'Email sudah terdaftar.']);
     exit;
 }
+$stmt->close();
 
 $hash = password_hash($password, PASSWORD_DEFAULT);
-$stmt = $pdo->prepare('INSERT INTO user (nama, email, pass) VALUES (?, ?, ?)');
-$stmt->execute([$nama, $email, $hash]);
+$stmt = $conn->prepare('INSERT INTO user (nama, email, pass) VALUES (?, ?, ?)');
+$stmt->bind_param('sss', $nama, $email, $hash);
+$stmt->execute();
+$stmt->close();
 
 echo json_encode(['status' => 'success', 'message' => 'Registrasi berhasil! Silakan login.']);

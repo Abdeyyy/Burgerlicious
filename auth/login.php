@@ -11,24 +11,24 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 $email    = trim($_POST['email'] ?? '');
 $password = $_POST['password'] ?? '';
 
-// Validasi
 if (!$email || !$password) {
     echo json_encode(['status' => 'error', 'message' => 'Email dan password harus diisi.']);
     exit;
 }
 
-// Cari user
-$stmt = $pdo->prepare('SELECT * FROM users WHERE email = ?');
-$stmt->execute([$email]);
-$user = $stmt->fetch();
+$stmt = $conn->prepare('SELECT * FROM user WHERE email = ?');
+$stmt->bind_param('s', $email);
+$stmt->execute();
+$result = $stmt->get_result();
+$user = $result->fetch_assoc();
+$stmt->close();
 
-if (!$user || !password_verify($password, $user['password'])) {
+if (!$user || !password_verify($password, $user['pass'])) {
     echo json_encode(['status' => 'error', 'message' => 'Email atau password salah.']);
     exit;
 }
 
-// Simpan session
-$_SESSION['user_id'] = $user['id'];
+$_SESSION['user_id'] = $user['id_user'];
 $_SESSION['nama']    = $user['nama'];
 $_SESSION['email']   = $user['email'];
 
