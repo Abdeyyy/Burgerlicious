@@ -1,6 +1,6 @@
 <?php
 $host     = 'sql100.infinityfree.com';
-$db       = 'if0_41496213_burgerlicious'; // cek nama db di MySQL Databases
+$db       = 'if0_41496213_burgerlicious'; 
 $user     = 'if0_41496213';
 $pass     = 'BgEwbUd9M7kd';
 $charset  = 'utf8mb4';

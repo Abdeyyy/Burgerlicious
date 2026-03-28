@@ -13,7 +13,6 @@ $email    = trim($_POST['email'] ?? '');
 $password = $_POST['password'] ?? '';
 $confirm  = $_POST['confirmPassword'] ?? '';
 
-// Validasi
 if (!$nama || !$email || !$password || !$confirm) {
     echo json_encode(['status' => 'error', 'message' => 'Semua field harus diisi.']);
     exit;
@@ -34,17 +33,15 @@ if ($password !== $confirm) {
     exit;
 }
 
-// Cek email sudah terdaftar
-$stmt = $pdo->prepare('SELECT id FROM users WHERE email = ?');
+$stmt = $pdo->prepare('SELECT id_user FROM user WHERE email = ?');
 $stmt->execute([$email]);
 if ($stmt->fetch()) {
     echo json_encode(['status' => 'error', 'message' => 'Email sudah terdaftar.']);
     exit;
 }
 
-// Simpan ke database
 $hash = password_hash($password, PASSWORD_DEFAULT);
-$stmt = $pdo->prepare('INSERT INTO users (nama, email, password) VALUES (?, ?, ?)');
+$stmt = $pdo->prepare('INSERT INTO user (nama, email, pass) VALUES (?, ?, ?)');
 $stmt->execute([$nama, $email, $hash]);
 
 echo json_encode(['status' => 'success', 'message' => 'Registrasi berhasil! Silakan login.']);
