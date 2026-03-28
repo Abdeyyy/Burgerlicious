@@ -10,21 +10,10 @@ document.addEventListener('DOMContentLoaded', async function() {
             loginBtns.forEach(loginBtn => {
                 // Pastikan yang diubah hanya tombol "Login" di navbar (bukan tombol promo dll)
                 if (loginBtn.textContent.trim().toLowerCase() === 'login') {
-                    loginBtn.innerHTML = `Selamat Datang, <b>${data.nama}</b>`;
-                    loginBtn.href = 'auth/logout.php';
-                    loginBtn.title = 'Sesi Aktif - Klik untuk Logout';
-                    
-                    // Modifikasi desain tombol agar terlihat lebih menonjol sebagai identitas user
-                    loginBtn.classList.remove('bg-white', 'text-black');
-                    loginBtn.classList.add('bg-[#FEBB19]', 'text-[#5D0303]', 'font-bold', 'hover:bg-red-600', 'hover:text-white', 'border-0');
-                    
-                    // Tambahkan konfirmasi logout saat diklik
-                    loginBtn.addEventListener('click', function(e) {
-                        const confirmLogout = confirm('Apakah Anda yakin ingin logout?');
-                        if (!confirmLogout) {
-                            e.preventDefault();
-                        }
-                    });
+                    const spanBtn = document.createElement('span');
+                    spanBtn.innerHTML = `Selamat Datang, <b>${data.nama}</b>`;
+                    spanBtn.className = 'text-black font-medium text-sm md:text-base px-2';
+                    loginBtn.replaceWith(spanBtn);
                 }
             });
         }
