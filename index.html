@@ -20,7 +20,7 @@
     <header class="w-screen sticky bg-white md:fixed md:bg-transparent sm:bg-transparent z-50">
         <div class="mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
             <a href="#" class="">
-                <img class="h-15 w-15 rounded-full" src="assets/icon/Logo_Burgerlicious_square.png"
+                <img loading="lazy" class="h-15 w-15 rounded-full" src="assets/icon/Logo_Burgerlicious_square.png"
                     alt="Logo Burgerlicious">
             </a>
             <nav class="hidden md:flex bg-white rounded-full">
@@ -41,7 +41,7 @@
     <!-- Hero Section -->
     <section id="home" class="w-full max-h-screen bg-linear-to-b from-[#BA0000] to-[#5D0303]">
         <div class="flex flex-col items-center py-9">
-            <img src="assets/images/Hero_section.png" alt="Hero Burger" class="w-2/3">
+            <img loading="lazy" src="assets/images/Hero_section.png" alt="Hero Burger" class="w-2/3">
 
             <div class="flex items-center mt-6 gap-4">
                 <a href="login.html"
@@ -76,13 +76,13 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-10 mb-16">
                 <!-- Promo 1 -->
                 <div
-                    class="group relative bg-white rounded-3xl p-3 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 cursor-pointer">
+                    class="group relative bg-white rounded-3xl p-3 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 cursor-pointer h-full">
                     <div
                         class="absolute top-6 left-6 z-20 bg-[#BD0202] text-white text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-wider shadow-md transform -rotate-3">
                         Terbatas
                     </div>
                     <div class="overflow-hidden rounded-2xl relative">
-                        <img class="w-full h-auto object-cover transform group-hover:scale-110 transition-transform duration-700 ease-in-out"
+                        <img loading="lazy" class="w-full h-auto object-cover transform group-hover:scale-110 transition-transform duration-700 ease-in-out"
                             src="assets/images/Promo_ramadhan.png" alt="Promo Ramadhan">
                         <!-- Overlay Gradient -->
                         <div
@@ -103,7 +103,8 @@
                     </div>
                 </div>
 
-                <!-- Promo 2 -->
+                <div class="flex flex-col gap-10 h-full">
+<!-- Promo 2 -->
                 <div
                     class="group relative bg-white rounded-3xl p-3 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 cursor-pointer">
                     <div
@@ -111,7 +112,7 @@
                         Setiap Kamis
                     </div>
                     <div class="overflow-hidden rounded-2xl relative">
-                        <img class="w-full h-auto object-cover transform group-hover:scale-110 transition-transform duration-700 ease-in-out"
+                        <img loading="lazy" class="w-full h-auto object-cover transform group-hover:scale-110 transition-transform duration-700 ease-in-out"
                             src="assets/images/Promo_mantap_kamis.png" alt="Promo Mantap Kamis">
                         <div
                             class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-90 transition-opacity duration-300 group-hover:opacity-100">
@@ -129,6 +130,26 @@
                             </div>
                         </div>
                     </div>
+                </div>
+                <!-- Promo 3 -->
+                <div
+                    class="group relative bg-[#BA0000] rounded-3xl p-3 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 cursor-pointer h-full flex items-center justify-center overflow-hidden">
+                    <img loading="lazy" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700 ease-in-out absolute inset-0"
+                        src="assets/images/promo3.jpeg" alt="Promo Eksklusif">
+                    <div
+                        class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-90 transition-opacity duration-300 group-hover:opacity-100">
+                    </div>
+                    <div
+                        class="absolute bottom-0 left-0 p-6 w-full transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
+                        <h3 class="text-2xl font-bold text-white mb-1 drop-shadow-md">Tawaran Spesial</h3>
+                        <div class="flex items-center gap-2 text-[#FFAD5B] font-medium text-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <span>Hanya berlaku minggu ini</span>
+                        </div>
+                    </div>
+                </div>
                 </div>
             </div>
 
@@ -163,7 +184,7 @@
             <div class="grid md:grid-cols-3 gap-10">
 
                 <!-- Card 1 -->
-                <a href="#"
+                <a href="pesan.html?menu=original-flavour"
                     class="relative bg-white rounded-[2rem] p-8 shadow-2xl hover:shadow-[0_20px_40px_rgba(254,187,25,0.3)] transition-all duration-500 hover:-translate-y-4 flex flex-col items-center border-[3px] border-transparent hover:border-[#FEBB19] group">
                     <div
                         class="absolute -top-5 bg-[#FEBB19] text-[#BA0000] font-black italic px-6 py-2 rounded-full shadow-lg transform -rotate-2 z-20 group-hover:scale-110 transition-transform duration-300">
@@ -176,7 +197,7 @@
                             class="absolute inset-0 bg-[#FEBB19] rounded-full blur-2xl opacity-0 group-hover:opacity-40 transition-opacity duration-500 scale-75">
                         </div>
                         <!-- Image -->
-                        <img src="assets/images/BestSeller_1.png" alt="Original Flavour"
+                        <img loading="lazy" src="assets/images/BestSeller_1.png" alt="Original Flavour"
                             class="w-full h-full object-contain relative z-10 drop-shadow-[0_20px_15px_rgba(0,0,0,0.4)] group-hover:scale-110 group-hover:-translate-y-4 transition-transform duration-500 ease-out">
                     </div>
 
@@ -198,13 +219,13 @@
                 </a>
 
                 <!-- Card 2 -->
-                <a href="#"
+                <a href="pesan.html?menu=chicken-original"
                     class="relative bg-white rounded-[2rem] p-8 shadow-2xl hover:shadow-[0_20px_40px_rgba(254,187,25,0.3)] transition-all duration-500 hover:-translate-y-4 flex flex-col items-center border-[3px] border-transparent hover:border-[#FEBB19] group">
                     <div class="w-48 h-48 sm:w-56 sm:h-56 mb-6 relative">
                         <div
                             class="absolute inset-0 bg-[#BA0000] rounded-full blur-2xl opacity-0 group-hover:opacity-30 transition-opacity duration-500 scale-75">
                         </div>
-                        <img src="assets/images/BestSeller_2.png" alt="Chicken Original"
+                        <img loading="lazy" src="assets/images/BestSeller_2.png" alt="Chicken Original"
                             class="w-full h-full object-contain relative z-10 drop-shadow-[0_20px_15px_rgba(0,0,0,0.4)] group-hover:scale-110 group-hover:-translate-y-4 transition-transform duration-500 ease-out">
                     </div>
 
@@ -226,7 +247,7 @@
                 </a>
 
                 <!-- Card 3 -->
-                <a href="#"
+                <a href="pesan.html?menu=spicy-chicken"
                     class="relative bg-white rounded-[2rem] p-8 shadow-2xl hover:shadow-[0_20px_40px_rgba(254,187,25,0.3)] transition-all duration-500 hover:-translate-y-4 flex flex-col items-center border-[3px] border-transparent hover:border-[#FEBB19] group">
                     <div
                         class="absolute top-6 right-6 bg-red-600 text-white p-2.5 rounded-full shadow-lg group-hover:rotate-12 transition-transform duration-300 z-20">
@@ -243,7 +264,7 @@
                         <div
                             class="absolute inset-0 bg-red-600 rounded-full blur-2xl opacity-0 group-hover:opacity-30 transition-opacity duration-500 scale-75">
                         </div>
-                        <img src="assets/images/BestSeller_3.png" alt="Spicy Chicken"
+                        <img loading="lazy" src="assets/images/BestSeller_3.png" alt="Spicy Chicken"
                             class="w-full h-full object-contain relative z-10 drop-shadow-[0_20px_15px_rgba(0,0,0,0.4)] group-hover:scale-110 group-hover:-translate-y-4 transition-transform duration-500 ease-out">
                     </div>
 
@@ -282,7 +303,7 @@
                 <div
                     class="bg-white rounded-lg shadow-lg hover:shadow-2xl hover:scale-[1.03] origin-center transition-all duration-300 flex flex-col min-w-[280px] sm:min-w-[320px] shrink-0 snap-center relative group">
                     <div class="flex justify-center items-center bg-gradient-to-b from-gray-50 to-white rounded-t-lg p-8 overflow-hidden">
-                        <img src="assets/images/menu_1.png" alt="menu 1" class="h-32 sm:h-40 w-full object-contain transform group-hover:scale-110 transition-transform duration-500">
+                        <img loading="lazy" src="assets/images/menu_1.png" alt="menu 1" class="h-32 sm:h-40 w-full object-contain transform group-hover:scale-110 transition-transform duration-500">
                     </div>
                     <div class="p-6 flex flex-col grow">
                         <h3 class="text-lg font-bold text-[#BA0000] mb-2">Double Meat Burger</h3>
@@ -299,7 +320,7 @@
                 <div
                     class="bg-white rounded-lg shadow-lg hover:shadow-2xl hover:scale-[1.03] origin-center transition-all duration-300 flex flex-col min-w-[280px] sm:min-w-[320px] shrink-0 snap-center relative group">
                     <div class="flex justify-center items-center bg-gradient-to-b from-gray-50 to-white rounded-t-lg p-8 overflow-hidden">
-                        <img src="assets/images/menu_2.png" alt="menu 2" class="h-32 sm:h-40 w-full object-contain transform group-hover:scale-110 transition-transform duration-500">
+                        <img loading="lazy" src="assets/images/menu_2.png" alt="menu 2" class="h-32 sm:h-40 w-full object-contain transform group-hover:scale-110 transition-transform duration-500">
                     </div>
                     <div class="p-6 flex flex-col grow">
                         <h3 class="text-lg font-bold text-[#BA0000] mb-2">Darth Vader Burger</h3>
@@ -317,7 +338,7 @@
                 <div
                     class="bg-white rounded-lg shadow-lg hover:shadow-2xl hover:scale-[1.03] origin-center transition-all duration-300 flex flex-col min-w-[280px] sm:min-w-[320px] shrink-0 snap-center relative group">
                     <div class="flex justify-center items-center bg-gradient-to-b from-gray-50 to-white rounded-t-lg p-8 overflow-hidden">
-                        <img src="assets/images/menu_3.png" alt="menu 3" class="h-32 sm:h-40 w-full object-contain transform group-hover:scale-110 transition-transform duration-500">
+                        <img loading="lazy" src="assets/images/menu_3.png" alt="menu 3" class="h-32 sm:h-40 w-full object-contain transform group-hover:scale-110 transition-transform duration-500">
                     </div>
                     <div class="p-6 flex flex-col grow">
                         <h3 class="text-lg font-bold text-[#BA0000] mb-2">Egg Cheese Burger</h3>
@@ -334,7 +355,7 @@
                 <div
                     class="bg-white rounded-lg shadow-lg hover:shadow-2xl hover:scale-[1.03] origin-center transition-all duration-300 flex flex-col min-w-[280px] sm:min-w-[320px] shrink-0 snap-center relative group">
                     <div class="flex justify-center items-center bg-gradient-to-b from-gray-50 to-white rounded-t-lg p-8 overflow-hidden">
-                        <img src="assets/images/menu_4.png" alt="menu 4" class="h-32 sm:h-40 w-full object-contain transform group-hover:scale-110 transition-transform duration-500">
+                        <img loading="lazy" src="assets/images/menu_4.png" alt="menu 4" class="h-32 sm:h-40 w-full object-contain transform group-hover:scale-110 transition-transform duration-500">
                     </div>
                     <div class="p-6 flex flex-col grow">
                         <h3 class="text-lg font-bold text-[#BA0000] mb-2">Red Bun Burger</h3>
@@ -351,7 +372,7 @@
                 <div
                     class="bg-white rounded-lg shadow-lg hover:shadow-2xl hover:scale-[1.03] origin-center transition-all duration-300 flex flex-col min-w-[280px] sm:min-w-[320px] shrink-0 snap-center relative group">
                     <div class="flex justify-center items-center bg-gradient-to-b from-gray-50 to-white rounded-t-lg p-8 overflow-hidden">
-                        <img src="assets/images/menu_5.png" alt="menu 5" class="h-32 sm:h-40 w-full object-contain transform group-hover:scale-110 transition-transform duration-500">
+                        <img loading="lazy" src="assets/images/menu_5.png" alt="menu 5" class="h-32 sm:h-40 w-full object-contain transform group-hover:scale-110 transition-transform duration-500">
                     </div>
                     <div class="p-6 flex flex-col grow">
                         <h3 class="text-lg font-bold text-[#BA0000] mb-2">Fried Fries</h3>
@@ -368,7 +389,7 @@
                 <div
                     class="bg-white rounded-lg shadow-lg hover:shadow-2xl hover:scale-[1.03] origin-center transition-all duration-300 flex flex-col min-w-[280px] sm:min-w-[320px] shrink-0 snap-center relative group">
                     <div class="flex justify-center items-center bg-gradient-to-b from-gray-50 to-white rounded-t-lg p-8 overflow-hidden">
-                        <img src="assets/images/menu_6.png" alt="menu 6" class="h-32 sm:h-40 w-full object-contain transform group-hover:scale-110 transition-transform duration-500">
+                        <img loading="lazy" src="assets/images/menu_6.png" alt="menu 6" class="h-32 sm:h-40 w-full object-contain transform group-hover:scale-110 transition-transform duration-500">
                     </div>
                     <div class="p-6 flex flex-col grow">
                         <h3 class="text-lg font-bold text-[#BA0000] mb-2">Cheese Hot Dogs</h3>
@@ -386,7 +407,7 @@
                 <div
                     class="bg-white rounded-lg shadow-lg hover:shadow-2xl hover:scale-[1.03] origin-center transition-all duration-300 flex flex-col min-w-[280px] sm:min-w-[320px] shrink-0 snap-center relative group">
                     <div class="flex justify-center items-center bg-gradient-to-b from-gray-50 to-white rounded-t-lg p-8 overflow-hidden">
-                        <img src="assets/images/menu_7.png" alt="menu 7" class="h-32 sm:h-40 w-full object-contain transform group-hover:scale-110 transition-transform duration-500">
+                        <img loading="lazy" src="assets/images/menu_7.png" alt="menu 7" class="h-32 sm:h-40 w-full object-contain transform group-hover:scale-110 transition-transform duration-500">
                     </div>
                     <div class="p-6 flex flex-col grow">
                         <h3 class="text-lg font-bold text-[#BA0000] mb-2">Fried Wings</h3>
@@ -403,7 +424,7 @@
                 <div
                     class="bg-white rounded-lg shadow-lg hover:shadow-2xl hover:scale-[1.03] origin-center transition-all duration-300 flex flex-col min-w-[280px] sm:min-w-[320px] shrink-0 snap-center relative group">
                     <div class="flex justify-center items-center bg-gradient-to-b from-gray-50 to-white rounded-t-lg p-8 overflow-hidden">
-                        <img src="assets/images/menu_8.png" alt="menu 8" class="h-32 sm:h-40 w-full object-contain transform group-hover:scale-110 transition-transform duration-500">
+                        <img loading="lazy" src="assets/images/menu_8.png" alt="menu 8" class="h-32 sm:h-40 w-full object-contain transform group-hover:scale-110 transition-transform duration-500">
                     </div>
                     <div class="p-6 flex flex-col grow">
                         <h3 class="text-lg font-bold text-[#BA0000] mb-2">Bucket Nugget</h3>

@@ -28,6 +28,11 @@ if (!$user || !password_verify($password, $user['pass'])) {
     exit;
 }
 
+if (isset($user['is_verified']) && $user['is_verified'] == 0) {
+    echo json_encode(['status' => 'error', 'message' => 'Akun belum diverifikasi. Cek email Anda untuk OTP.']);
+    exit;
+}
+
 $_SESSION['user_id'] = $user['id_user'];
 $_SESSION['nama']    = $user['nama'];
 $_SESSION['email']   = $user['email'];

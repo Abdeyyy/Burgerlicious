@@ -1,5 +1,6 @@
 <?php
 session_start();
+date_default_timezone_set('Asia/Jakarta');
 header('Content-Type: application/json');
 require_once '../config/db.php';
 
@@ -39,16 +40,25 @@ if ($password !== $confirm) {
     exit;
 }
 
-$stmt = $conn->prepare('SELECT id_user FROM user WHERE email = ?');
+$stmt = $conn->prepare('SELECT id_user, is_verified FROM user WHERE email = ?');
 $stmt->bind_param('s', $email);
 $stmt->execute();
-$stmt->store_result();
-
-if ($stmt->num_rows > 0) {
-    echo json_encode(['status' => 'error', 'message' => 'Email sudah terdaftar.']);
-    exit;
-}
+$result = $stmt->get_result();
+$user_exists = $result->fetch_assoc();
 $stmt->close();
+
+if ($user_exists) {
+    if ($user_exists['is_verified'] == 1) {
+        echo json_encode(['status' => 'error', 'message' => 'Email sudah terdaftar dan terverifikasi. Silakan login.']);
+        exit;
+    } else {
+        // Hapus akun yang belum terverifikasi agar bisa ditimpa ulang (misal: password berubah, otp baru)
+        $stmt_del = $conn->prepare("DELETE FROM user WHERE id_user = ?");
+        $stmt_del->bind_param("i", $user_exists['id_user']);
+        $stmt_del->execute();
+        $stmt_del->close();
+    }
+}
 
 $hash = password_hash($password, PASSWORD_DEFAULT);
 $otp = sprintf("%06d", mt_rand(1, 999999));

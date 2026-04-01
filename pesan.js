@@ -1,4 +1,7 @@
 const menuData = {
+    'original-flavour': { nama: 'Original Flavour', deskripsi: 'Cita rasa asli Burgerlicious dengan daging sapi juicy dan saus rahasia yang autentik.', harga: 45000, gambar: 'assets/images/BestSeller_1.png' },
+    'chicken-original': { nama: 'Chicken Original', deskripsi: 'Ayam krispi fillet tebal yang gurih dengan perpaduan selada segar dan roti lembut.', harga: 38000, gambar: 'assets/images/BestSeller_2.png' },
+    'spicy-chicken': { nama: 'Spicy Chicken', deskripsi: 'Sensasi pedas yang membakar semangat di tiap gigitan. Tantang diri Anda!', harga: 42000, gambar: 'assets/images/BestSeller_3.png' },
     'double-meat-burger': { nama: 'Double Meat Burger', deskripsi: 'Double daging yang juicy dengan keju premium.', harga: 32999, gambar: 'assets/images/menu_1.png' },
     'darth-vader-burger': { nama: 'Darth Vader Burger', deskripsi: 'Burger original edisi spesial kolaborasi dengan Star Wars.', harga: 40000, gambar: 'assets/images/menu_2.png' },
     'egg-cheese-burger': { nama: 'Egg Cheese Burger', deskripsi: 'Daging dan telur yang nikmat dalam satu gigitan.', harga: 37000, gambar: 'assets/images/menu_3.png' },
@@ -9,7 +12,7 @@ const menuData = {
     'bucket-nugget': { nama: 'Bucket Nugget', deskripsi: 'Nugget ayam renyah dengan saus cocol favorit.', harga: 25000, gambar: 'assets/images/menu_8.png' }
 };
 
-const ongkirData = { instant: 12000, hemat: 7000, scheduled: 9000 };
+const ongkirData = { instant: 12000, hemat: 7000, pickup: 0 };
 const promoList = {
     'BURGER10': { nama: 'BURGER10', desc: 'Diskon 10% untuk semua menu', persen: 10 },
     'HEMAT5K':  { nama: 'HEMAT5K',  desc: 'Potongan Rp 5.000',          nominal: 5000 },
@@ -31,7 +34,7 @@ function getOngkir() {
 
 function getPengirimanLabel() {
     const val = document.querySelector('input[name="pengiriman"]:checked');
-    const labels = { instant: 'GoFood Instant (15–25 menit)', hemat: 'GoFood Hemat (30–45 menit)', scheduled: 'Scheduled (Terjadwal)' };
+    const labels = { instant: 'Kurir Instant (15–25 menit)', hemat: 'Kurir Hemat (30–45 menit)', pickup: 'Ambil Sendiri (Pickup)' };
     return val ? labels[val.value] : '-';
 }
 
