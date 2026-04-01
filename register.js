@@ -132,7 +132,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 
                 if (result.status === 'success') {
                     showFormMessage(result.message, 'success');
-                    setTimeout(() => { window.location.href = 'login.html'; }, 1500);
+                    if (result.requires_verification) {
+                        setTimeout(() => { window.location.href = `verify.html?email=${encodeURIComponent(emailInput.value.trim())}`; }, 1700);
+                    } else {
+                        setTimeout(() => { window.location.href = 'login.html'; }, 1500);
+                    }
                 } else {
                     showFormMessage(result.message || 'Registrasi gagal.');
                     submitBtn.disabled = false;
