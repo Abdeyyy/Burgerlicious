@@ -1,0 +1,19 @@
+/* verify.css - Styles for verify.html */
+
+body {
+    font-family: 'Baloo Bhaijaan 2', sans-serif;
+}
+
+@media (max-width: 767px) {
+    body {
+        overflow-y: auto;
+        min-height: 100svh;
+    }
+}
+
+@media (min-width: 768px) {
+    body {
+        overflow: hidden;
+        height: 100vh;
+    }
+}
