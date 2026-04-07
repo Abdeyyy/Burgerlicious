@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Burgerlicious - Fresh & Juicy</title>
-    <link rel="stylesheet" href="./src/output.css">
-    <link rel="stylesheet" href="loading.css">
+    <link rel="stylesheet" href="./public/frontend/css/output.css">
+    <link rel="stylesheet" href="./public/frontend/css/loading.css">
     <link rel="preload" href="assets/icon/wired-lineal-1927-food-truck-hover-pinch.gif" as="image">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -25,17 +25,17 @@
             </a>
             <nav class="hidden md:flex bg-white rounded-full">
                 <a class="text-black hover:text-white hover:bg-[#8F0919] px-9 py-2.5 rounded-full transition-colors"
-                    href="#home">Home</a>
-                <a class="text-black hover:text-white hover:bg-[#8F0919] px-9 py-2.5 rounded-full transition-colors"
-                    href="#menu">Menu</a>
+                    href="#home">Home</a>                
                 <a class="text-black hover:text-white hover:bg-[#8F0919] px-9 py-2.5 rounded-full transition-colors"
                     href="#promo">Promo</a>
+                <a class="text-black hover:text-white hover:bg-[#8F0919] px-9 py-2.5 rounded-full transition-colors"
+                    href="#menu">Menu</a>
                 <a class="text-black hover:text-white hover:bg-[#8F0919] px-9 py-2.5 rounded-full transition-colors"
                     href="#about">About</a>
             </nav>
 
             <a class=" bg-white text-black hover:bg-[#8F0919] hover:text-white hover:shadow-2xl py-2.5 px-7 rounded-full transition-all duration-300 text-sm md:text-base"
-                href="login.html">Login</a>
+                href="./public/pages/login.html">Login</a>
     </header>
 
     <!-- Hero Section -->
@@ -44,12 +44,9 @@
             <img loading="lazy" src="assets/images/Hero_section.png" alt="Hero Burger" class="w-2/3">
 
             <div class="flex items-center mt-6 gap-4">
-                <a href="login.html"
+                <a href="./public/pages/login.html"
                     class="font-light text-white bg-transparent border-2 border-[#E3867A] hover:bg-[#BA0000] hover:border-transparent rounded-full transition-all py-2 px-9">
                     View More
-                    <!-- <svg class="w-2 h-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 8.25 21 12m0 0-3.75 3.75M21 12H3" />
-                </svg> -->
                 </a>
             </div>
         </div>
@@ -184,7 +181,7 @@
             <div class="grid md:grid-cols-3 gap-10">
 
                 <!-- Card 1 -->
-                <a href="pesan.html?menu=original-flavour"
+                <a href="./public/pages/pesan.html?menu=original-flavour"
                     class="relative bg-white rounded-[2rem] p-8 shadow-2xl hover:shadow-[0_20px_40px_rgba(254,187,25,0.3)] transition-all duration-500 hover:-translate-y-4 flex flex-col items-center border-[3px] border-transparent hover:border-[#FEBB19] group">
                     <div
                         class="absolute -top-5 bg-[#FEBB19] text-[#BA0000] font-black italic px-6 py-2 rounded-full shadow-lg transform -rotate-2 z-20 group-hover:scale-110 transition-transform duration-300">
@@ -219,7 +216,7 @@
                 </a>
 
                 <!-- Card 2 -->
-                <a href="pesan.html?menu=chicken-original"
+                <a href="./public/pages/pesan.html?menu=chicken-original"
                     class="relative bg-white rounded-[2rem] p-8 shadow-2xl hover:shadow-[0_20px_40px_rgba(254,187,25,0.3)] transition-all duration-500 hover:-translate-y-4 flex flex-col items-center border-[3px] border-transparent hover:border-[#FEBB19] group">
                     <div class="w-48 h-48 sm:w-56 sm:h-56 mb-6 relative">
                         <div
@@ -247,7 +244,7 @@
                 </a>
 
                 <!-- Card 3 -->
-                <a href="pesan.html?menu=spicy-chicken"
+                <a href="./public/pages/pesan.html?menu=spicy-chicken"
                     class="relative bg-white rounded-[2rem] p-8 shadow-2xl hover:shadow-[0_20px_40px_rgba(254,187,25,0.3)] transition-all duration-500 hover:-translate-y-4 flex flex-col items-center border-[3px] border-transparent hover:border-[#FEBB19] group">
                     <div
                         class="absolute top-6 right-6 bg-red-600 text-white p-2.5 rounded-full shadow-lg group-hover:rotate-12 transition-transform duration-300 z-20">
@@ -310,7 +307,7 @@
                         <p class="text-gray-600 text-sm mb-7">Double daging yang juicy dengan keju premium.</p>
                         <div class="flex justify-between items-center">
                             <span class="font-bold text-[#BA0000]">Rp 32.999</span>
-                            <a href="pesan.html?menu=double-meat-burger"
+                            <a href="./public/pages/pesan.html?menu=double-meat-burger"
                                 class="bg-[#FFAD5B] text-[#BD0202] text-sm px-4 py-2 rounded-full font-semibold hover:bg-[#7A0000] transition">Pesan
                                 Sekarang</a>
                         </div>
@@ -328,7 +325,7 @@
                         </p>
                         <div class="flex justify-between items-center">
                             <span class="font-bold text-[#BA0000]">Rp 40.000</span>
-                            <a href="pesan.html?menu=darth-vader-burger"
+                            <a href="./public/pages/pesan.html?menu=darth-vader-burger"
                                 class="bg-[#FFAD5B] text-[#BD0202] text-sm px-4 py-2 rounded-full font-semibold hover:bg-[#7A0000] transition">Pesan
                                 Sekarang</a>
                         </div>
@@ -345,7 +342,7 @@
                         <p class="text-gray-600 text-sm mb-7">Daging dan telur yang nikmat dalam satu gigitan.</p>
                         <div class="flex justify-between items-center">
                             <span class="font-bold text-[#BA0000]">Rp 37.000</span>
-                            <a href="pesan.html?menu=egg-cheese-burger"
+                            <a href="./public/pages/pesan.html?menu=egg-cheese-burger"
                                 class="bg-[#FFAD5B] text-[#BD0202] text-sm px-4 py-2 rounded-full font-semibold hover:bg-[#7A0000] transition">Pesan
                                 Sekarang</a>
                         </div>
@@ -362,7 +359,7 @@
                         <p class="text-gray-600 text-sm mb-7">Roti merah yang lezat dan pedas dengan daging sapi.</p>
                         <div class="flex justify-between items-center">
                             <span class="font-bold text-[#BA0000]">Rp 32.499</span>
-                            <a href="pesan.html?menu=red-bun-burger"
+                            <a href="./public/pages/pesan.html?menu=red-bun-burger"
                                 class="bg-[#FFAD5B] text-[#BD0202] text-sm px-4 py-2 rounded-full font-semibold hover:bg-[#7A0000] transition">Pesan
                                 Sekarang</a>
                         </div>
@@ -379,7 +376,7 @@
                         <p class="text-gray-600 text-sm mb-7">Kentang goreng renyah dengan saus cocol favorit.</p>
                         <div class="flex justify-between items-center">
                             <span class="font-bold text-[#BA0000]">Rp 15.900</span>
-                            <a href="pesan.html?menu=fried-fries"
+                            <a href="./public/pages/pesan.html?menu=fried-fries"
                                 class="bg-[#FFAD5B] text-[#BD0202] text-sm px-4 py-2 rounded-full font-semibold hover:bg-[#7A0000] transition">Pesan
                                 Sekarang</a>
                         </div>
@@ -397,7 +394,7 @@
                         </p>
                         <div class="flex justify-between items-center">
                             <span class="font-bold text-[#BA0000]">Rp 20.000</span>
-                            <a href="pesan.html?menu=cheese-hot-dogs"
+                            <a href="./public/pages/pesan.html?menu=cheese-hot-dogs"
                                 class="bg-[#FFAD5B] text-[#BD0202] text-sm px-4 py-2 rounded-full font-semibold hover:bg-[#7A0000] transition">Pesan
                                 Sekarang</a>
                         </div>
@@ -414,7 +411,7 @@
                         <p class="text-gray-600 text-sm mb-7">Sayap ayam goreng renyah dengan cita rasa yang lezat.</p>
                         <div class="flex justify-between items-center">
                             <span class="font-bold text-[#BA0000]">Rp 39.000</span>
-                            <a href="pesan.html?menu=fried-wings"
+                            <a href="./public/pages/pesan.html?menu=fried-wings"
                                 class="bg-[#FFAD5B] text-[#BD0202] text-sm px-4 py-2 rounded-full font-semibold hover:bg-[#7A0000] transition">Pesan
                                 Sekarang</a>
                         </div>
@@ -432,7 +429,7 @@
                             dinikmati.</p>
                         <div class="flex justify-between items-center">
                             <span class="font-bold text-[#BA0000]">Rp 25.000</span>
-                            <a href="pesan.html?menu=bucket-nugget"
+                            <a href="./public/pages/pesan.html?menu=bucket-nugget"
                                 class="bg-[#FFAD5B] text-[#BD0202] text-sm px-4 py-2 rounded-full font-semibold hover:bg-[#7A0000] transition">Pesan
                                 Sekarang</a>
                         </div>
@@ -471,9 +468,9 @@
         </div>
     </footer>
 
-    <script src="./src/js/script.js"></script>
-    <script src="loading.js"></script>
-    <script src="session.js?v=2"></script>
+    <script src="./public/frontend/js/script.js"></script>
+    <script src="./public/frontend/js/loading.js"></script>
+    <script src="./public/frontend/js/session.js?v=2"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const slider = document.getElementById('slider-container');

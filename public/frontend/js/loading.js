@@ -4,7 +4,7 @@
         overlay.id = 'page-loader';
         overlay.innerHTML = `
             <div class="loader-content">
-                <img src="assets/icon/wired-lineal-1927-food-truck-hover-pinch.gif" alt="Loading..." />
+                <img src="../../assets/icon/wired-lineal-1927-food-truck-hover-pinch.gif" alt="Loading..." />
                 <p>Loading...</p>
                 <div class="loader-bar-wrap">
                     <div class="loader-bar" id="loader-bar"></div>
