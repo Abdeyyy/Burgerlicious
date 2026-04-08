@@ -37,5 +37,3 @@ Apabila baru pertama kali menyalakan proyek, jangan lupa untuk:
 2. Masukkan basis data kosong (Database) dengan nama `burgerlicious`.
 3. Jalankan `setup_db.php` atau *import* file instruksi SQL yang tersedia di akar repositori untuk membentuk ruang tabel *(users, orders, dsb)* secara otomatis.
 
-## 👨‍💻 Kontributor
-Didokumentasikan khusus untuk masa Responsi Ujian. *Good Luck!*
