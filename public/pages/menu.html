@@ -7,6 +7,11 @@
     <title>Menu - Burgerlicious</title>
     <link rel="stylesheet" href="../frontend/css/output.css">
     <link rel="stylesheet" href="../frontend/css/loading.css">
+
+    <!-- FONT AWESOME -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <!-- IMAGE PRELOAD -->
     <link rel="preload" href="../../assets/icon/wired-lineal-1927-food-truck-hover-pinch.gif" as="image">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -261,13 +266,10 @@
 
     <!-- FOOTER -->
     <footer
-        style="background-color: #ffffff; color: white; padding: 30px 0; border-top: 1px solid rgba(255,255,255,0.05);">
+        style="background-color: #ffffff; color: white; padding: 30px 0; border-top: 1px solid rgba(255,255,255,0.05); margin-top: auto;">
         <div style="max-width: 1100px; margin: 0 auto; padding: 0 18px;">
-
-            <!-- ROW -->
             <div
                 style="display: flex; justify-content: space-between; flex-wrap: wrap; align-items: flex-start; gap: 32px; margin-bottom: 32px;">
-
                 <!-- BRAND -->
                 <div
                     style="display: flex; flex-direction: column; align-items: left; gap: 12px; text-align: left; max-width: 400px;">
@@ -275,40 +277,44 @@
                     <h4 style="font-size: 24px; color: #000000; margin: 0;">So Delicious its Burgerlicious!</h4>
                     <p style="font-size: 15.2px; color: #000000; margin: 0;">Burgerlicious berdiri sejak 2026,
                         menghadirkan burger fresh dengan bahan berkualitas dan rasa yang selalu bikin nagih.</p>
+                    
+                <!-- SOSMED -->
+                        <div style="display: flex; gap: 18px; font-size: 18px; margin-top: 8px;">
+                        <a href="https://wa.me/6285701067886" style="color: rgb(0, 0, 0); text-decoration: none;"
+                            target="_blank"><i class="fab fa-whatsapp"></i></a>
+                        <a href="https://www.instagram.com/burgerliciously"
+                            style="color: rgb(0, 0, 0); text-decoration: none;" target="_blank"><i
+                                class="fab fa-instagram"></i></a>
+                        <a href="https://x.com/burgerliciously" style="color: rgb(0, 0, 0); text-decoration: none;"
+                            target="_blank"><i class="fab fa-x-twitter"></i></a>
+                    </div>
                 </div>
 
-                <!-- KANAN: MENU JAM KONTAK -->
-                <div class="gap-[40px] md:gap-[100px]" style="display: flex; flex-wrap: wrap; align-items: flex-start;">
-
-                    <!-- MENU -->
+                <!-- QUICK LINKS -->
+                <div style="display: flex; flex-direction: column; gap: 18px;">
                     <div style="display: flex; flex-direction: column; gap: 8px;">
                         <h4 style="font-size: 20px; font-weight: bold; color: #8F0919; margin: 0 0 8px 0;">Menu</h4>
                         <a href="../../index.html"
-                            style="font-size: 12px; color: #000000; text-decoration: none;">Home</a>
-                        <a href="#" style="font-size: 12px; color: #000000; text-decoration: none;">Menu</a>
-                        <a href="promo.html"
-                            style="font-size: 12px; color: #000000; text-decoration: none;">Promo</a>
-                        <a href="about.html"
-                            style="font-size: 12px; color: #000000; text-decoration: none;">About</a>
+                            style="font-size: 14px; color: #000000; text-decoration: none;">Home</a>
+                        <a href="#" style="font-size: 14px; color: #000000; text-decoration: none;">Menu</a>
+                        <a href="promo.html" style="font-size: 14px; color: #000000; text-decoration: none;">Promo</a>
+                        <a href="about.html" style="font-size: 14px; color: #000000; text-decoration: none;">About</a>
                     </div>
-
-                    <!-- JAM -->
-                    <div style="display: flex; flex-direction: column; gap: 8px; min-width: 130px; margin-left: 20px;">
-                        <h4 style="font-size: 20px; font-weight: bold; color: #8F0919; margin: 0 0 8px 0;">Jam Buka</h4>
-                        <span style="font-size: 12px; color: #000000;">🕒 10.00 - 22.00</span>
-                        <span style="font-size: 12px; color: #000000;">📅 Setiap Hari</span>
-                    </div>
-
-                    <!-- KONTAK -->
-                    <div style="display: flex; flex-direction: column; gap: 8px; min-width: 180px;">
-                        <h4 style="font-size: 20px; font-weight: bold; color: #8F0919; margin: 0 0 8px 0;">Kontak</h4>
-                        <span style="font-size: 12px; color: #000000;">📍 Magelang</span>
-                        <span style="font-size: 12px; color: #000000;">📞 085701067886</span>
-                        <span style="font-size: 12px; color: #000000;">✉️ burgerlicious@gmail.com</span>
-                    </div>
-
                 </div>
 
+                <!-- ADDRESS -->
+                <div style="display: flex; flex-direction: column; gap: 12px; max-width: 300px;">
+                    <h4 style="font-size: 20px; font-weight: bold; color: #8F0919; margin: 0 0 8px 0;">Alamat Outlet
+                    </h4>
+                    <p style="font-size: 14.4px; color: #000000; line-height: 1.6; margin: 0;">
+                        Jl. Malioboro No. 123<br>
+                        DI Yogyakarta, 55271<br>
+                        Indonesia
+                    </p>
+                    <p style="font-size: 14.4px; color: #000000; margin: 8px 0 0 0;">
+                        <strong>Buka:</strong> Senin - Minggu (10:00 - 22:00)
+                    </p>
+                </div>
             </div>
 
             <!-- COPYRIGHT -->
@@ -318,12 +324,10 @@
                     © 2026 Burgerlicious
                 </p>
             </div>
-
         </div>
     </footer>
 
-    <script src="../frontend/js/script.js"></script>
-    <script src="../frontend/js/loading.js"></script>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
     <script src="../frontend/js/session.js?v=2"></script>
 </body>
 
