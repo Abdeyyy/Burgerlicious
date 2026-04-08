@@ -1,15 +1,15 @@
 const menuData = {
-    'original-flavour': { nama: 'Original Flavour', deskripsi: 'Cita rasa asli Burgerlicious dengan daging sapi juicy dan saus rahasia yang autentik.', harga: 45000, gambar: 'assets/images/BestSeller_1.png' },
-    'chicken-original': { nama: 'Chicken Original', deskripsi: 'Ayam krispi fillet tebal yang gurih dengan perpaduan selada segar dan roti lembut.', harga: 38000, gambar: 'assets/images/BestSeller_2.png' },
-    'spicy-chicken': { nama: 'Spicy Chicken', deskripsi: 'Sensasi pedas yang membakar semangat di tiap gigitan. Tantang diri Anda!', harga: 42000, gambar: 'assets/images/BestSeller_3.png' },
-    'double-meat-burger': { nama: 'Double Meat Burger', deskripsi: 'Double daging yang juicy dengan keju premium.', harga: 32999, gambar: 'assets/images/menu_1.png' },
-    'darth-vader-burger': { nama: 'Darth Vader Burger', deskripsi: 'Burger original edisi spesial kolaborasi dengan Star Wars.', harga: 40000, gambar: 'assets/images/menu_2.png' },
-    'egg-cheese-burger': { nama: 'Egg Cheese Burger', deskripsi: 'Daging dan telur yang nikmat dalam satu gigitan.', harga: 37000, gambar: 'assets/images/menu_3.png' },
-    'red-bun-burger': { nama: 'Red Bun Burger', deskripsi: 'Roti merah yang lezat dan pedas dengan daging sapi.', harga: 32499, gambar: 'assets/images/menu_4.png' },
-    'fried-fries': { nama: 'Fried Fries', deskripsi: 'Kentang goreng renyah dengan saus cocol favorit.', harga: 15900, gambar: 'assets/images/menu_5.png' },
-    'cheese-hot-dogs': { nama: 'Cheese Hot Dogs', deskripsi: 'Roti panjang dengan sosis daging sapi dan keju yang lezat.', harga: 20000, gambar: 'assets/images/menu_6.png' },
-    'fried-wings': { nama: 'Fried Wings', deskripsi: 'Sayap ayam goreng renyah dengan cita rasa yang lezat.', harga: 39000, gambar: 'assets/images/menu_7.png' },
-    'bucket-nugget': { nama: 'Bucket Nugget', deskripsi: 'Nugget ayam renyah dengan saus cocol favorit.', harga: 25000, gambar: 'assets/images/menu_8.png' }
+    'original-flavour': { nama: 'Original Flavour', deskripsi: 'Cita rasa asli Burgerlicious dengan daging sapi juicy dan saus rahasia yang autentik.', harga: 45000, gambar: '../../assets/images/BestSeller_1.png' },
+    'chicken-original': { nama: 'Chicken Original', deskripsi: 'Ayam krispi fillet tebal yang gurih dengan perpaduan selada segar dan roti lembut.', harga: 38000, gambar: '../../assets/images/BestSeller_2.png' },
+    'spicy-chicken': { nama: 'Spicy Chicken', deskripsi: 'Sensasi pedas yang membakar semangat di tiap gigitan. Tantang diri Anda!', harga: 42000, gambar: '../../assets/images/BestSeller_3.png' },
+    'double-meat-burger': { nama: 'Double Meat Burger', deskripsi: 'Double daging yang juicy dengan keju premium.', harga: 32999, gambar: '../../assets/images/menu_1.png' },
+    'darth-vader-burger': { nama: 'Darth Vader Burger', deskripsi: 'Burger original edisi spesial kolaborasi dengan Star Wars.', harga: 40000, gambar: '../../assets/images/menu_2.png' },
+    'egg-cheese-burger': { nama: 'Egg Cheese Burger', deskripsi: 'Daging dan telur yang nikmat dalam satu gigitan.', harga: 37000, gambar: '../../assets/images/menu_3.png' },
+    'red-bun-burger': { nama: 'Red Bun Burger', deskripsi: 'Roti merah yang lezat dan pedas dengan daging sapi.', harga: 32499, gambar: '../../assets/images/menu_4.png' },
+    'fried-fries': { nama: 'Fried Fries', deskripsi: 'Kentang goreng renyah dengan saus cocol favorit.', harga: 15900, gambar: '../../assets/images/menu_5.png' },
+    'cheese-hot-dogs': { nama: 'Cheese Hot Dogs', deskripsi: 'Roti panjang dengan sosis daging sapi dan keju yang lezat.', harga: 20000, gambar: '../../assets/images/menu_6.png' },
+    'fried-wings': { nama: 'Fried Wings', deskripsi: 'Sayap ayam goreng renyah dengan cita rasa yang lezat.', harga: 39000, gambar: '../../assets/images/menu_7.png' },
+    'bucket-nugget': { nama: 'Bucket Nugget', deskripsi: 'Nugget ayam renyah dengan saus cocol favorit.', harga: 25000, gambar: '../../assets/images/menu_8.png' }
 };
 
 const ongkirData = { instant: 12000, hemat: 7000, pickup: 0 };
