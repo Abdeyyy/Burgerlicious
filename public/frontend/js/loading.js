@@ -2,9 +2,11 @@
     function createOverlay() {
         const overlay = document.createElement('div');
         overlay.id = 'page-loader';
+        const inPagesDir = window.location.pathname.includes('/public/pages/');
+        const logoPath = inPagesDir ? '../../assets/icon/wired-lineal-1927-food-truck-hover-pinch.gif' : './assets/icon/wired-lineal-1927-food-truck-hover-pinch.gif';
         overlay.innerHTML = `
             <div class="loader-content">
-                <img src="../../assets/icon/wired-lineal-1927-food-truck-hover-pinch.gif" alt="Loading..." />
+                <img src="${logoPath}" alt="Loading..." />
                 <p>Loading...</p>
                 <div class="loader-bar-wrap">
                     <div class="loader-bar" id="loader-bar"></div>

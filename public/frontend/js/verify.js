@@ -58,7 +58,8 @@ document.addEventListener('DOMContentLoaded', function () {
             formData.append('otp', otpCode);
 
             try {
-                const response = await fetch('auth/verify_otp.php', {
+                const basePath = window.location.pathname.includes('/public/pages/') ? '../../' : './';
+                const response = await fetch(basePath + 'auth/verify_otp.php', {
                     method: 'POST',
                     body: formData
                 });
@@ -95,7 +96,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 formData.append('email', emailToVerify);
 
                 try {
-                    const response = await fetch('auth/resend_otp.php', {
+                    const basePath = window.location.pathname.includes('/public/pages/') ? '../../' : './';
+                    const response = await fetch(basePath + 'auth/resend_otp.php', {
                         method: 'POST',
                         body: formData
                     });

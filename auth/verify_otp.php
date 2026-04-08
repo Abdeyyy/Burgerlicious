@@ -1,5 +1,5 @@
 <?php
-error_reporting(E_ALL & ~E_NOTICE & ~E_WARNING); // Sembunyikan warning bawaan lokal
+error_reporting(E_ALL & ~E_NOTICE & ~E_WARNING);
 session_start();
 date_default_timezone_set('Asia/Jakarta');
 header('Content-Type: application/json');
@@ -19,7 +19,6 @@ if (!$email || !$otp) {
 }
 
 try {
-    // Cari user berdasarkan email
     $stmt = $conn->prepare('SELECT id_user, is_verified, verification_code, code_expires_at FROM user WHERE email = ?');
     $stmt->bind_param('s', $email);
     $stmt->execute();
@@ -37,20 +36,17 @@ try {
         exit;
     }
 
-    // Cek apakah OTP cocok
     if ($user['verification_code'] !== $otp) {
         echo json_encode(['status' => 'error', 'message' => 'Kode OTP salah.']);
         exit;
     }
 
-    // Cek apakah expired
     $current_time = date('Y-m-d H:i:s');
     if ($current_time > $user['code_expires_at']) {
         echo json_encode(['status' => 'error', 'message' => 'Kode OTP sudah kadaluwarsa. Silakan mendaftar ulang atau minta OTP baru.']);
         exit;
     }
 
-    // Jika cocok dan belum expired, update is_verified
     $stmt = $conn->prepare("UPDATE user SET is_verified = 1, verification_code = '', code_expires_at = '2000-01-01 00:00:00' WHERE email = ?");
     $stmt->bind_param('s', $email);
 

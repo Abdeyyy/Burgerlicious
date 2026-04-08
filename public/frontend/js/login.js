@@ -90,7 +90,8 @@ document.addEventListener('DOMContentLoaded', function () {
             formData.append('password', passwordInput.value);
 
             try {
-                const response = await fetch('auth/login.php', {
+                const basePath = window.location.pathname.includes('/public/pages/') ? '../../' : './';
+                const response = await fetch(basePath + 'auth/login.php', {
                     method: 'POST',
                     body: formData
                 });
@@ -99,7 +100,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 
                 if (result.status === 'success') {
                     showFormMessage(result.message, 'success');
-                    setTimeout(() => { window.location.href = 'index.html'; }, 1500);
+                    setTimeout(() => { window.location.href = basePath + 'index.html'; }, 1500);
                 } else {
                     showFormMessage(result.message || 'Login gagal.');
                     submitBtn.disabled = false;

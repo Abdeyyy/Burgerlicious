@@ -123,7 +123,8 @@ document.addEventListener('DOMContentLoaded', function () {
             formData.append('confirmPassword', confirmPassInput.value);
 
             try {
-                const response = await fetch('auth/register.php', {
+                const basePath = window.location.pathname.includes('/public/pages/') ? '../../' : './';
+                const response = await fetch(basePath + 'auth/register.php', {
                     method: 'POST',
                     body: formData
                 });

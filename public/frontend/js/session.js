@@ -1,16 +1,18 @@
 document.addEventListener('DOMContentLoaded', async function () {
     try {
-        const res = await fetch('auth/check_session.php');
+        const basePath = window.location.pathname.includes('/public/pages/') ? '../../' : './';
+        const res = await fetch(basePath + 'auth/check_session.php');
         const data = await res.json();
 
         if (data.loggedIn) {
-            const loginBtns = document.querySelectorAll('a[href="login.html"]');
+            const loginBtns = document.querySelectorAll('a[href="login.html"], a[href="./public/pages/login.html"]');
 
             loginBtns.forEach(loginBtn => {
                 if (loginBtn.textContent.trim().toLowerCase() === 'login') {
-                    const spanBtn = document.createElement('span');
-                    spanBtn.innerHTML = `Selamat Datang, <b>${data.nama}</b>`;
-                    spanBtn.className = 'text-white font-medium text-sm md:text-base px-2';
+                    const spanBtn = document.createElement('div');
+                    const firstName = data.nama.split(' ')[0];
+                    spanBtn.innerHTML = `Halo, <b>${firstName}</b>`;
+                    spanBtn.className = 'text-white font-bold text-base md:text-lg px-2 drop-shadow-sm truncate max-w-[150px] text-center cursor-default';
                     loginBtn.replaceWith(spanBtn);
                 }
             });

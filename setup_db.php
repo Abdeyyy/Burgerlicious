@@ -3,13 +3,11 @@ $host = 'localhost';
 $user = 'root';
 $pass = '';
 
-// Create connection without selecting DB
 $conn = new mysqli($host, $user, $pass);
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error . "\nPastikan MySQL Laragon sudah Start.\n");
 }
 
-// Create database
 $sql = "CREATE DATABASE IF NOT EXISTS burgerlicious";
 if ($conn->query($sql) === TRUE) {
     echo "Database burgerlicious berhasil dibuat atau sudah ada.\n";
@@ -17,10 +15,8 @@ if ($conn->query($sql) === TRUE) {
     die("Error creating database: " . $conn->error . "\n");
 }
 
-// Select the database
 $conn->select_db("burgerlicious");
 
-// Create table based on our needs
 $sql_table = "CREATE TABLE IF NOT EXISTS `user` (
   `id_user` int(11) NOT NULL AUTO_INCREMENT,
   `nama` varchar(100) NOT NULL,

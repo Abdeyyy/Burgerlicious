@@ -23,7 +23,6 @@ if (!$email) {
     exit;
 }
 
-// Cek apakah email terdaftar dan belum verified
 $stmt = $conn->prepare('SELECT id_user, nama, is_verified FROM user WHERE email = ?');
 $stmt->bind_param('s', $email);
 $stmt->execute();
@@ -41,7 +40,6 @@ if ($user['is_verified'] == 1) {
     exit;
 }
 
-// Update OTP
 $otp = sprintf("%06d", mt_rand(1, 999999));
 $expires = date('Y-m-d H:i:s', strtotime('+15 minutes'));
 
@@ -50,7 +48,6 @@ $stmt_upd->bind_param('sss', $otp, $expires, $email);
 $stmt_upd->execute();
 $stmt_upd->close();
 
-// --- SEND EMAIL VIA PHPMAILER ---
 $mail = new PHPMailer(true);
 try {
     $mail->isSMTP();

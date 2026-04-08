@@ -52,7 +52,6 @@ if ($user_exists) {
         echo json_encode(['status' => 'error', 'message' => 'Email sudah terdaftar dan terverifikasi. Silakan login.']);
         exit;
     } else {
-        // Hapus akun yang belum terverifikasi agar bisa ditimpa ulang (misal: password berubah, otp baru)
         $stmt_del = $conn->prepare("DELETE FROM user WHERE id_user = ?");
         $stmt_del->bind_param("i", $user_exists['id_user']);
         $stmt_del->execute();
@@ -72,7 +71,6 @@ if(!$stmt->execute()) {
 }
 $stmt->close();
 
-// --- SEND EMAIL VIA PHPMAILER ---
 $mail = new PHPMailer(true);
 try {
     $mail->isSMTP();
