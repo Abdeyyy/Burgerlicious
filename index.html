@@ -31,7 +31,7 @@
                 <a class="text-black hover:text-white hover:bg-[#8F0919] px-9 py-2.5 rounded-full transition-colors"
                     href="./public/pages/menu.html">Menu</a>
                 <a class="text-black hover:text-white hover:bg-[#8F0919] px-9 py-2.5 rounded-full transition-colors"
-                    href="#about">About</a>
+                    href="./public/pages/about.html">About</a>
             </nav>
 
             <a class=" bg-white text-black hover:bg-[#8F0919] hover:text-white hover:shadow-2xl py-2.5 px-7 rounded-full transition-all duration-300 text-sm md:text-base"
@@ -283,63 +283,18 @@
 
     </section>
 
-    <!-- ABOUT US -->
-    <section id="about" class="py-16 bg-[#5D0303]">
-        <div class="container mx-auto px-6">
-
-            <!-- JUDUL TENGAH ATAS -->
-            <div class="text-center mb-16">
-                <h2 class="text-5xl font-bold">
-                    <span class="text-white">Tentang </span>
-                    <span class="text-[#FEBB19]">Burgerlicious</span>
-                </h2>
-            </div>
-
-            <div class="grid md:grid-cols-2 items-center gap-16">
-
-                <!-- IMAGE KIRI -->
-                <div>
-                    <img src="assets/images/Hero_section.png" class="rounded-3xl shadow-2xl mx-auto">
-                </div>
-
-                <!-- TEXT KANAN -->
-                <div class="text-center md:text-left">
-
-                    <p class="text-white leading-relaxed mb-4 italic">
-                        "Burger fresh, juicy, dan penuh cita rasa untuk semua orang."
-                    </p>
-
-                    <p class="text-white leading-relaxed">
-                        Kami menggunakan bahan premium pilihan yang diproses dengan standar tinggi
-                        untuk memberikan pengalaman terbaik di setiap gigitan.
-                    </p>
-
-                    <!-- STATS -->
-                    <div class="grid grid-cols-3 gap-6 mt-10 text-center">
-                        <div>
-                            <h4 class="text-2xl font-bold text-[#FEBB19]">100%</h4>
-                            <p class="text-sm text-white">Fresh</p>
-                        </div>
-                        <div>
-                            <h4 class="text-2xl font-bold text-[#FEBB19]">1000+</h4>
-                            <p class="text-sm text-white">Customer</p>
-                        </div>
-                        <div>
-                            <h4 class="text-2xl font-bold text-[#FEBB19]">5★</h4>
-                            <p class="text-sm text-white">Rating</p>
-                        </div>
-                    </div>
-
-                    <!-- BUTTON -->
-                    <div class="mt-10 flex justify-center md:justify-start">
-                        <a href="./public/pages/menu.html"
-                            class="bg-[#FEBB19] text-[#5D0303] px-6 py-3 rounded-full font-bold hover:bg-yellow-400 transition">
-                            Pesan Sekarang 🍔
-                        </a>
-                    </div>
-                </div>
-
-            </div>
+    <!-- CTA PEMBELIAN -->
+    <section id="order-cta" class="py-16 bg-linear-to-r from-[#BA0000] to-[#5D0303] relative overflow-hidden">
+        <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-transparent via-[#000000]/20 to-[#000000]/40"></div>
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+            <h2 class="text-4xl md:text-5xl font-extrabold text-white mb-6 drop-shadow-lg">Mulai Lapar? Waktunya Burgerlicious!</h2>
+            <p class="text-xl md:text-2xl text-white/90 mb-10 mx-auto drop-shadow-md leading-relaxed">Pilih burger favoritmu dari menu fresh kami, siap dihidangkan hangat langsung untukmu. Bahagiakan perutmu hari ini!</p>
+            <a href="./public/pages/menu.html" class="inline-flex items-center justify-center px-10 py-4 text-lg font-bold text-[#5D0303] bg-[#FEBB19] rounded-full hover:bg-yellow-400 hover:scale-105 transition-all duration-300 shadow-[0_0_20px_rgba(254,187,25,0.4)]">
+                Pesan Sekarang
+                <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+            </a>
         </div>
     </section>
 
@@ -385,7 +340,7 @@
                         <a href="./public/pages/menu.html"
                             style="font-size: 12px; color: #000000; text-decoration: none;">Menu</a>
                         <a href="./public/pages/promo.html" style="font-size: 12px; color: #000000; text-decoration: none;">Promo</a>
-                        <a href="#about" style="font-size: 12px; color: #000000; text-decoration: none;">About</a>
+                        <a href="./public/pages/about.html" style="font-size: 12px; color: #000000; text-decoration: none;">About</a>
                     </div>
 
                     <!-- JAM -->
