@@ -5,6 +5,7 @@ export default {
     "./login.html",
     "./register.html",
     "./src/**/*.{js,jsx,ts,tsx}",
+    "./public/pages/**/*.html",
   ],
   theme: {
     extend: {
