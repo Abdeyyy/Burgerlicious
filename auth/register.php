@@ -40,7 +40,7 @@ if ($password !== $confirm) {
     exit;
 }
 
-// 1. Cek apakah alamat email tersebut sudah pernah didaftarkan
+// Cek apakah alamat email tersebut sudah pernah didaftarkan
 $stmt = $conn->prepare('SELECT id_user, is_verified FROM user WHERE email = ?');
 $stmt->bind_param('s', $email);
 $stmt->execute();
@@ -53,7 +53,6 @@ if ($user_exists) {
         echo json_encode(['status' => 'error', 'message' => 'Email sudah terdaftar dan terverifikasi. Silakan login.']);
         exit;
     } else {
-        // Jika belum diverifikasi (OTP tidak diisi sebelumnya), kita hapus dulu akun yg menggantung tsb.
         $stmt_del = $conn->prepare("DELETE FROM user WHERE id_user = ?");
         $stmt_del->bind_param("i", $user_exists['id_user']);
         $stmt_del->execute();
@@ -61,15 +60,12 @@ if ($user_exists) {
     }
 }
 
-// 2. Pembuatan Kredensial Baru
-// Menyandikan password menggunakan fungsi asli PHP (Bcrypt). Ini krusial agar admin database pun tak bisa mengetahui isi passwordnya.
+// Pembuatan hash dan otp
 $hash = password_hash($password, PASSWORD_DEFAULT);
-// Buat kode OTP acak berisi 6 angka.
 $otp = sprintf("%06d", mt_rand(1, 999999));
-// Kode tsb valid hanya selama 15 menit dari sekarang.
 $expires = date('Y-m-d H:i:s', strtotime('+15 minutes'));
 
-// 3. Masukkan record/data baru pengguna ke dalam tabel Database `user`
+// Masukkan record/data baru pengguna ke dalam tabel Database user
 $stmt = $conn->prepare('INSERT INTO user (nama, email, pass, is_verified, verification_code, code_expires_at) VALUES (?, ?, ?, 0, ?, ?)');
 $stmt->bind_param('sssss', $nama, $email, $hash, $otp, $expires);
 if(!$stmt->execute()) {
