@@ -1,8 +1,9 @@
 <?php
-$host    = 'db';
+$host    = 'localhost';
 $db      = 'burgerlicious';
 $user    = 'root';
-$pass    = 'rootpassword';
+$pass    = ''; // Sesuaikan jika database lokal Anda memiliki password
+
 
 $conn = new mysqli($host, $user, $pass, $db);
 

@@ -1,65 +1,135 @@
 document.addEventListener('DOMContentLoaded', async function () {
     try {
-        // Menentukan prefix folder supaya URL tujuan selalu benar
         const basePath = window.location.pathname.includes('/public/pages/') ? '../../' : './';
         const res = await fetch(basePath + 'auth/check_session.php');
         const data = await res.json();
 
         if (data.loggedIn) {
-            const loginBtns = document.querySelectorAll('a[href="login.html"], a[href="./public/pages/login.html"]');
+            // Cari semua <a> yang teksnya "login" (case-insensitive) — lebih robust
+            const allLinks = document.querySelectorAll('a');
+            const loginBtns = Array.from(allLinks).filter(a =>
+                a.textContent.trim().toLowerCase() === 'login' &&
+                (a.href.includes('login.html'))
+            );
 
+            // Buat Overlay
+            const overlay = document.createElement('div');
+            overlay.id = 'drawer-overlay';
+            overlay.style.cssText = [
+                'position:fixed', 'inset:0', 'background:rgba(0,0,0,0.5)',
+                'z-index:90', 'display:none', 'opacity:0',
+                'transition:opacity 0.3s ease'
+            ].join(';');
+            document.body.appendChild(overlay);
+
+            // Buat Drawer
+            const drawer = document.createElement('div');
+            drawer.id = 'profile-drawer';
+            drawer.style.cssText = [
+                'position:fixed', 'top:0', 'left:0', 'height:100%', 'width:320px',
+                'background:#fff', 'z-index:100',
+                'transform:translateX(-100%)',
+                'transition:transform 0.3s ease',
+                'box-shadow:4px 0 24px rgba(0,0,0,0.15)',
+                'display:flex', 'flex-direction:column',
+                'font-family:inherit'
+            ].join(';');
+
+            drawer.innerHTML = `
+                <div style="display:flex;align-items:center;padding:16px 24px;border-bottom:1px solid #e5e7eb;margin-top:8px;">
+                    <img src="${basePath}assets/icon/profile.png" alt="Profile"
+                        style="width:90px;height:90px;object-fit:contain;display:block;flex-shrink:0;">
+                    <div style="margin-left:8px;flex:1;overflow:hidden;">
+                        <h3 style="margin:0;font-size:18px;font-weight:700;color:#1f2937;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${data.nama}</h3>
+                        <p style="margin:2px 0 0;font-size:13px;color:#6b7280;">Customer</p>
+                    </div>
+                    <button style="background:none;border:none;cursor:pointer;color:#9ca3af;padding:8px;font-size:18px;">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                </div>
+
+                <div style="flex:1;overflow-y:auto;padding:8px 0;">
+                    ${[
+                        { icon: 'far fa-calendar-alt', label: 'Aktivitas' },
+                        { icon: 'fas fa-coins',        label: 'Promo dan Voucher' },
+                        { icon: 'fas fa-globe',        label: 'Bahasa' },
+                        { icon: 'fas fa-shield-alt',   label: 'Keamanan Akun' },
+                        { icon: 'far fa-file-alt',     label: 'Ketentuan Layanan' },
+                        { icon: 'fas fa-wallet',       label: 'Metode Pembayaran' },
+                    ].map(item => `
+                        <a href="#"
+                            style="display:flex;align-items:center;padding:14px 24px;color:#374151;text-decoration:none;transition:background 0.2s;"
+                            onmouseover="this.style.background='#f9fafb';this.style.color='#BA0000';"
+                            onmouseout="this.style.background='';this.style.color='#374151';">
+                            <i class="${item.icon}" style="width:24px;text-align:center;font-size:18px;"></i>
+                            <span style="margin-left:16px;font-size:15px;font-weight:500;">${item.label}</span>
+                        </a>
+                    `).join('')}
+                </div>
+
+                <div style="padding:20px 24px;border-top:1px solid #f3f4f6;">
+                    <a href="${basePath}auth/logout.php"
+                        style="display:flex;align-items:center;color:#BA0000;font-weight:700;text-decoration:none;font-size:15px;"
+                        onmouseover="this.style.color='#8F0919';" onmouseout="this.style.color='#BA0000';">
+                        <i class="fas fa-sign-out-alt" style="width:24px;text-align:center;font-size:18px;"></i>
+                        <span style="margin-left:8px;">Logout</span>
+                    </a>
+                </div>
+            `;
+            document.body.appendChild(drawer);
+
+            function openDrawer() {
+                overlay.style.display = 'block';
+                setTimeout(() => {
+                    overlay.style.opacity = '1';
+                    drawer.style.transform = 'translateX(0)';
+                }, 10);
+            }
+
+            function closeDrawer() {
+                overlay.style.opacity = '0';
+                drawer.style.transform = 'translateX(-100%)';
+                setTimeout(() => { overlay.style.display = 'none'; }, 300);
+            }
+
+            overlay.addEventListener('click', closeDrawer);
+
+            // Ganti semua tombol Login dengan ikon profile
             loginBtns.forEach(loginBtn => {
-                if (loginBtn.textContent.trim().toLowerCase() === 'login') {
-                    // Membuat container dropdown
-                    const container = document.createElement('div');
-                    container.className = 'relative inline-block text-left';
+                const profileBtn = document.createElement('button');
+                profileBtn.title = 'Profil Saya';
+                // Gambar profile.png punya padding transparan ~15%, jadi perbesar ke 90px
+                // agar lingkaran orange yang terlihat setara ~63px (sama dengan logo)
+                profileBtn.style.cssText = [
+                    'width:90px', 'height:90px',
+                    'border:none',
+                    'cursor:pointer',
+                    'background:transparent',
+                    'padding:0',
+                    'display:flex',
+                    'align-items:center',
+                    'justify-content:center',
+                    'transition:transform 0.2s,opacity 0.2s',
+                    'flex-shrink:0'
+                ].join(';');
 
-                    // Tombol Sapaan
-                    const greetingBtn = document.createElement('button');
-                    const firstName = data.nama.split(' ')[0]; 
-                    // Menggunakan chevron dari FontAwesome (sudah di-load di index.html)
-                    greetingBtn.innerHTML = `Halo, <b>${firstName}</b> <i class="fas fa-chevron-down ml-1.5 text-xs opacity-80"></i>`;
-                    greetingBtn.className = 'flex items-center text-black md:text-black lg:text-white font-bold text-base md:text-lg px-4 py-2 drop-shadow-sm cursor-pointer hover:bg-black/5 lg:hover:bg-white/20 rounded-full transition outline-none';
-                    
-                    // Menu Dropdown
-                    const dropdownMenu = document.createElement('div');
-                    // Style box dropdown
-                    dropdownMenu.className = 'hidden absolute right-0 mt-2 w-48 bg-white rounded-2xl shadow-xl ring-1 ring-black/5 overflow-hidden z-[100] transform origin-top-right transition-all';
-                    
-                    // Link Profil
-                    const profileLink = document.createElement('a');
-                    profileLink.href = basePath + 'public/pages/profile.html';
-                    profileLink.className = 'flex items-center px-4 py-3.5 text-sm text-gray-700 hover:bg-gray-50 transition border-b border-gray-100/50';
-                    profileLink.innerHTML = '<i class="fas fa-user w-5 text-center mr-2 text-gray-400"></i> Profil Saya';
-                    
-                    // Link Logout
-                    const logoutLink = document.createElement('a');
-                    logoutLink.href = basePath + 'auth/logout.php';
-                    logoutLink.className = 'flex items-center px-4 py-3.5 text-sm text-[#BA0000] hover:bg-red-50 transition font-semibold';
-                    logoutLink.innerHTML = '<i class="fas fa-sign-out-alt w-5 text-center mr-2"></i> Logout';
-                    
-                    dropdownMenu.appendChild(profileLink);
-                    dropdownMenu.appendChild(logoutLink);
-                    
-                    container.appendChild(greetingBtn);
-                    container.appendChild(dropdownMenu);
+                profileBtn.innerHTML = `<img src="${basePath}assets/icon/profile.png" alt="Profile" style="width:90px;height:90px;object-fit:contain;display:block;">`;
 
-                    // Event Listener untuk toggle dropdown
-                    greetingBtn.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        dropdownMenu.classList.toggle('hidden');
-                    });
-                    
-                    // Menutup dropdown saat klik di luar area
-                    document.addEventListener('click', (e) => {
-                        if (!container.contains(e.target)) {
-                            dropdownMenu.classList.add('hidden');
-                        }
-                    });
+                profileBtn.addEventListener('mouseenter', () => {
+                    profileBtn.style.opacity = '0.8';
+                    profileBtn.style.transform = 'scale(1.08)';
+                });
+                profileBtn.addEventListener('mouseleave', () => {
+                    profileBtn.style.opacity = '1';
+                    profileBtn.style.transform = 'scale(1)';
+                });
+                profileBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    openDrawer();
+                });
 
-                    // Ganti tombol login asli dengan komponen dropdown
-                    loginBtn.replaceWith(container);
-                }
+                loginBtn.replaceWith(profileBtn);
             });
         }
     } catch (error) {
