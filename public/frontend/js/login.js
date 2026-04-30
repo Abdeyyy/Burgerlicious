@@ -100,7 +100,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 
                 if (result.status === 'success') {
                     showFormMessage(result.message, 'success');
-                    setTimeout(() => { window.location.href = basePath + 'index.html'; }, 1500);
+                    setTimeout(() => { 
+                        if (result.role === 'admin') {
+                            window.location.href = basePath + 'public/pages/dashboard.html';
+                        } else {
+                            window.location.href = basePath + 'index.html';
+                        }
+                    }, 1500);
                 } else {
                     showFormMessage(result.message || 'Login gagal.');
                     submitBtn.disabled = false;

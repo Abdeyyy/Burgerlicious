@@ -39,9 +39,11 @@ if (isset($user['is_verified']) && $user['is_verified'] == 0) {
 $_SESSION['user_id'] = $user['id_user'];
 $_SESSION['nama']    = $user['nama'];
 $_SESSION['email']   = $user['email'];
+$_SESSION['role']    = $user['role'] ?? 'customer';
 
 echo json_encode([
     'status'  => 'success',
     'message' => 'Login berhasil!',
-    'nama'    => $user['nama']
+    'nama'    => $user['nama'],
+    'role'    => $user['role'] ?? 'customer'
 ]);
