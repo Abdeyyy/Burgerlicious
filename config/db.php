@@ -1,8 +1,8 @@
 <?php
-$host    = 'localhost';
+$host    = 'db';
 $db      = 'burgerlicious';
 $user    = 'root';
-$pass    = '';
+$pass    = 'rootpassword';
 
 $conn = new mysqli($host, $user, $pass, $db);
 

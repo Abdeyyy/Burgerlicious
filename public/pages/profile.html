@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil Saya - Burgerlicious</title>
+    <link rel="stylesheet" href="../frontend/css/output.css">
+    <link rel="stylesheet" href="../frontend/css/loading.css">
+
+    <!-- FONT AWESOME -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <!-- IMAGE PRELOAD -->
+    <link rel="preload" href="../../assets/icon/wired-lineal-1927-food-truck-hover-pinch.gif" as="image">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2&display=swap" rel="stylesheet">
+</head>
+
+<body class="bg-gray-50 font-sans">
+
+    <!-- Navbar Header -->
+    <header class="w-screen sticky top-0 bg-white md:fixed md:bg-transparent sm:bg-transparent z-50">
+        <div class="mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+            <a href="../../index.html" class="">
+                <img loading="lazy" class="h-15 w-15 rounded-full" src="../../assets/icon/Logo_Burgerlicious_square.png"
+                    alt="Logo Burgerlicious">
+            </a>
+            <nav class="hidden border border-[#FEBB19] md:flex bg-white rounded-full shadow-md">
+                <a class="text-black hover:text-white hover:bg-[#8F0919] px-9 py-2.5 rounded-full transition-colors"
+                    href="../../index.html">Home</a>
+                <a class="text-black hover:text-white hover:bg-[#8F0919] px-9 py-2.5 rounded-full transition-colors"
+                    href="promo.html">Promo</a>
+                <a class="text-black hover:text-white hover:bg-[#8F0919] px-9 py-2.5 rounded-full transition-colors"
+                    href="menu.html">Menu</a>
+                <a class="text-black hover:text-white hover:bg-[#8F0919] px-9 py-2.5 rounded-full transition-colors"
+                    href="about.html">About</a>
+            </nav>
+
+            <a class="bg-white border text-black hover:bg-[#8F0919] hover:text-white hover:shadow-2xl py-2.5 px-7 rounded-full transition-all duration-300 text-sm md:text-base border-[#BA0000]"
+                href="login.html">Login</a>
+        </div>
+    </header>
+
+    <!-- PROFIL SECTION -->
+    <section class="pt-32 pb-16 min-h-screen flex items-start justify-center">
+        <div class="bg-white p-8 md:p-12 rounded-[2rem] shadow-xl border border-gray-100 w-full max-w-2xl mx-4">
+            <div class="flex flex-col items-center text-center">
+                <div class="w-32 h-32 bg-gray-200 rounded-full flex items-center justify-center text-[#5D0303] text-5xl mb-6 shadow-inner">
+                    <i class="fas fa-user-circle"></i>
+                </div>
+                <h1 id="profileName" class="text-3xl font-bold text-gray-800 mb-2">Memuat...</h1>
+                <p id="profileEmail" class="text-gray-500 mb-8">Memuat...</p>
+
+                <div class="w-full text-left bg-gray-50 p-6 rounded-2xl border border-gray-200 mb-8">
+                    <h2 class="text-lg font-bold text-[#BA0000] mb-4 border-b border-gray-200 pb-2">Informasi Akun</h2>
+                    <div class="space-y-3">
+                        <div class="flex justify-between">
+                            <span class="text-gray-500 font-medium">Status</span>
+                            <span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-bold">Terverifikasi</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-500 font-medium">Member Sejak</span>
+                            <span class="text-gray-800 font-bold">2026</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex gap-4 w-full">
+                    <a href="../../index.html" class="flex-1 bg-gray-100 text-gray-700 py-3 rounded-xl font-bold hover:bg-gray-200 transition">Kembali</a>
+                    <a href="../../auth/logout.php" class="flex-1 bg-[#BA0000] text-white py-3 rounded-xl font-bold hover:bg-[#8F0919] transition shadow-md shadow-red-200">Logout</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <script src="../frontend/js/session.js?v=4"></script>
+    <script>
+        // Mengisi data profil dari session check
+        document.addEventListener('DOMContentLoaded', async function () {
+            try {
+                const res = await fetch('../../auth/check_session.php');
+                const data = await res.json();
+                if (data.loggedIn) {
+                    document.getElementById('profileName').textContent = data.nama;
+                    document.getElementById('profileEmail').textContent = data.email || 'Email tidak tersedia';
+                } else {
+                    window.location.href = 'login.html'; // redirect ke login jika belum login
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        });
+    </script>
+</body>
+</html>
