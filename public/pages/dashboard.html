@@ -1,460 +1,244 @@
 <!DOCTYPE html>
 
-<html class="light" lang="en"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Burgerlicious Admin Panel</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Be+Vietnam+Pro:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    "colors": {
-                        "on-secondary-fixed-variant": "#764500",
-                        "on-tertiary-container": "#5b3900",
-                        "on-secondary": "#fff0e5",
-                        "outline-variant": "#acadae",
-                        "tertiary-fixed-dim": "#ebad59",
-                        "surface-tint": "#b41c00",
-                        "surface-variant": "#dbddde",
-                        "surface-container-high": "#e1e3e4",
-                        "primary-dim": "#9e1700",
-                        "tertiary-container": "#fabb65",
-                        "on-primary-fixed": "#000000",
-                        "on-tertiary": "#fff0e2",
-                        "tertiary": "#805200",
-                        "inverse-on-surface": "#9c9d9e",
-                        "secondary-fixed-dim": "#ffb462",
-                        "tertiary-dim": "#704700",
-                        "on-background": "#2d2f30",
-                        "primary": "#b41c00",
-                        "inverse-primary": "#ff5536",
-                        "on-secondary-container": "#693d00",
-                        "surface-dim": "#d2d5d6",
-                        "on-primary-fixed-variant": "#5d0900",
-                        "on-secondary-fixed": "#4e2c00",
-                        "on-tertiary-fixed-variant": "#674100",
-                        "secondary-container": "#ffc78e",
-                        "on-surface": "#2d2f30",
-                        "on-primary-container": "#4c0600",
-                        "error-dim": "#b92902",
-                        "on-surface-variant": "#5a5c5d",
-                        "error-container": "#f95630",
-                        "on-error-container": "#520c00",
-                        "surface": "#f6f6f7",
-                        "background": "#f6f6f7",
-                        "error": "#b02500",
-                        "primary-fixed": "#ff775d",
-                        "tertiary-fixed": "#fabb65",
-                        "surface-container-highest": "#dbddde",
-                        "surface-container": "#e7e8e9",
-                        "on-error": "#ffefec",
-                        "outline": "#757778",
-                        "on-primary": "#ffefec",
-                        "on-tertiary-fixed": "#402700",
-                        "surface-container-low": "#f0f1f2",
-                        "primary-container": "#ff775d",
-                        "surface-container-lowest": "#ffffff",
-                        "secondary-fixed": "#ffc78e",
-                        "surface-bright": "#f6f6f7",
-                        "secondary-dim": "#744400",
-                        "primary-fixed-dim": "#ff5c3d",
-                        "inverse-surface": "#0c0e0f",
-                        "secondary": "#854f00"
-                    },
-                    "borderRadius": {
-                        "DEFAULT": "1rem",
-                        "lg": "2rem",
-                        "xl": "3rem",
-                        "full": "9999px"
-                    },
-                    "fontFamily": {
-                        "headline": ["Plus Jakarta Sans"],
-                        "body": ["Be Vietnam Pro"],
-                        "label": ["Be Vietnam Pro"]
-                    }
-                },
-            },
-        }
-    </script>
-<style>
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Burgerlicious Admin Panel</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Be+Vietnam+Pro:wght@300;400;500;600;700&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script src="../frontend/js/tailwind-admin-config.js"></script>
+    <style>
         .material-symbols-outlined {
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
         }
-        body { font-family: 'Be Vietnam Pro', sans-serif; }
-        h1, h2, h3, h4 { font-family: 'Plus Jakarta Sans', sans-serif; }
+
+        body {
+            font-family: 'Be Vietnam Pro', sans-serif;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4 {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
     </style>
 </head>
+
 <body class="bg-surface text-on-surface">
-<!-- SideNavBar -->
-<nav class="h-screen w-64 fixed left-0 top-0 bg-stone-50 dark:bg-stone-950 border-r border-stone-200 dark:border-stone-800 flex flex-col h-full py-6 font-['Be_Vietnam_Pro'] text-sm z-40">
-<div class="px-6 mb-10">
-<h1 class="text-xl font-bold text-stone-900 dark:text-stone-50">Admin Panel</h1>
-<p class="text-xs text-stone-500 uppercase tracking-wider">Burgerlicious Management</p>
-</div>
-<div class="flex-1 space-y-1">
-<!-- Active Tab: Dashboard -->
-<a class="bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300 rounded-full mx-2 px-4 py-3 font-semibold flex items-center gap-3 transition-all duration-200 ease-in-out" href="#">
-<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
-<span>Dashboard</span>
-</a>
-<a class="text-stone-500 dark:text-stone-400 px-4 py-3 mx-2 flex items-center gap-3 hover:bg-stone-200 dark:hover:bg-stone-800 rounded-full transition-all duration-200 ease-in-out" href="#">
-<span class="material-symbols-outlined" data-icon="restaurant_menu">restaurant_menu</span>
-<span>Menu Management</span>
-</a>
-<a class="text-stone-500 dark:text-stone-400 px-4 py-3 mx-2 flex items-center gap-3 hover:bg-stone-200 dark:hover:bg-stone-800 rounded-full transition-all duration-200 ease-in-out" href="#">
-<span class="material-symbols-outlined" data-icon="pending_actions">pending_actions</span>
-<span>Order Queue</span>
-</a>
-<a class="text-stone-500 dark:text-stone-400 px-4 py-3 mx-2 flex items-center gap-3 hover:bg-stone-200 dark:hover:bg-stone-800 rounded-full transition-all duration-200 ease-in-out" href="#">
-<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
-<span>Analytics</span>
-</a>
-</div>
-<div class="mt-auto px-4">
-<div class="flex items-center gap-3 p-4 bg-surface-container-low rounded-xl mb-4">
-<img class="w-10 h-10 rounded-full object-cover" data-alt="portrait of a professional chef wearing a clean white uniform in a high-end restaurant kitchen setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC8Cu_BIerUaUneo_LN-UBetnxt_RAVsG3RKh76Cd3_aIa2x1fs6W6x3sBlzSvmdraNm8JrNL3qRptRtDbGKWDT07KUjrO0cO_3-Uyv0o-YGtg2VLBeOIlDMO_5C9Lhiv-t10UO9VhDg2pGQtEurYnQI4FLc6YTSjtEVi3tDuqSgNyl_-reVQ7p5mMqc5i6FrqPbplc2SyKv4aX1PiqG_9DYi_624HH1nT9bd4vLj1GFtXfe0JawSEUE_mF-WLBEqlUiyukvI9sPhM"/>
-<div>
-<p class="font-bold text-on-surface text-xs">Admin User</p>
-<p class="text-[10px] text-on-surface-variant">Admin User Profile</p>
-</div>
-</div>
-<button class="w-full py-3 px-4 text-red-600 font-bold hover:bg-red-50 rounded-full transition-colors flex items-center justify-center gap-2">
-<span class="material-symbols-outlined" data-icon="logout">logout</span>
+    <!-- SideNavBar -->
+    <nav
+        class="h-screen w-64 fixed left-0 top-0 bg-stone-50 dark:bg-stone-950 border-r border-stone-200 dark:border-stone-800 flex flex-col h-full py-6 font-['Be_Vietnam_Pro'] text-sm z-40">
+        <div class="px-6 mb-10">
+            <h1 class="text-xl font-bold text-stone-900 dark:text-stone-50">Admin Panel</h1>
+            <p class="text-xs text-stone-500 uppercase tracking-wider">Burgerlicious Management</p>
+        </div>
+        <div class="flex-1 space-y-1">
+            <!-- Active Tab: Dashboard -->
+            <a class="bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300 rounded-full mx-2 px-4 py-3 font-semibold flex items-center gap-3 transition-all duration-200 ease-in-out"
+                href="#">
+                <span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+                <span>Dashboard</span>
+            </a>
+            <a class="text-stone-500 dark:text-stone-400 px-4 py-3 mx-2 flex items-center gap-3 hover:bg-stone-200 dark:hover:bg-stone-800 rounded-full transition-all duration-200 ease-in-out"
+                href="#">
+                <span class="material-symbols-outlined" data-icon="restaurant_menu">restaurant_menu</span>
+                <span>Menu Management</span>
+            </a>
+            <a class="text-stone-500 dark:text-stone-400 px-4 py-3 mx-2 flex items-center gap-3 hover:bg-stone-200 dark:hover:bg-stone-800 rounded-full transition-all duration-200 ease-in-out"
+                href="#">
+                <span class="material-symbols-outlined" data-icon="pending_actions">pending_actions</span>
+                <span>Order Queue</span>
+            </a>
+            <a class="text-stone-500 dark:text-stone-400 px-4 py-3 mx-2 flex items-center gap-3 hover:bg-stone-200 dark:hover:bg-stone-800 rounded-full transition-all duration-200 ease-in-out"
+                href="#">
+                <span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+                <span>Analytics</span>
+            </a>
+        </div>
+        <div class="mt-auto px-4">
+            <div class="flex items-center gap-3 p-4 bg-surface-container-low rounded-xl mb-4">
+                <img class="w-10 h-10 rounded-full object-cover"
+                    data-alt="portrait of a professional chef wearing a clean white uniform in a high-end restaurant kitchen setting"
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuC8Cu_BIerUaUneo_LN-UBetnxt_RAVsG3RKh76Cd3_aIa2x1fs6W6x3sBlzSvmdraNm8JrNL3qRptRtDbGKWDT07KUjrO0cO_3-Uyv0o-YGtg2VLBeOIlDMO_5C9Lhiv-t10UO9VhDg2pGQtEurYnQI4FLc6YTSjtEVi3tDuqSgNyl_-reVQ7p5mMqc5i6FrqPbplc2SyKv4aX1PiqG_9DYi_624HH1nT9bd4vLj1GFtXfe0JawSEUE_mF-WLBEqlUiyukvI9sPhM" />
+                <div>
+                    <p class="font-bold text-on-surface text-xs">Admin User</p>
+                    <p class="text-[10px] text-on-surface-variant">Admin User Profile</p>
+                </div>
+            </div>
+            <button
+                class="w-full py-3 px-4 text-red-600 font-bold hover:bg-red-50 rounded-full transition-colors flex items-center justify-center gap-2">
+                <span class="material-symbols-outlined" data-icon="logout">logout</span>
                 Logout
             </button>
-</div>
-</nav>
-<!-- Main Content Canvas -->
-<main class="ml-64 p-8 min-h-screen">
-<!-- Header & Notifications -->
-<header class="flex justify-between items-center mb-10">
-<div>
-<h2 class="text-3xl font-extrabold tracking-tight text-on-surface">Daily Overview</h2>
-<p class="text-on-surface-variant font-medium">Welcome back, Chef. Here's what's cooking today.</p>
-</div>
-<div class="flex gap-4 items-center">
-<div class="relative group">
-<button class="p-3 bg-surface-container-lowest rounded-full shadow-sm hover:bg-surface-container transition-colors relative">
-<span class="material-symbols-outlined text-on-surface" data-icon="notifications">notifications</span>
-<span class="absolute top-2 right-2 w-2.5 h-2.5 bg-primary rounded-full border-2 border-surface-container-lowest"></span>
-</button>
-<!-- Notification Dropdown Ghost -->
-<div class="absolute right-0 mt-2 w-80 bg-surface-container-lowest rounded-xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 p-4 border border-outline-variant/10">
-<h4 class="font-bold text-sm mb-3">Recent Alerts</h4>
-<div class="space-y-3">
-<div class="flex gap-3 p-2 hover:bg-surface-container-low rounded-lg transition-colors">
-<div class="w-8 h-8 rounded-full bg-error-container/20 flex items-center justify-center text-error">
-<span class="material-symbols-outlined text-sm" data-icon="inventory_2">inventory_2</span>
-</div>
-<div>
-<p class="text-xs font-bold">Low Stock: Brioche Buns</p>
-<p class="text-[10px] text-on-surface-variant">Only 12 units remaining in inventory.</p>
-</div>
-</div>
-<div class="flex gap-3 p-2 hover:bg-surface-container-low rounded-lg transition-colors">
-<div class="w-8 h-8 rounded-full bg-tertiary-container/20 flex items-center justify-center text-tertiary">
-<span class="material-symbols-outlined text-sm" data-icon="local_fire_department">local_fire_department</span>
-</div>
-<div>
-<p class="text-xs font-bold">New High-Value Order</p>
-<p class="text-[10px] text-on-surface-variant">Order #8842 - $142.50 via UberEats.</p>
-</div>
-</div>
-</div>
-</div>
-</div>
-<button class="bg-primary hover:bg-primary-dim text-on-primary px-6 py-3 rounded-full font-bold shadow-lg shadow-primary/20 transition-all active:scale-95 flex items-center gap-2">
-<span class="material-symbols-outlined" data-icon="add">add</span>
-                    New Menu Item
+        </div>
+    </nav>
+    <!-- Main Content Canvas -->
+    <main class="ml-64 p-8 min-h-screen">
+        <!-- Header & Notifications -->
+        <header class="flex justify-between items-center mb-10">
+            <div>
+                <h2 class="text-3xl font-extrabold tracking-tight text-on-surface">Daily Overview</h2>
+                <p class="text-on-surface-variant font-medium">Welcome back, Chef. Here's what's cooking today.</p>
+            </div>
+            <div class="flex gap-4 items-center">
+                <div class="relative group">
+                    <button
+                        class="p-3 bg-surface-container-lowest rounded-full shadow-sm hover:bg-surface-container transition-colors relative">
+                        <span class="material-symbols-outlined text-on-surface"
+                            data-icon="notifications">notifications</span>
+                        <span
+                            class="absolute top-2 right-2 w-2.5 h-2.5 bg-primary rounded-full border-2 border-surface-container-lowest"></span>
+                    </button>
+                    <!-- Notification Dropdown Ghost -->
+                    <div
+                        class="absolute right-0 mt-2 w-80 bg-surface-container-lowest rounded-xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 p-4 border border-outline-variant/10">
+                        <h4 class="font-bold text-sm mb-3">Recent Alerts</h4>
+                        <div class="space-y-3" id="notification-container">
+                            <!-- Notifications will be loaded here dynamically -->
+                        </div>
+                    </div>
+                </div>
+                <button
+                    class="bg-primary hover:bg-primary-dim text-on-primary px-6 py-3 rounded-full font-bold shadow-lg shadow-primary/20 transition-all active:scale-95 flex items-center gap-2">
+                    <span class="material-symbols-outlined" data-icon="add">add</span>
+                    New Trascation
                 </button>
-</div>
-</header>
-<!-- Stats Bento Grid -->
-<section class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
-<div class="md:col-span-1 bg-surface-container-lowest p-6 rounded-lg shadow-sm border border-outline-variant/10">
-<div class="flex justify-between items-start mb-4">
-<div class="p-3 bg-primary/10 rounded-xl text-primary">
-<span class="material-symbols-outlined" data-icon="payments">payments</span>
-</div>
-<span class="text-xs font-bold text-green-600 bg-green-50 px-2 py-1 rounded-full">+12.5%</span>
-</div>
-<p class="text-on-surface-variant text-sm font-medium">Daily Revenue</p>
-<h3 class="text-2xl font-black mt-1">$4,282.50</h3>
-</div>
-<div class="md:col-span-1 bg-surface-container-lowest p-6 rounded-lg shadow-sm border border-outline-variant/10">
-<div class="flex justify-between items-start mb-4">
-<div class="p-3 bg-secondary-container/30 rounded-xl text-secondary">
-<span class="material-symbols-outlined" data-icon="shopping_bag">shopping_bag</span>
-</div>
-<span class="text-xs font-bold text-green-600 bg-green-50 px-2 py-1 rounded-full">+8%</span>
-</div>
-<p class="text-on-surface-variant text-sm font-medium">Orders Today</p>
-<h3 class="text-2xl font-black mt-1">154</h3>
-</div>
-<div class="md:col-span-2 bg-inverse-surface p-6 rounded-lg shadow-sm relative overflow-hidden group">
-<div class="relative z-10 flex h-full items-center justify-between">
-<div>
-<p class="text-inverse-on-surface text-sm font-medium uppercase tracking-widest">Trending Item</p>
-<h3 class="text-surface-bright text-3xl font-black mt-2">Smoky Truffle BBQ</h3>
-<p class="text-inverse-on-surface/60 mt-1">42 units sold in the last 2 hours</p>
-</div>
-<div class="hidden lg:block w-32 h-32 transform rotate-12 group-hover:scale-110 transition-transform">
-<img class="w-full h-full object-contain" data-alt="gourmet juicy beef burger with melted cheese and smoky barbecue sauce on a dark wood background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDcVL-3-gFAVLxRIGoNCXw0b8soSLFEj-oiiWbh8IGgzdZxUjHiAlGt241E3hOzqtNON1k-nniuGCpO15GTBqgKfId80NL8tN-ngMkZo0uElr7ghqwTqvtEsqrIP9rjfGEFkj9zbamFG3v7MSZ_qNuTVo_xquxdA0gtu9uvPKeJgfVcIMhmkPRrF7IoADV3a4k9SqlGHSEtcGfpdBkGHc9dMn2UlzFKTtJwFPjnM5few0lGBrc_DXiM6_RzGb4OaF_UX_AuVoxtpVo"/>
-</div>
-</div>
-<div class="absolute -bottom-10 -right-10 w-40 h-40 bg-primary/20 rounded-full blur-3xl"></div>
-</div>
-</section>
-<!-- Two Column Layout: Orders and Menu -->
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-<!-- Order Queue (2/3 width) -->
-<section class="lg:col-span-2 space-y-6">
-<div class="flex items-center justify-between">
-<h3 class="text-xl font-extrabold flex items-center gap-2">
-<span class="material-symbols-outlined text-primary" data-icon="list_alt">list_alt</span>
+            </div>
+        </header>
+        <!-- Stats Bento Grid -->
+        <section class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
+            <div
+                class="md:col-span-1 bg-surface-container-lowest p-6 rounded-lg shadow-sm border border-outline-variant/10">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="p-3 bg-primary/10 rounded-xl text-primary">
+                        <span class="material-symbols-outlined" data-icon="payments">payments</span>
+                    </div>
+                    <span class="text-xs font-bold text-green-600 bg-green-50 px-2 py-1 rounded-full">+12.5%</span>
+                </div>
+                <p class="text-on-surface-variant text-sm font-medium">Daily Revenue</p>
+                <h3 class="text-2xl font-black mt-1" id="daily-revenue">$0.00</h3>
+            </div>
+            <div
+                class="md:col-span-1 bg-surface-container-lowest p-6 rounded-lg shadow-sm border border-outline-variant/10">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="p-3 bg-secondary-container/30 rounded-xl text-secondary">
+                        <span class="material-symbols-outlined" data-icon="shopping_bag">shopping_bag</span>
+                    </div>
+                    <span class="text-xs font-bold text-green-600 bg-green-50 px-2 py-1 rounded-full">+8%</span>
+                </div>
+                <p class="text-on-surface-variant text-sm font-medium">Orders Today</p>
+                <h3 class="text-2xl font-black mt-1" id="orders-today">0</h3>
+            </div>
+            <div class="md:col-span-2 bg-inverse-surface p-6 rounded-lg shadow-sm relative overflow-hidden group">
+                <div class="relative z-10 flex h-full items-center justify-between">
+                    <div>
+                        <p class="text-inverse-on-surface text-sm font-medium uppercase tracking-widest">Trending Item
+                        </p>
+                        <h3 class="text-surface-bright text-3xl font-black mt-2" id="trending-item-name">-</h3>
+                        <p class="text-inverse-on-surface/60 mt-1" id="trending-item-sales">-</p>
+                    </div>
+                    <div
+                        class="hidden lg:block w-32 h-32 transform rotate-12 group-hover:scale-110 transition-transform">
+                        <img id="trending-item-image" class="w-full h-full object-contain"
+                            data-alt="Trending item image" src="" />
+                    </div>
+                </div>
+                <div class="absolute -bottom-10 -right-10 w-40 h-40 bg-primary/20 rounded-full blur-3xl"></div>
+            </div>
+        </section>
+        <!-- Two Column Layout: Orders and Menu -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Order Queue (2/3 width) -->
+            <section class="lg:col-span-2 space-y-6">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-xl font-extrabold flex items-center gap-2">
+                        <span class="material-symbols-outlined text-primary" data-icon="list_alt">list_alt</span>
                         Live Order Queue
                     </h3>
-<div class="flex gap-2">
-<button class="px-4 py-1.5 rounded-full text-xs font-bold bg-surface-container-high text-on-surface">All</button>
-<button class="px-4 py-1.5 rounded-full text-xs font-bold text-on-surface-variant hover:bg-surface-container-high">Preparing</button>
-</div>
-</div>
-<div class="space-y-4">
-<!-- Order Card 1 -->
-<div class="bg-surface-container-low p-5 rounded-lg flex items-center gap-6 border-l-4 border-tertiary">
-<div class="text-center min-w-[60px]">
-<p class="text-[10px] text-on-surface-variant uppercase font-bold">Order</p>
-<p class="text-lg font-black">#8845</p>
-</div>
-<div class="flex-1">
-<h4 class="font-bold">2x Double Beast, 1x Truffle Fries</h4>
-<p class="text-xs text-on-surface-variant flex items-center gap-1 mt-1">
-<span class="material-symbols-outlined text-sm" data-icon="schedule">schedule</span>
-                                Ordered 8 mins ago
-                            </p>
-</div>
-<div class="flex items-center gap-4">
-<span class="px-3 py-1 rounded-full bg-tertiary-container text-on-tertiary-container text-[10px] font-black uppercase">Preparing</span>
-<div class="flex gap-2">
-<button class="p-2 hover:bg-surface-container-high rounded-full transition-colors text-on-surface-variant">
-<span class="material-symbols-outlined" data-icon="check_circle">check_circle</span>
-</button>
-<button class="p-2 hover:bg-surface-container-high rounded-full transition-colors text-on-surface-variant">
-<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
-</button>
-</div>
-</div>
-</div>
-<!-- Order Card 2 -->
-<div class="bg-surface-container-low p-5 rounded-lg flex items-center gap-6 border-l-4 border-primary">
-<div class="text-center min-w-[60px]">
-<p class="text-[10px] text-on-surface-variant uppercase font-bold">Order</p>
-<p class="text-lg font-black">#8846</p>
-</div>
-<div class="flex-1">
-<h4 class="font-bold">1x Classic Brioche, 1x Vanilla Shake</h4>
-<p class="text-xs text-on-surface-variant flex items-center gap-1 mt-1">
-<span class="material-symbols-outlined text-sm" data-icon="schedule">schedule</span>
-                                Ordered 2 mins ago
-                            </p>
-</div>
-<div class="flex items-center gap-4">
-<span class="px-3 py-1 rounded-full bg-primary-container text-on-primary-container text-[10px] font-black uppercase">Pending</span>
-<div class="flex gap-2">
-<button class="p-2 hover:bg-surface-container-high rounded-full transition-colors text-on-surface-variant">
-<span class="material-symbols-outlined" data-icon="play_arrow">play_arrow</span>
-</button>
-<button class="p-2 hover:bg-surface-container-high rounded-full transition-colors text-on-surface-variant">
-<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
-</button>
-</div>
-</div>
-</div>
-<!-- Order Card 3 -->
-<div class="bg-surface-container-low p-5 rounded-lg flex items-center gap-6 border-l-4 border-green-500">
-<div class="text-center min-w-[60px]">
-<p class="text-[10px] text-on-surface-variant uppercase font-bold">Order</p>
-<p class="text-lg font-black">#8844</p>
-</div>
-<div class="flex-1">
-<h4 class="font-bold">3x Spicy Chicken Delux</h4>
-<p class="text-xs text-on-surface-variant flex items-center gap-1 mt-1">
-<span class="material-symbols-outlined text-sm" data-icon="schedule">schedule</span>
-                                Ordered 15 mins ago
-                            </p>
-</div>
-<div class="flex items-center gap-4">
-<span class="px-3 py-1 rounded-full bg-green-100 text-green-700 text-[10px] font-black uppercase">Ready</span>
-<div class="flex gap-2">
-<button class="p-2 hover:bg-surface-container-high rounded-full transition-colors text-on-surface-variant">
-<span class="material-symbols-outlined" data-icon="local_shipping">local_shipping</span>
-</button>
-<button class="p-2 hover:bg-surface-container-high rounded-full transition-colors text-on-surface-variant">
-<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
-</button>
-</div>
-</div>
-</div>
-</div>
-</section>
-<!-- Inventory/Quick Management (1/3 width) -->
-<section class="space-y-6">
-<h3 class="text-xl font-extrabold flex items-center gap-2">
-<span class="material-symbols-outlined text-secondary" data-icon="inventory">inventory</span>
+                    <div class="flex gap-2">
+                        <button
+                            class="px-4 py-1.5 rounded-full text-xs font-bold bg-surface-container-high text-on-surface">All</button>
+                        <button
+                            class="px-4 py-1.5 rounded-full text-xs font-bold text-on-surface-variant hover:bg-surface-container-high">Preparing</button>
+                    </div>
+                </div>
+                <div class="space-y-4" id="order-queue-container">
+                    <!-- Live orders will be loaded here dynamically -->
+                </div>
+            </section>
+            <!-- Inventory/Quick Management (1/3 width) -->
+            <section class="space-y-6">
+                <h3 class="text-xl font-extrabold flex items-center gap-2">
+                    <span class="material-symbols-outlined text-secondary" data-icon="inventory">inventory</span>
                     Stock Monitor
                 </h3>
-<div class="bg-surface-container-lowest rounded-lg border border-outline-variant/10 overflow-hidden">
-<div class="p-4 border-b border-surface-container">
-<div class="relative">
-<span class="material-symbols-outlined absolute left-3 top-2.5 text-on-surface-variant text-sm" data-icon="search">search</span>
-<input class="w-full pl-9 pr-4 py-2 bg-surface-container-low border-none rounded-full text-xs focus:ring-1 focus:ring-primary" placeholder="Search menu..." type="text"/>
-</div>
-</div>
-<div class="divide-y divide-surface-container">
-<!-- Stock Item 1 -->
-<div class="p-4 flex items-center justify-between hover:bg-surface-container-low transition-colors">
-<div class="flex items-center gap-3">
-<img class="w-10 h-10 rounded-lg object-cover" data-alt="crispy golden french fries in a premium serving box" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAnHTMZiRZdF0EiF-eOuvo7xeJVvR8GXYP4sk1g2H0vyPfrmV2fJCvdBXmxfpxv2HNkrZZzrcaw0nGnE7Q8g0E7biMAJUwviJiOwDIu8qEE9j6g5eWvleksPaapj05RopvZfQRlzyKhfmx6etO3rchYS6DLRVb4F_vyzpmjRHwaxsXQX4r3ZNZmOjccPZiteGVBIUulETln9FQzqtRjbmi2Iir-cvfGWswafNKH1OrgQKd6dpnWO0yNUyBk3IzNO3w0FuSdYq6O_50"/>
-<div>
-<p class="text-xs font-bold">Truffle Fries</p>
-<p class="text-[10px] text-on-surface-variant">Category: Sides</p>
-</div>
-</div>
-<div class="text-right">
-<div class="w-16 bg-surface-container-high h-1.5 rounded-full overflow-hidden mb-1">
-<div class="bg-green-500 h-full w-[85%]"></div>
-</div>
-<p class="text-[10px] font-bold text-on-surface-variant">85% Stock</p>
-</div>
-</div>
-<!-- Stock Item 2 (Low) -->
-<div class="p-4 flex items-center justify-between hover:bg-surface-container-low transition-colors">
-<div class="flex items-center gap-3">
-<img class="w-10 h-10 rounded-lg object-cover" data-alt="fresh brioche burger bun showing its soft texture and golden crust" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDUH8fDj3VOvyCu9c3BcbmnxnhRqUGILm95fHC_lHL5FQVU9oOMU_9IoXgPLcED0apcrsu3G-M3AguOJLmQ8-cPhl_-zsRMWvp-Jzp7GqT2DbgIWHICuwhov0-zF1lBzRR0041v4cy8eWIWZ7j_yFyjEtPUOIMw_pntnDQjqhjC75CWsJajGCQ-5soLXXzwwvkfDEwek3tWmuPjjDqkWEFBEx9VbewYAFBzlKanL2lhsNlqGNrZSRSOQA1J24PADzGItWKHp4om8Io"/>
-<div>
-<p class="text-xs font-bold">Brioche Buns</p>
-<p class="text-[10px] text-error font-bold">Action Required</p>
-</div>
-</div>
-<div class="text-right">
-<div class="w-16 bg-surface-container-high h-1.5 rounded-full overflow-hidden mb-1">
-<div class="bg-error h-full w-[15%]"></div>
-</div>
-<p class="text-[10px] font-bold text-error">15% Stock</p>
-</div>
-</div>
-<!-- Stock Item 3 -->
-<div class="p-4 flex items-center justify-between hover:bg-surface-container-low transition-colors">
-<div class="flex items-center gap-3">
-<img class="w-10 h-10 rounded-lg object-cover" data-alt="close up of a cheeseburger with fresh ingredients" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDSNzmnlJN8aeBaFOTEPwNF9u5lws_arbeC_A3K3R6Az3rXlVaQm1vE2HmMZ8JcEj5Cc8j3s28nghdwElROSR5195HTrmCgAh5SodZ4rCbE_PO_6nMUwwj4tkn7UeL4mpFgokSHib_g_1pYlGEbwXLO-rUBmElPLHxAfsebBS1qytRcNXoYq_laeWwmFL-FwhMvlLktW7vPkGjbwUsHxSu-sxnpXvFuwfs8YgmOFoGwFJSBWs9SEG3vLWSsyUknFDi-qEG-I2Firek"/>
-<div>
-<p class="text-xs font-bold">Double Beast</p>
-<p class="text-[10px] text-on-surface-variant">Category: Burgers</p>
-</div>
-</div>
-<div class="text-right">
-<div class="w-16 bg-surface-container-high h-1.5 rounded-full overflow-hidden mb-1">
-<div class="bg-green-500 h-full w-[60%]"></div>
-</div>
-<p class="text-[10px] font-bold text-on-surface-variant">60% Stock</p>
-</div>
-</div>
-</div>
-<button class="w-full py-3 bg-surface-container-low text-xs font-bold text-primary hover:bg-surface-container-high transition-colors">
+                <div class="bg-surface-container-lowest rounded-lg border border-outline-variant/10 overflow-hidden">
+                    <div class="p-4 border-b border-surface-container">
+                        <div class="relative">
+                            <span
+                                class="material-symbols-outlined absolute left-3 top-2.5 text-on-surface-variant text-sm"
+                                data-icon="search">search</span>
+                            <input
+                                class="w-full pl-9 pr-4 py-2 bg-surface-container-low border-none rounded-full text-xs focus:ring-1 focus:ring-primary"
+                                placeholder="Search menu..." type="text" />
+                        </div>
+                    </div>
+                    <div class="divide-y divide-surface-container" id="stock-monitor-container">
+                        <!-- Stock items will be loaded here dynamically -->
+                    </div>
+                    <button
+                        class="w-full py-3 bg-surface-container-low text-xs font-bold text-primary hover:bg-surface-container-high transition-colors">
                         View Full Inventory Management
                     </button>
-</div>
-</section>
-</div>
-<!-- Menu Management Table Section -->
-<section class="mt-12 mb-20">
-<div class="flex items-center justify-between mb-6">
-<h3 class="text-xl font-extrabold">Active Menu Items</h3>
-<div class="flex items-center gap-4">
-<button class="flex items-center gap-2 text-xs font-bold text-on-surface-variant px-4 py-2 bg-surface-container rounded-lg">
-<span class="material-symbols-outlined text-sm" data-icon="filter_list">filter_list</span>
+                </div>
+            </section>
+        </div>
+        <!-- Menu Management Table Section -->
+        <section class="mt-12 mb-20">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-xl font-extrabold">Active Menu Items</h3>
+                <div class="flex items-center gap-4">
+                    <button
+                        class="flex items-center gap-2 text-xs font-bold text-on-surface-variant px-4 py-2 bg-surface-container rounded-lg">
+                        <span class="material-symbols-outlined text-sm" data-icon="filter_list">filter_list</span>
                         Filter
                     </button>
-<button class="flex items-center gap-2 text-xs font-bold text-on-surface-variant px-4 py-2 bg-surface-container rounded-lg">
-<span class="material-symbols-outlined text-sm" data-icon="download">download</span>
+                    <button
+                        class="flex items-center gap-2 text-xs font-bold text-on-surface-variant px-4 py-2 bg-surface-container rounded-lg">
+                        <span class="material-symbols-outlined text-sm" data-icon="download">download</span>
                         Export CSV
                     </button>
-</div>
-</div>
-<div class="bg-surface-container-lowest rounded-lg shadow-sm border border-outline-variant/10 overflow-hidden">
-<table class="w-full text-left border-collapse">
-<thead class="bg-surface-container-low text-[10px] uppercase tracking-widest text-on-surface-variant font-bold">
-<tr>
-<th class="px-6 py-4">Item Name</th>
-<th class="px-6 py-4">Category</th>
-<th class="px-6 py-4">Price</th>
-<th class="px-6 py-4">Popularity</th>
-<th class="px-6 py-4">Status</th>
-<th class="px-6 py-4 text-right">Actions</th>
-</tr>
-</thead>
-<tbody class="divide-y divide-surface-container text-sm">
-<tr class="hover:bg-surface-container-lowest transition-colors">
-<td class="px-6 py-4 font-bold">The Smokehouse Special</td>
-<td class="px-6 py-4 text-on-surface-variant">Burgers</td>
-<td class="px-6 py-4 font-bold text-primary">$14.50</td>
-<td class="px-6 py-4">
-<div class="flex text-tertiary">
-<span class="material-symbols-outlined text-sm" data-icon="star" data-weight="fill">star</span>
-<span class="material-symbols-outlined text-sm" data-icon="star" data-weight="fill">star</span>
-<span class="material-symbols-outlined text-sm" data-icon="star" data-weight="fill">star</span>
-<span class="material-symbols-outlined text-sm" data-icon="star" data-weight="fill">star</span>
-<span class="material-symbols-outlined text-sm" data-icon="star">star</span>
-</div>
-</td>
-<td class="px-6 py-4">
-<span class="px-2 py-1 bg-green-50 text-green-700 text-[10px] font-black rounded uppercase">Active</span>
-</td>
-<td class="px-6 py-4 text-right space-x-2">
-<button class="text-on-surface-variant hover:text-primary transition-colors"><span class="material-symbols-outlined" data-icon="edit">edit</span></button>
-<button class="text-on-surface-variant hover:text-error transition-colors"><span class="material-symbols-outlined" data-icon="delete">delete</span></button>
-</td>
-</tr>
-<tr class="hover:bg-surface-container-lowest transition-colors">
-<td class="px-6 py-4 font-bold">Veggie Delight</td>
-<td class="px-6 py-4 text-on-surface-variant">Plant-Based</td>
-<td class="px-6 py-4 font-bold text-primary">$12.00</td>
-<td class="px-6 py-4">
-<div class="flex text-tertiary">
-<span class="material-symbols-outlined text-sm" data-icon="star" data-weight="fill">star</span>
-<span class="material-symbols-outlined text-sm" data-icon="star" data-weight="fill">star</span>
-<span class="material-symbols-outlined text-sm" data-icon="star" data-weight="fill">star</span>
-<span class="material-symbols-outlined text-sm" data-icon="star">star</span>
-<span class="material-symbols-outlined text-sm" data-icon="star">star</span>
-</div>
-</td>
-<td class="px-6 py-4">
-<span class="px-2 py-1 bg-green-50 text-green-700 text-[10px] font-black rounded uppercase">Active</span>
-</td>
-<td class="px-6 py-4 text-right space-x-2">
-<button class="text-on-surface-variant hover:text-primary transition-colors"><span class="material-symbols-outlined" data-icon="edit">edit</span></button>
-<button class="text-on-surface-variant hover:text-error transition-colors"><span class="material-symbols-outlined" data-icon="delete">delete</span></button>
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</section>
-</main>
-<!-- Footer Component -->
-<footer class="ml-64 w-[calc(100%-16rem)] py-12 bg-stone-100 dark:bg-stone-900 border-t border-stone-200 dark:border-stone-800 flex flex-col md:flex-row justify-between items-center px-12 gap-6 font-['Be_Vietnam_Pro'] text-xs uppercase tracking-widest">
-<div class="text-lg font-black text-stone-800 dark:text-stone-200">Burgerlicious</div>
-<div class="flex gap-8 text-stone-500 dark:text-stone-400">
-<a class="hover:text-stone-800 underline underline-offset-4 opacity-80 hover:opacity-100 transition-opacity" href="#">Privacy Policy</a>
-<a class="hover:text-stone-800 underline underline-offset-4 opacity-80 hover:opacity-100 transition-opacity" href="#">Terms of Service</a>
-<a class="hover:text-stone-800 underline underline-offset-4 opacity-80 hover:opacity-100 transition-opacity" href="#">Contact Us</a>
-</div>
-<div class="text-stone-500 dark:text-stone-400">© 2024 Burgerlicious. Crafted for the flavorful.</div>
-</footer>
+                </div>
+            </div>
+            <div
+                class="bg-surface-container-lowest rounded-lg shadow-sm border border-outline-variant/10 overflow-hidden">
+                <table class="w-full text-left border-collapse">
+                    <thead
+                        class="bg-surface-container-low text-[10px] uppercase tracking-widest text-on-surface-variant font-bold">
+                        <tr>
+                            <th class="px-6 py-4">Item Name</th>
+                            <th class="px-6 py-4">Category</th>
+                            <th class="px-6 py-4">Price</th>
+                            <th class="px-6 py-4">Popularity</th>
+                            <th class="px-6 py-4">Status</th>
+                            <th class="px-6 py-4 text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-surface-container text-sm" id="menu-table-body">
+                        <!-- Menu items will be loaded here dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
 </body>
+
 </html>
