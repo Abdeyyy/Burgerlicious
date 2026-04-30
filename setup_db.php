@@ -1,11 +1,26 @@
 <?php
-$host = 'db';
-$user = 'root';
-$pass = 'rootpassword';
+// Konfigurasi untuk Docker
+$host_docker = 'db';
+$user_docker = 'root';
+$pass_docker = 'rootpassword';
 
-$conn = new mysqli($host, $user, $pass);
+// Konfigurasi untuk Laragon/XAMPP (Lokal)
+$host_local = 'localhost';
+$user_local = 'root';
+$pass_local = '';
+
+mysqli_report(MYSQLI_REPORT_OFF);
+
+// Coba koneksi ke Docker
+$conn = @new mysqli($host_docker, $user_docker, $pass_docker);
+
 if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error . "\nPastikan MySQL Laragon sudah Start.\n");
+    // Jika gagal ke Docker, coba koneksi ke Laragon/Lokal
+    $conn = @new mysqli($host_local, $user_local, $pass_local);
+    
+    if ($conn->connect_error) {
+        die("Connection failed: " . $conn->connect_error . "\nPastikan MySQL Laragon sudah Start atau container Docker berjalan.\n");
+    }
 }
 
 $sql = "CREATE DATABASE IF NOT EXISTS burgerlicious";
