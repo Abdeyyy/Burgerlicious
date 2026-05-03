@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Menu Management - Burgerlicious Admin Panel</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Be+Vietnam+Pro:wght@300;400;500;600;700&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script src="../frontend/js/tailwind-admin-config.js"></script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        body {
+            font-family: 'Be Vietnam Pro', sans-serif;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4 {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+    </style>
+</head>
+
+<body class="bg-surface text-on-surface">
+    <!-- SideNavBar -->
+    <nav
+        class="h-screen w-64 fixed left-0 top-0 bg-stone-50 dark:bg-stone-950 border-r border-stone-200 dark:border-stone-800 flex flex-col h-full py-6 font-['Be_Vietnam_Pro'] text-sm z-40">
+        <div class="px-6 mb-10">
+            <h1 class="text-xl font-bold text-stone-900 dark:text-stone-50">Admin Panel</h1>
+            <p class="text-xs text-stone-500 uppercase tracking-wider">Burgerlicious Management</p>
+        </div>
+        <div class="flex-1 space-y-1">
+            <!-- Dashboard Tab -->
+            <a class="text-stone-500 dark:text-stone-400 px-4 py-3 mx-2 flex items-center gap-3 hover:bg-stone-200 dark:hover:bg-stone-800 rounded-full transition-all duration-200 ease-in-out"
+                href="dashboard.html">
+                <span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+                <span>Dashboard</span>
+            </a>
+            <!-- Active Tab: Menu Management -->
+            <a class="bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300 rounded-full mx-2 px-4 py-3 font-semibold flex items-center gap-3 transition-all duration-200 ease-in-out"
+                href="#">
+                <span class="material-symbols-outlined" data-icon="restaurant_menu">restaurant_menu</span>
+                <span>Menu Management</span>
+            </a>
+            <a class="text-stone-500 dark:text-stone-400 px-4 py-3 mx-2 flex items-center gap-3 hover:bg-stone-200 dark:hover:bg-stone-800 rounded-full transition-all duration-200 ease-in-out"
+                href="order_queue.html">
+                <span class="material-symbols-outlined" data-icon="pending_actions">pending_actions</span>
+                <span>Order Queue</span>
+            </a>
+            <a class="text-stone-500 dark:text-stone-400 px-4 py-3 mx-2 flex items-center gap-3 hover:bg-stone-200 dark:hover:bg-stone-800 rounded-full transition-all duration-200 ease-in-out"
+                href="analytics.html">
+                <span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+                <span>Analytics</span>
+            </a>
+        </div>
+        <div class="mt-auto px-4">
+            <div class="flex items-center gap-3 p-4 bg-surface-container-low rounded-xl mb-4">
+                <img class="w-10 h-10 rounded-full object-cover"
+                    data-alt="portrait of a professional chef wearing a clean white uniform in a high-end restaurant kitchen setting"
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuC8Cu_BIerUaUneo_LN-UBetnxt_RAVsG3RKh76Cd3_aIa2x1fs6W6x3sBlzSvmdraNm8JrNL3qRptRtDbGKWDT07KUjrO0cO_3-Uyv0o-YGtg2VLBeOIlDMO_5C9Lhiv-t10UO9VhDg2pGQtEurYnQI4FLc6YTSjtEVi3tDuqSgNyl_-reVQ7p5mMqc5i6FrqPbplc2SyKv4aX1PiqG_9DYi_624HH1nT9bd4vLj1GFtXfe0JawSEUE_mF-WLBEqlUiyukvI9sPhM" />
+                <div>
+                    <p class="font-bold text-on-surface text-xs">Admin User</p>
+                    <p class="text-[10px] text-on-surface-variant">Admin User Profile</p>
+                </div>
+            </div>
+            <button
+                class="w-full py-3 px-4 text-red-600 font-bold hover:bg-red-50 rounded-full transition-colors flex items-center justify-center gap-2">
+                <span class="material-symbols-outlined" data-icon="logout">logout</span>
+                Logout
+            </button>
+        </div>
+    </nav>
+    <!-- Main Content Canvas -->
+    <main class="ml-64 p-8 min-h-screen">
+        <!-- Header -->
+        <header class="flex justify-between items-center mb-10">
+            <div>
+                <h2 class="text-3xl font-extrabold tracking-tight text-on-surface">Menu Management</h2>
+                <p class="text-on-surface-variant font-medium">Add, edit, and manage your restaurant menu items.</p>
+            </div>
+            <button
+                class="bg-primary hover:bg-primary-dim text-on-primary px-6 py-3 rounded-full font-bold shadow-lg shadow-primary/20 transition-all active:scale-95 flex items-center gap-2">
+                <span class="material-symbols-outlined" data-icon="add">add</span>
+                Add New Item
+            </button>
+        </header>
+
+        <!-- Filters & Search -->
+        <section class="bg-surface-container-lowest p-6 rounded-lg shadow-sm border border-outline-variant/10 mb-8">
+            <div class="flex gap-4 flex-wrap items-center">
+                <div class="flex-1 min-w-[200px]">
+                    <div class="relative">
+                        <span
+                            class="material-symbols-outlined absolute left-3 top-2.5 text-on-surface-variant text-sm"
+                            data-icon="search">search</span>
+                        <input
+                            class="w-full pl-9 pr-4 py-2 bg-surface-container border border-outline-variant rounded-lg text-sm focus:ring-1 focus:ring-primary focus:border-primary"
+                            placeholder="Search menu items..." type="text" />
+                    </div>
+                </div>
+                <select
+                    class="px-4 py-2 bg-surface-container border border-outline-variant rounded-lg text-sm focus:ring-1 focus:ring-primary">
+                    <option>All Categories</option>
+                    <option>Burgers</option>
+                    <option>Sides</option>
+                    <option>Drinks</option>
+                    <option>Desserts</option>
+                </select>
+                <select
+                    class="px-4 py-2 bg-surface-container border border-outline-variant rounded-lg text-sm focus:ring-1 focus:ring-primary">
+                    <option>All Status</option>
+                    <option>Available</option>
+                    <option>Out of Stock</option>
+                </select>
+                <button
+                    class="flex items-center gap-2 text-sm font-bold text-on-surface-variant px-4 py-2 bg-surface-container rounded-lg hover:bg-surface-container-high transition-colors">
+                    <span class="material-symbols-outlined text-sm" data-icon="download">download</span>
+                    Export
+                </button>
+            </div>
+        </section>
+
+        <!-- Menu Items Grid -->
+        <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12" id="menu-items-container">
+            <!-- Menu items will be loaded here dynamically -->
+        </section>
+
+        <!-- Pagination -->
+        <div class="flex justify-center items-center gap-2">
+            <button
+                class="px-4 py-2 rounded-lg border border-outline-variant hover:bg-surface-container transition-colors text-sm font-bold">
+                Previous
+            </button>
+            <button
+                class="px-4 py-2 rounded-lg bg-primary text-on-primary font-bold text-sm">
+                1
+            </button>
+            <button
+                class="px-4 py-2 rounded-lg border border-outline-variant hover:bg-surface-container transition-colors text-sm font-bold">
+                2
+            </button>
+            <button
+                class="px-4 py-2 rounded-lg border border-outline-variant hover:bg-surface-container transition-colors text-sm font-bold">
+                3
+            </button>
+            <button
+                class="px-4 py-2 rounded-lg border border-outline-variant hover:bg-surface-container transition-colors text-sm font-bold">
+                Next
+            </button>
+        </div>
+    </main>
+</body>
+
+</html>
