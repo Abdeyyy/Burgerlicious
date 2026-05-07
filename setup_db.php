@@ -45,6 +45,10 @@ $sql_table = "CREATE TABLE IF NOT EXISTS `user` (
   UNIQUE KEY `email` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
 
+// Pastikan kolom verification_code & code_expires_at nullable (fix untuk DB yang sudah ada)
+$conn->query("ALTER TABLE `user` MODIFY `verification_code` varchar(6) DEFAULT NULL");
+$conn->query("ALTER TABLE `user` MODIFY `code_expires_at` datetime DEFAULT NULL");
+
 if ($conn->query($sql_table) === TRUE) {
     echo "Tabel user berhasil dibuat/dikonfirmasi siap!\n";
     
@@ -65,7 +69,7 @@ $admin_nama  = 'Administrator';
 
 $check_admin = $conn->query("SELECT id_user FROM user WHERE email = '$admin_email'");
 if ($check_admin->num_rows == 0) {
-    $sql_admin = "INSERT INTO user (nama, email, pass, role, is_verified) VALUES ('$admin_nama', '$admin_email', '$admin_pass', 'admin', 1)";
+    $sql_admin = "INSERT INTO user (nama, email, pass, role, is_verified, verification_code, code_expires_at) VALUES ('$admin_nama', '$admin_email', '$admin_pass', 'admin', 1, NULL, NULL)";
     if ($conn->query($sql_admin) === TRUE) {
         echo "User Admin default berhasil dibuat: $admin_email / admin123\n";
     } else {
