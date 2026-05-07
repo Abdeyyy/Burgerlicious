@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en">
+
+<head>
+        <meta charset="utf-8" />
+        <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+        <title>Sizzle &amp; Sauce | Promo Management</title>
+        <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+        <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&amp;family=Be+Vietnam+Pro:wght@300;400;500;600&amp;display=swap"
+                rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+                rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+                rel="stylesheet" />
+        <script src="../frontend/js/tailwind-admin-config.js"></script>
+        <style>
+                body {
+                        font-family: 'Be Vietnam Pro', sans-serif;
+                }
+
+                h1,
+                h2,
+                h3,
+                .font-headline {
+                        font-family: 'Plus Jakarta Sans', sans-serif;
+                }
+
+                .material-symbols-outlined {
+                        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+                }
+
+                .no-scrollbar::-webkit-scrollbar {
+                        display: none;
+                }
+        </style>
+</head>
+
+<body class="bg-background text-on-surface selection:bg-primary-container selection:text-on-primary-container">
+        <!-- SideNavBar -->
+        <nav
+                class="h-screen w-64 fixed left-0 top-0 bg-stone-50 dark:bg-stone-950 border-r border-stone-200 dark:border-stone-800 flex flex-col h-full py-6 font-['Be_Vietnam_Pro'] text-sm z-40">
+                <div class="px-6 mb-10">
+                        <h1 class="text-xl font-bold text-stone-900 dark:text-stone-50">Admin Panel</h1>
+                        <p class="text-xs text-stone-500 uppercase tracking-wider">Burgerlicious Management</p>
+                </div>
+                <div class="flex-1 space-y-1">
+                        <a class="text-stone-500 dark:text-stone-400 px-4 py-3 mx-2 flex items-center gap-3 hover:bg-stone-200 dark:hover:bg-stone-800 rounded-full transition-all duration-200 ease-in-out"
+                                href="dashboard.html">
+                                <span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+                                <span>Dashboard</span>
+                        </a>
+                        <a class="text-stone-500 dark:text-stone-400 px-4 py-3 mx-2 flex items-center gap-3 hover:bg-stone-200 dark:hover:bg-stone-800 rounded-full transition-all duration-200 ease-in-out"
+                                href="menu_management.html">
+                                <span class="material-symbols-outlined"
+                                        data-icon="restaurant_menu">restaurant_menu</span>
+                                <span>Menu Management</span>
+                        </a>
+                        <a class="text-stone-500 dark:text-stone-400 px-4 py-3 mx-2 flex items-center gap-3 hover:bg-stone-200 dark:hover:bg-stone-800 rounded-full transition-all duration-200 ease-in-out"
+                                href="order_queue.html">
+                                <span class="material-symbols-outlined"
+                                        data-icon="pending_actions">pending_actions</span>
+                                <span>Order Queue</span>
+                        </a>
+                        <a class="text-stone-500 dark:text-stone-400 px-4 py-3 mx-2 flex items-center gap-3 hover:bg-stone-200 dark:hover:bg-stone-800 rounded-full transition-all duration-200 ease-in-out"
+                                href="analytics.html">
+                                <span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+                                <span>Analytics</span>
+                        </a>
+                        <!-- Active Tab: Promos -->
+                        <a class="bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300 rounded-full mx-2 px-4 py-3 font-semibold flex items-center gap-3 transition-all duration-200 ease-in-out"
+                                href="#">
+                                <span class="material-symbols-outlined" data-icon="campaign">campaign</span>
+                                <span>Promos</span>
+                        </a>
+                </div>
+                <div class="mt-auto px-4">
+                        <div class="flex items-center gap-3 p-4 bg-surface-container-low rounded-xl mb-4">
+                                <img class="w-10 h-10 rounded-full object-cover"
+                                        data-alt="portrait of a professional chef wearing a clean white uniform in a high-end restaurant kitchen setting"
+                                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuC8Cu_BIerUaUneo_LN-UBetnxt_RAVsG3RKh76Cd3_aIa2x1fs6W6x3sBlzSvmdraNm8JrNL3qRptRtDbGKWDT07KUjrO0cO_3-Uyv0o-YGtg2VLBeOIlDMO_5C9Lhiv-t10UO9VhDg2pGQtEurYnQI4FLc6YTSjtEVi3tDuqSgNyl_-reVQ7p5mMqc5i6FrqPbplc2SyKv4aX1PiqG_9DYi_624HH1nT9bd4vLj1GFtXfe0JawSEUE_mF-WLBEqlUiyukvI9sPhM" />
+                                <div>
+                                        <p class="font-bold text-on-surface text-xs">Admin User</p>
+                                        <p class="text-[10px] text-on-surface-variant">Admin User Profile</p>
+                                </div>
+                        </div>
+                        <button
+                                class="w-full py-3 px-4 text-red-600 font-bold hover:bg-red-50 rounded-full transition-colors flex items-center justify-center gap-2">
+                                <span class="material-symbols-outlined" data-icon="logout">logout</span>
+                                Logout
+                        </button>
+                </div>
+        </nav>
+        <!-- Main Content Canvas -->
+        <main class="ml-64 p-8 min-h-screen">
+                <!-- Header -->
+                <header class="flex justify-between items-center mb-10">
+                        <div>
+                                <h2 class="text-3xl font-extrabold tracking-tight text-on-surface">Promo Management</h2>
+                                <p class="text-on-surface-variant font-medium">Create and manage your marketing
+                                        campaigns and discount codes.</p>
+                        </div>
+                        <div class="flex gap-4 items-center">
+                                <div class="relative w-64 group">
+                                        <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant group-focus-within:text-primary transition-colors text-sm"
+                                                data-icon="search">search</span>
+                                        <input class="w-full bg-surface-container-low border-none rounded-full py-2.5 pl-12 pr-4 focus:ring-2 focus:ring-primary/20 focus:bg-surface-container-highest transition-all text-sm"
+                                                placeholder="Search promos..." type="text" />
+                                </div>
+                        </div>
+                </header>
+
+                <div class="space-y-10">
+                        <!-- Bento Summary Section -->
+                        <section class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                                <div
+                                        class="col-span-1 md:col-span-2 bg-surface-container-lowest p-8 rounded-lg flex flex-col justify-between overflow-hidden relative group">
+                                        <div class="relative z-10">
+                                                <p
+                                                        class="text-sm font-bold text-on-surface-variant uppercase tracking-widest mb-2">
+                                                        Total Active Promos</p>
+                                                <h3 class="text-6xl font-black text-on-surface tracking-tighter">14</h3>
+                                                <p class="mt-4 text-sm text-primary font-bold flex items-center gap-1">
+                                                        <span class="material-symbols-outlined text-sm"
+                                                                data-icon="trending_up">trending_up</span>
+                                                        +2 from last month
+                                                </p>
+                                        </div>
+                                        <div
+                                                class="absolute -right-12 -bottom-12 opacity-10 group-hover:scale-110 transition-transform duration-700 pointer-events-none">
+                                                <span class="material-symbols-outlined text-[180px]"
+                                                        data-icon="campaign">campaign</span>
+                                        </div>
+                                </div>
+                                <div
+                                        class="bg-primary text-on-primary p-8 rounded-lg flex flex-col justify-between shadow-2xl shadow-primary/20">
+                                        <div>
+                                                <p class="text-sm font-bold opacity-80 uppercase tracking-widest mb-2">
+                                                        Total Redemptions</p>
+                                                <h3 class="text-4xl font-black tracking-tighter">12,402</h3>
+                                        </div>
+                                        <div class="h-1 bg-white/20 rounded-full mt-6">
+                                                <div class="h-full bg-white rounded-full" style="width: 78%;"></div>
+                                        </div>
+                                        <p class="text-xs font-medium mt-2 opacity-80">78% of monthly target achieved
+                                        </p>
+                                </div>
+                                <div class="flex flex-col gap-6">
+                                        <div class="bg-surface-container-low p-6 rounded-lg flex-1">
+                                                <p
+                                                        class="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-1">
+                                                        Revenue from Promos</p>
+                                                <h3 class="text-2xl font-black text-on-surface">$45.2k</h3>
+                                        </div>
+                                        <div class="bg-tertiary-container p-6 rounded-lg flex-1">
+                                                <p
+                                                        class="text-xs font-bold text-on-tertiary-container uppercase tracking-widest mb-1">
+                                                        Active Customers</p>
+                                                <h3 class="text-2xl font-black text-on-tertiary-container">3.8k</h3>
+                                        </div>
+                                </div>
+                        </section>
+                        <!-- Main Content: Promotional Table Section -->
+                        <section class="space-y-6">
+                                <div class="flex items-center justify-between">
+                                        <div>
+                                                <h2 class="text-2xl font-black text-on-surface font-headline">Active
+                                                        Promotions</h2>
+                                                <p class="text-on-surface-variant text-sm mt-1">Manage and monitor your
+                                                        current marketing campaigns.</p>
+                                        </div>
+                                        <div class="flex items-center gap-4">
+                                                <button
+                                                        class="flex items-center gap-2 px-6 py-2.5 rounded-full bg-surface-container-highest text-on-surface font-bold hover:bg-surface-container-high transition-colors">
+                                                        <span class="material-symbols-outlined"
+                                                                data-icon="filter_list">filter_list</span>
+                                                        <span>Filter</span>
+                                                </button>
+                                                <button
+                                                        class="flex items-center gap-2 px-8 py-2.5 rounded-full bg-primary text-on-primary font-bold hover:scale-105 transition-all shadow-lg shadow-primary/20">
+                                                        <span class="material-symbols-outlined"
+                                                                data-icon="add_circle">add_circle</span>
+                                                        <span>Create New Promo</span>
+                                                </button>
+                                        </div>
+                                </div>
+                                <!-- Tonal Layered Table (No borders) -->
+                                <div class="bg-surface-container-lowest rounded-lg overflow-hidden">
+                                        <div class="overflow-x-auto">
+                                                <table class="w-full text-left border-collapse">
+                                                        <thead>
+                                                                <tr class="bg-surface-container-low/50">
+                                                                        <th
+                                                                                class="px-8 py-5 text-xs font-black text-on-surface-variant uppercase tracking-widest">
+                                                                                Promo Name</th>
+                                                                        <th
+                                                                                class="px-6 py-5 text-xs font-black text-on-surface-variant uppercase tracking-widest">
+                                                                                Type</th>
+                                                                        <th
+                                                                                class="px-6 py-5 text-xs font-black text-on-surface-variant uppercase tracking-widest text-center">
+                                                                                Discount</th>
+                                                                        <th
+                                                                                class="px-6 py-5 text-xs font-black text-on-surface-variant uppercase tracking-widest">
+                                                                                Period</th>
+                                                                        <th
+                                                                                class="px-6 py-5 text-xs font-black text-on-surface-variant uppercase tracking-widest">
+                                                                                Status</th>
+                                                                        <th
+                                                                                class="px-6 py-5 text-xs font-black text-on-surface-variant uppercase tracking-widest">
+                                                                                Performance</th>
+                                                                        <th
+                                                                                class="px-8 py-5 text-xs font-black text-on-surface-variant uppercase tracking-widest text-right">
+                                                                                Actions</th>
+                                                                </tr>
+                                                        </thead>
+                                                        <tbody class="divide-y divide-surface-container-low">
+                                                                <!-- Row 1 -->
+                                                                <tr
+                                                                        class="hover:bg-surface-container-low/30 transition-colors group">
+                                                                        <td class="px-8 py-6">
+                                                                                <div class="flex items-center gap-4">
+                                                                                        <div
+                                                                                                class="w-14 h-14 rounded-md overflow-hidden bg-surface-container flex-shrink-0 relative">
+                                                                                                <img alt="Weekend Feast Burger"
+                                                                                                        class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                                                                                                        data-alt="A top-down editorial shot of a gourmet double cheeseburger with melting cheddar, crispy bacon, and fresh lettuce on a toasted brioche bun. The lighting is warm and dramatic, highlighting the textures of the meat and bread. The background is a clean, dark slate surface, giving it a premium culinary feel."
+                                                                                                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuDLL2zAJImJoY04XFSllnEMrFBFCmoEheB1fSwPHFox0Xp93gHBBDdQBsGP9k4SZaNLn6FXTrO3LAJFN1Yz9P2ogiOyIOYj2qUWYxpa_0ZODu4rrReY5WsjTVreffWRqZ5xQ8uPdhpdjcv06mdNEO6CRrA2zi5A3YuxbNkjGhUDJSiHmXSaybyhH4eMzOCAJ_tdLSulgLZ_YId0F204ZWeqmx99RQIHk7WKsqkgvYXr5leyVawlCbHusHk-INovNZl1JUhQXnfRGNg" />
+                                                                                        </div>
+                                                                                        <div>
+                                                                                                <p
+                                                                                                        class="font-bold text-on-surface leading-tight">
+                                                                                                        Weekend Feast
+                                                                                                </p>
+                                                                                                <p
+                                                                                                        class="text-xs text-on-surface-variant">
+                                                                                                        Code: WEEKEND25
+                                                                                                </p>
+                                                                                        </div>
+                                                                                </div>
+                                                                        </td>
+                                                                        <td class="px-6 py-6">
+                                                                                <span
+                                                                                        class="px-3 py-1 bg-surface-container text-on-surface-variant rounded-full text-xs font-bold">Percentage</span>
+                                                                        </td>
+                                                                        <td class="px-6 py-6 text-center">
+                                                                                <span
+                                                                                        class="text-lg font-black text-primary">25%</span>
+                                                                        </td>
+                                                                        <td class="px-6 py-6">
+                                                                                <div class="text-sm">
+                                                                                        <p
+                                                                                                class="text-on-surface font-medium">
+                                                                                                Oct 20 - Oct 22</p>
+                                                                                        <p
+                                                                                                class="text-xs text-on-surface-variant">
+                                                                                                Recurring Weekly</p>
+                                                                                </div>
+                                                                        </td>
+                                                                        <td class="px-6 py-6">
+                                                                                <div
+                                                                                        class="flex items-center gap-1.5 px-3 py-1 bg-emerald-50 text-emerald-700 rounded-full w-fit">
+                                                                                        <span
+                                                                                                class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                                                                                        <span
+                                                                                                class="text-xs font-bold">Active</span>
+                                                                                </div>
+                                                                        </td>
+                                                                        <td class="px-6 py-6">
+                                                                                <div class="space-y-1">
+                                                                                        <p
+                                                                                                class="text-sm font-bold text-on-surface">
+                                                                                                1,240 Uses</p>
+                                                                                        <p
+                                                                                                class="text-xs text-on-surface-variant">
+                                                                                                $18,450 Rev.</p>
+                                                                                </div>
+                                                                        </td>
+                                                                        <td class="px-8 py-6 text-right">
+                                                                                <div
+                                                                                        class="flex items-center justify-end gap-2">
+                                                                                        <button
+                                                                                                class="p-2 hover:bg-primary/10 hover:text-primary text-on-surface-variant rounded-full transition-all">
+                                                                                                <span class="material-symbols-outlined text-[20px]"
+                                                                                                        data-icon="edit">edit</span>
+                                                                                        </button>
+                                                                                        <button
+                                                                                                class="p-2 hover:bg-primary/10 hover:text-primary text-on-surface-variant rounded-full transition-all">
+                                                                                                <span class="material-symbols-outlined text-[20px]"
+                                                                                                        data-icon="content_copy">content_copy</span>
+                                                                                        </button>
+                                                                                        <button
+                                                                                                class="p-2 hover:bg-error-container/20 hover:text-error text-on-surface-variant rounded-full transition-all">
+                                                                                                <span class="material-symbols-outlined text-[20px]"
+                                                                                                        data-icon="block">block</span>
+                                                                                        </button>
+                                                                                </div>
+                                                                        </td>
+                                                                </tr>
+                                                                <!-- Row 2 -->
+                                                                <tr
+                                                                        class="hover:bg-surface-container-low/30 transition-colors group">
+                                                                        <td class="px-8 py-6">
+                                                                                <div class="flex items-center gap-4">
+                                                                                        <div
+                                                                                                class="w-14 h-14 rounded-md overflow-hidden bg-surface-container flex-shrink-0">
+                                                                                                <img alt="Burger BOGO"
+                                                                                                        class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                                                                                                        data-alt="A vibrant, close-up photograph of two identical, juicy sliders sitting side-by-side on a rustic wooden platter. The image uses a shallow depth of field to make the colorful layers of ingredients pop. Bright, high-key lighting creates an appetizing and fresh look, perfectly matching a premium delivery brand's aesthetic."
+                                                                                                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuBAIt2UHibhuyvrf8HlVA0TmABwUdwBFb6NM4BdCRg1J47Vx1Xnod4QNI9PfIXwtQdMCzfQPpNI05_BBObRXEs9uon3egrnMxPczULUZ4U3vdpvy1CZxb6FUDDnOssDFH-aofGCqlHvKugImPT-JxPX5vgUhcmk8smghSrAziyIiE40qu9R8zu9uvgP9Y3CwSY5_R4oGEoS4Z0as0mqhIEAQgPv1NMBZ7243DCcCOC6CcnVreLOT1TBuVNtHRCwEKhGldKv9w0jSsw" />
+                                                                                        </div>
+                                                                                        <div>
+                                                                                                <p
+                                                                                                        class="font-bold text-on-surface leading-tight">
+                                                                                                        Monday BOGO</p>
+                                                                                                <p
+                                                                                                        class="text-xs text-on-surface-variant">
+                                                                                                        Automatic</p>
+                                                                                        </div>
+                                                                                </div>
+                                                                        </td>
+                                                                        <td class="px-6 py-6">
+                                                                                <span
+                                                                                        class="px-3 py-1 bg-surface-container text-on-surface-variant rounded-full text-xs font-bold">BOGO</span>
+                                                                        </td>
+                                                                        <td class="px-6 py-6 text-center">
+                                                                                <span
+                                                                                        class="text-lg font-black text-primary">Free
+                                                                                        Item</span>
+                                                                        </td>
+                                                                        <td class="px-6 py-6">
+                                                                                <div class="text-sm">
+                                                                                        <p
+                                                                                                class="text-on-surface font-medium">
+                                                                                                Oct 23 - Dec 31</p>
+                                                                                        <p
+                                                                                                class="text-xs text-on-surface-variant">
+                                                                                                Lunch Hours Only</p>
+                                                                                </div>
+                                                                        </td>
+                                                                        <td class="px-6 py-6">
+                                                                                <div
+                                                                                        class="flex items-center gap-1.5 px-3 py-1 bg-orange-50 text-orange-700 rounded-full w-fit">
+                                                                                        <span
+                                                                                                class="w-2 h-2 rounded-full bg-orange-500"></span>
+                                                                                        <span
+                                                                                                class="text-xs font-bold">Scheduled</span>
+                                                                                </div>
+                                                                        </td>
+                                                                        <td class="px-6 py-6">
+                                                                                <div class="space-y-1">
+                                                                                        <p
+                                                                                                class="text-sm font-bold text-on-surface">
+                                                                                                0 Uses</p>
+                                                                                        <p
+                                                                                                class="text-xs text-on-surface-variant">
+                                                                                                $0 Rev.</p>
+                                                                                </div>
+                                                                        </td>
+                                                                        <td class="px-8 py-6 text-right">
+                                                                                <div
+                                                                                        class="flex items-center justify-end gap-2">
+                                                                                        <button
+                                                                                                class="p-2 hover:bg-primary/10 hover:text-primary text-on-surface-variant rounded-full transition-all">
+                                                                                                <span class="material-symbols-outlined text-[20px]"
+                                                                                                        data-icon="edit">edit</span>
+                                                                                        </button>
+                                                                                        <button
+                                                                                                class="p-2 hover:bg-primary/10 hover:text-primary text-on-surface-variant rounded-full transition-all">
+                                                                                                <span class="material-symbols-outlined text-[20px]"
+                                                                                                        data-icon="content_copy">content_copy</span>
+                                                                                        </button>
+                                                                                        <button
+                                                                                                class="p-2 hover:bg-error-container/20 hover:text-error text-on-surface-variant rounded-full transition-all">
+                                                                                                <span class="material-symbols-outlined text-[20px]"
+                                                                                                        data-icon="delete">delete</span>
+                                                                                        </button>
+                                                                                </div>
+                                                                        </td>
+                                                                </tr>
+                                                                <!-- Row 3 -->
+                                                                <tr
+                                                                        class="hover:bg-surface-container-low/30 transition-colors group opacity-60">
+                                                                        <td class="px-8 py-6">
+                                                                                <div class="flex items-center gap-4">
+                                                                                        <div
+                                                                                                class="w-14 h-14 rounded-md overflow-hidden bg-surface-container flex-shrink-0 grayscale">
+                                                                                                <img alt="Summer Drinks"
+                                                                                                        class="w-full h-full object-cover"
+                                                                                                        data-alt="A row of refreshing, colorful iced fruit lemonades in tall glasses with condensation and fresh mint sprigs. The scene is bright and sun-drenched, suggesting a summer patio setting. The style is crisp and editorial, highlighting the vivid colors of the drinks against a clean, white background."
+                                                                                                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuBzyeMXMWriS9ERefByPiExCViWy02S2pMAvkGaD0l9R6SudTH0Wl93o3Szf0gkdHklScxs9zx7Qg5kyi-mfShmUa_0rPYiWrpQCFmMgaObYehhEURVFtCN7nqdpHePJ8cRMcxM2bSBBolmogRO5fGTo3y4fyyAgvLyA7zeHzEingwZzhXwdtsL7yKU28nj-QpI33ObW0v22OJQhqzr_LzGtQ_hqtDDKeVU5nX_j_EaFAgXfXkKG4LTCEI1wFsV8BtAZgbYrci5TBU" />
+                                                                                        </div>
+                                                                                        <div>
+                                                                                                <p
+                                                                                                        class="font-bold text-on-surface leading-tight line-through">
+                                                                                                        Summer Coolers
+                                                                                                </p>
+                                                                                                <p
+                                                                                                        class="text-xs text-on-surface-variant">
+                                                                                                        Code: SUMMER10
+                                                                                                </p>
+                                                                                        </div>
+                                                                                </div>
+                                                                        </td>
+                                                                        <td class="px-6 py-6">
+                                                                                <span
+                                                                                        class="px-3 py-1 bg-surface-container text-on-surface-variant rounded-full text-xs font-bold">Fixed
+                                                                                        Amount</span>
+                                                                        </td>
+                                                                        <td class="px-6 py-6 text-center">
+                                                                                <span
+                                                                                        class="text-lg font-black text-on-surface-variant">$10.00</span>
+                                                                        </td>
+                                                                        <td class="px-6 py-6">
+                                                                                <div class="text-sm">
+                                                                                        <p
+                                                                                                class="text-on-surface font-medium">
+                                                                                                Jun 01 - Aug 31</p>
+                                                                                        <p
+                                                                                                class="text-xs text-on-surface-variant">
+                                                                                                Expired</p>
+                                                                                </div>
+                                                                        </td>
+                                                                        <td class="px-6 py-6">
+                                                                                <div
+                                                                                        class="flex items-center gap-1.5 px-3 py-1 bg-neutral-100 text-neutral-600 rounded-full w-fit">
+                                                                                        <span
+                                                                                                class="w-2 h-2 rounded-full bg-neutral-400"></span>
+                                                                                        <span
+                                                                                                class="text-xs font-bold">Ended</span>
+                                                                                </div>
+                                                                        </td>
+                                                                        <td class="px-6 py-6">
+                                                                                <div class="space-y-1">
+                                                                                        <p
+                                                                                                class="text-sm font-bold text-on-surface">
+                                                                                                5,410 Uses</p>
+                                                                                        <p
+                                                                                                class="text-xs text-on-surface-variant">
+                                                                                                $62,100 Rev.</p>
+                                                                                </div>
+                                                                        </td>
+                                                                        <td class="px-8 py-6 text-right">
+                                                                                <div
+                                                                                        class="flex items-center justify-end gap-2">
+                                                                                        <button
+                                                                                                class="p-2 hover:bg-primary/10 hover:text-primary text-on-surface-variant rounded-full transition-all">
+                                                                                                <span class="material-symbols-outlined text-[20px]"
+                                                                                                        data-icon="visibility">visibility</span>
+                                                                                        </button>
+                                                                                        <button
+                                                                                                class="p-2 hover:bg-primary/10 hover:text-primary text-on-surface-variant rounded-full transition-all">
+                                                                                                <span class="material-symbols-outlined text-[20px]"
+                                                                                                        data-icon="content_copy">content_copy</span>
+                                                                                        </button>
+                                                                                </div>
+                                                                        </td>
+                                                                </tr>
+                                                        </tbody>
+                                                </table>
+                                        </div>
+                                        <!-- Pagination / Footer of Table -->
+                                        <div
+                                                class="px-8 py-4 bg-surface-container-low/30 flex items-center justify-between border-t border-surface-container">
+                                                <p
+                                                        class="text-xs font-medium text-on-surface-variant uppercase tracking-widest">
+                                                        Showing 1-10 of 24 promotions</p>
+                                                <div class="flex items-center gap-2">
+                                                        <button class="p-2 rounded-full hover:bg-surface-container-high transition-colors disabled:opacity-30"
+                                                                disabled="">
+                                                                <span class="material-symbols-outlined"
+                                                                        data-icon="chevron_left">chevron_left</span>
+                                                        </button>
+                                                        <div class="flex items-center gap-1">
+                                                                <button
+                                                                        class="w-8 h-8 rounded-full bg-primary text-on-primary text-xs font-bold">1</button>
+                                                                <button
+                                                                        class="w-8 h-8 rounded-full hover:bg-surface-container-high text-xs font-bold">2</button>
+                                                                <button
+                                                                        class="w-8 h-8 rounded-full hover:bg-surface-container-high text-xs font-bold">3</button>
+                                                        </div>
+                                                        <button
+                                                                class="p-2 rounded-full hover:bg-surface-container-high transition-colors">
+                                                                <span class="material-symbols-outlined"
+                                                                        data-icon="chevron_right">chevron_right</span>
+                                                        </button>
+                                                </div>
+                                        </div>
+                                </div>
+                        </section>
+                        <!-- Asymmetric Promotional Insights / Tips -->
+                        <section class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                                <div
+                                        class="md:col-span-2 relative bg-surface-container-highest rounded-lg overflow-hidden flex flex-col md:flex-row items-center">
+                                        <div class="p-10 flex-1 z-10">
+                                                <span
+                                                        class="inline-block px-3 py-1 bg-primary-container text-on-primary-container text-[10px] font-black uppercase tracking-[0.2em] rounded mb-4">Marketing
+                                                        Tip</span>
+                                                <h3
+                                                        class="text-3xl font-black text-on-surface tracking-tighter mb-4 leading-tight">
+                                                        Increase redemptions with<br />personalized 'Sauce' codes.</h3>
+                                                <p class="text-on-surface-variant leading-relaxed max-w-sm mb-6">Our
+                                                        analytics show that customized codes like 'BURGER-LOVE' perform
+                                                        24% better than generic alphanumeric strings.</p>
+                                                <button class="text-primary font-bold flex items-center gap-2 group">
+                                                        Learn about AI-powered promos
+                                                        <span class="material-symbols-outlined transition-transform group-hover:translate-x-1"
+                                                                data-icon="arrow_forward">arrow_forward</span>
+                                                </button>
+                                        </div>
+                                        <div class="h-64 md:h-full w-full md:w-1/3 relative">
+                                                <img alt="Creative Promotion" class="w-full h-full object-cover"
+                                                        data-alt="A stylized overhead photograph of a burger restaurant setting, featuring hand-sketched marketing notes and burger drawings on a napkin next to a fresh, delicious-looking burger and golden fries. The atmosphere is creative and brainstorming-focused, with soft afternoon sunlight streaming across a wooden table. High-end food editorial style."
+                                                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuCwrvyB3bC1F5v7W8COsnkscPAgQD9xfLJU4CmpDF8oog4XSBsr_0-BQ4jKHb1ZJdc0wDL8ic0aoyTrMSYtuO0mm3nK1qquZovHGDJb58wSL75d7niVHKFroTDPL5fCt-8QYJS65lkTJxSXxeeGAsQdCa4INA4heIIeQMgclVh2kYbO0up7AhMQBA4-ZZnKci7is7uzS3ie1KjmhIu8onnDWnBSFtmAY2IMn4Sw0jsNmFyeI2A6kV-9eU9s_fM2S1GdmXKDd0K7H60" />
+                                                <div
+                                                        class="absolute inset-0 bg-gradient-to-r from-surface-container-highest to-transparent md:block hidden">
+                                                </div>
+                                        </div>
+                                </div>
+                                <div
+                                        class="bg-surface-container-low p-8 rounded-lg flex flex-col items-center justify-center text-center">
+                                        <div
+                                                class="w-20 h-20 bg-primary-container rounded-full flex items-center justify-center mb-6 shadow-xl shadow-primary/10">
+                                                <span class="material-symbols-outlined text-on-primary-container text-4xl"
+                                                        data-icon="auto_awesome">auto_awesome</span>
+                                        </div>
+                                        <h4 class="font-black text-xl mb-2">Automate Your Growth</h4>
+                                        <p class="text-on-surface-variant text-sm leading-relaxed mb-6">Set up automatic
+                                                holiday campaigns and never miss a peak season again.</p>
+                                        <button
+                                                class="w-full py-3 bg-on-surface text-surface rounded-full font-bold text-sm hover:opacity-90 transition-opacity">
+                                                Configure Automation
+                                        </button>
+                                </div>
+                        </section>
+                </div>
+        </main>
+        <!-- FAB for quick action (Contextually suppressed on some screens, but kept here for promo dashboard utility) -->
+        <button
+                class="fixed bottom-8 right-8 w-16 h-16 bg-primary text-on-primary rounded-full shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all z-50">
+                <span class="material-symbols-outlined text-3xl" data-icon="bolt"
+                        style="font-variation-settings: 'FILL' 1;">bolt</span>
+        </button>
+        <script src="../frontend/js/session.js?v=14"></script>
+</body>
+
+</html>
