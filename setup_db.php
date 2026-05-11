@@ -59,7 +59,47 @@ if ($conn->query($sql_table) === TRUE) {
         echo "Kolom 'role' berhasil ditambahkan.\n";
     }
 } else {
-    die("Error creating table: " . $conn->error . "\n");
+    die("Error creating table user: " . $conn->error . "\n");
+}
+
+// Tambah Tabel Kategori Menu
+$sql_kategori = "CREATE TABLE IF NOT EXISTS `kategori_menu` (
+  `id_kategori` int(11) NOT NULL AUTO_INCREMENT,
+  `nama_kategori` varchar(100) NOT NULL,
+  PRIMARY KEY (`id_kategori`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
+
+if ($conn->query($sql_kategori) === TRUE) {
+    echo "Tabel kategori_menu siap!\n";
+    
+    // Tambah Kategori Default jika kosong
+    $check_kat = $conn->query("SELECT id_kategori FROM kategori_menu LIMIT 1");
+    if ($check_kat->num_rows == 0) {
+        $conn->query("INSERT INTO kategori_menu (nama_kategori) VALUES ('Burgers'), ('Sides'), ('Drinks'), ('Desserts')");
+        echo "Kategori default ditambahkan.\n";
+    }
+} else {
+    die("Error creating table kategori_menu: " . $conn->error . "\n");
+}
+
+// Tambah Tabel Menu
+$sql_menu = "CREATE TABLE IF NOT EXISTS `menu` (
+  `id_menu` int(11) NOT NULL AUTO_INCREMENT,
+  `id_kategori` int(11) NOT NULL,
+  `nama_menu` varchar(100) NOT NULL,
+  `deskripsi` text DEFAULT NULL,
+  `harga` decimal(10,2) NOT NULL,
+  `gambar_url` varchar(255) DEFAULT NULL,
+  `status_tersedia` tinyint(1) DEFAULT 1,
+  PRIMARY KEY (`id_menu`),
+  KEY `fk_kategori` (`id_kategori`),
+  CONSTRAINT `fk_kategori` FOREIGN KEY (`id_kategori`) REFERENCES `kategori_menu` (`id_kategori`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
+
+if ($conn->query($sql_menu) === TRUE) {
+    echo "Tabel menu siap!\n";
+} else {
+    die("Error creating table menu: " . $conn->error . "\n");
 }
 
 // Tambahkan User Admin Default

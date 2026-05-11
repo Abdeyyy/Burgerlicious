@@ -41,13 +41,11 @@
             <p class="text-xs text-stone-500 uppercase tracking-wider">Burgerlicious Management</p>
         </div>
         <div class="flex-1 space-y-1">
-            <!-- Dashboard Tab -->
             <a class="text-stone-500 dark:text-stone-400 px-4 py-3 mx-2 flex items-center gap-3 hover:bg-stone-200 dark:hover:bg-stone-800 rounded-full transition-all duration-200 ease-in-out"
                 href="dashboard.html">
                 <span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
                 <span>Dashboard</span>
             </a>
-            <!-- Active Tab: Menu Management -->
             <a class="bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300 rounded-full mx-2 px-4 py-3 font-semibold flex items-center gap-3 transition-all duration-200 ease-in-out"
                 href="#">
                 <span class="material-symbols-outlined" data-icon="restaurant_menu">restaurant_menu</span>
@@ -72,7 +70,6 @@
         <div class="mt-auto px-4">
             <div class="flex items-center gap-3 p-4 bg-surface-container-low rounded-xl mb-4">
                 <img class="w-10 h-10 rounded-full object-cover"
-                    data-alt="portrait of a professional chef wearing a clean white uniform in a high-end restaurant kitchen setting"
                     src="https://lh3.googleusercontent.com/aida-public/AB6AXuC8Cu_BIerUaUneo_LN-UBetnxt_RAVsG3RKh76Cd3_aIa2x1fs6W6x3sBlzSvmdraNm8JrNL3qRptRtDbGKWDT07KUjrO0cO_3-Uyv0o-YGtg2VLBeOIlDMO_5C9Lhiv-t10UO9VhDg2pGQtEurYnQI4FLc6YTSjtEVi3tDuqSgNyl_-reVQ7p5mMqc5i6FrqPbplc2SyKv4aX1PiqG_9DYi_624HH1nT9bd4vLj1GFtXfe0JawSEUE_mF-WLBEqlUiyukvI9sPhM" />
                 <div>
                     <p class="font-bold text-on-surface text-xs">Admin User</p>
@@ -94,7 +91,7 @@
                 <h2 class="text-3xl font-extrabold tracking-tight text-on-surface">Menu Management</h2>
                 <p class="text-on-surface-variant font-medium">Add, edit, and manage your restaurant menu items.</p>
             </div>
-            <button
+            <button id="add-item-btn"
                 class="bg-primary hover:bg-primary-dim text-on-primary px-6 py-3 rounded-full font-bold shadow-lg shadow-primary/20 transition-all active:scale-95 flex items-center gap-2">
                 <span class="material-symbols-outlined" data-icon="add">add</span>
                 Add New Item
@@ -109,24 +106,14 @@
                         <span
                             class="material-symbols-outlined absolute left-3 top-2.5 text-on-surface-variant text-sm"
                             data-icon="search">search</span>
-                        <input
+                        <input id="search-input"
                             class="w-full pl-9 pr-4 py-2 bg-surface-container border border-outline-variant rounded-lg text-sm focus:ring-1 focus:ring-primary focus:border-primary"
                             placeholder="Search menu items..." type="text" />
                     </div>
                 </div>
-                <select
+                <select id="category-filter"
                     class="px-4 py-2 bg-surface-container border border-outline-variant rounded-lg text-sm focus:ring-1 focus:ring-primary">
-                    <option>All Categories</option>
-                    <option>Burgers</option>
-                    <option>Sides</option>
-                    <option>Drinks</option>
-                    <option>Desserts</option>
-                </select>
-                <select
-                    class="px-4 py-2 bg-surface-container border border-outline-variant rounded-lg text-sm focus:ring-1 focus:ring-primary">
-                    <option>All Status</option>
-                    <option>Available</option>
-                    <option>Out of Stock</option>
+                    <option value="all">All Categories</option>
                 </select>
                 <button
                     class="flex items-center gap-2 text-sm font-bold text-on-surface-variant px-4 py-2 bg-surface-container rounded-lg hover:bg-surface-container-high transition-colors">
@@ -141,30 +128,62 @@
             <!-- Menu items will be loaded here dynamically -->
         </section>
 
-        <!-- Pagination -->
-        <div class="flex justify-center items-center gap-2">
-            <button
-                class="px-4 py-2 rounded-lg border border-outline-variant hover:bg-surface-container transition-colors text-sm font-bold">
-                Previous
-            </button>
-            <button
-                class="px-4 py-2 rounded-lg bg-primary text-on-primary font-bold text-sm">
-                1
-            </button>
-            <button
-                class="px-4 py-2 rounded-lg border border-outline-variant hover:bg-surface-container transition-colors text-sm font-bold">
-                2
-            </button>
-            <button
-                class="px-4 py-2 rounded-lg border border-outline-variant hover:bg-surface-container transition-colors text-sm font-bold">
-                3
-            </button>
-            <button
-                class="px-4 py-2 rounded-lg border border-outline-variant hover:bg-surface-container transition-colors text-sm font-bold">
-                Next
-            </button>
-        </div>
     </main>
+
+    <!-- Modal structure -->
+    <div id="menu-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] hidden items-center justify-center p-4">
+        <div class="bg-surface-container-lowest w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
+            <div class="px-6 py-4 border-b border-outline-variant/20 flex justify-between items-center text-on-surface">
+                <h3 id="modal-title" class="text-xl font-bold">Add New Menu Item</h3>
+                <button id="close-modal" class="p-2 hover:bg-surface-container rounded-full transition-colors">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+            <form id="menu-form" class="p-6 space-y-4">
+                <div class="space-y-1">
+                    <label class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Item Name</label>
+                    <input id="item-name" name="nama_menu" type="text" required class="w-full bg-surface-container border-none rounded-lg focus:ring-2 focus:ring-primary/20 text-on-surface">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-1">
+                        <label class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Category</label>
+                        <select id="item-category" name="id_kategori" required class="w-full bg-surface-container border-none rounded-lg focus:ring-2 focus:ring-primary/20 text-on-surface">
+                            <!-- Categories dynamic -->
+                        </select>
+                    </div>
+                    <div class="space-y-1">
+                        <label class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Price (IDR)</label>
+                        <input id="item-price" name="harga" type="number" required class="w-full bg-surface-container border-none rounded-lg focus:ring-2 focus:ring-primary/20 text-on-surface">
+                    </div>
+                </div>
+                <div class="space-y-1">
+                    <label class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Description</label>
+                    <textarea id="item-description" name="deskripsi" rows="3" class="w-full bg-surface-container border-none rounded-lg focus:ring-2 focus:ring-primary/20 text-on-surface"></textarea>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-1">
+                        <label class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Image</label>
+                        <input name="gambar" type="file" accept="image/*" class="w-full text-sm text-on-surface-variant file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-primary/10 file:text-primary hover:file:bg-primary/20">
+                    </div>
+                    <div class="space-y-1">
+                        <label class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Status</label>
+                        <select id="item-status" name="status_tersedia" class="w-full bg-surface-container border-none rounded-lg focus:ring-2 focus:ring-primary/20 text-on-surface">
+                            <option value="1">Available</option>
+                            <option value="0">Out of Stock</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="pt-4">
+                    <button type="submit" class="w-full py-3 bg-primary text-on-primary rounded-full font-bold shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all">
+                        Save Menu Item
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="../frontend/js/session.js"></script>
+    <script src="../frontend/js/menu_management.js"></script>
 </body>
 
 </html>

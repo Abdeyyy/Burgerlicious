@@ -14,6 +14,9 @@ $pass_local = '';
 // Matikan exception otomatis untuk mysqli agar bisa ditangkap dengan gracefully
 mysqli_report(MYSQLI_REPORT_OFF);
 
+// Matikan display_errors agar warning/notice PHP tidak merusak output JSON
+ini_set('display_errors', 0);
+
 // Coba koneksi ke Docker
 $conn = @new mysqli($host_docker, $user_docker, $pass_docker, $db_name);
 

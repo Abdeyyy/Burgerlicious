@@ -1,8 +1,8 @@
 <?php
-session_start();
+require_once 'auth_helper.php';
 header('Content-Type: application/json');
 
-if (isset($_SESSION['user_id']) && isset($_SESSION['nama'])) {
+if (isLoggedIn()) {
     echo json_encode([
         'loggedIn' => true,
         'nama' => $_SESSION['nama']
