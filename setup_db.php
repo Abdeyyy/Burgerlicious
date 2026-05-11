@@ -102,6 +102,44 @@ if ($conn->query($sql_menu) === TRUE) {
     die("Error creating table menu: " . $conn->error . "\n");
 }
 
+// Tambah Tabel Transaksi
+$sql_transaksi = "CREATE TABLE IF NOT EXISTS `transaksi` (
+  `id_transaksi` int(11) NOT NULL AUTO_INCREMENT,
+  `nama_pelanggan` varchar(100) NOT NULL,
+  `tipe_pesanan` enum('dine-in','takeaway') NOT NULL DEFAULT 'dine-in',
+  `status_pesanan` enum('pending','preparing','ready','completed','cancelled') NOT NULL DEFAULT 'pending',
+  `total_harga` decimal(10,2) NOT NULL,
+  `tanggal_transaksi` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id_transaksi`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
+
+if ($conn->query($sql_transaksi) === TRUE) {
+    echo "Tabel transaksi siap!\n";
+} else {
+    die("Error creating table transaksi: " . $conn->error . "\n");
+}
+
+// Tambah Tabel Detail Transaksi
+$sql_detail = "CREATE TABLE IF NOT EXISTS `detail_transaksi` (
+  `id_detail` int(11) NOT NULL AUTO_INCREMENT,
+  `id_transaksi` int(11) NOT NULL,
+  `id_menu` int(11) NOT NULL,
+  `jumlah` int(11) NOT NULL,
+  `harga_satuan` decimal(10,2) NOT NULL,
+  `subtotal` decimal(10,2) NOT NULL,
+  PRIMARY KEY (`id_detail`),
+  KEY `fk_transaksi` (`id_transaksi`),
+  KEY `fk_menu_transaksi` (`id_menu`),
+  CONSTRAINT `fk_transaksi` FOREIGN KEY (`id_transaksi`) REFERENCES `transaksi` (`id_transaksi`) ON DELETE CASCADE,
+  CONSTRAINT `fk_menu_transaksi` FOREIGN KEY (`id_menu`) REFERENCES `menu` (`id_menu`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
+
+if ($conn->query($sql_detail) === TRUE) {
+    echo "Tabel detail_transaksi siap!\n";
+} else {
+    die("Error creating table detail_transaksi: " . $conn->error . "\n");
+}
+
 // Tambahkan User Admin Default
 $admin_email = 'admin@burgerlicious.com';
 $admin_pass  = password_hash('admin123', PASSWORD_DEFAULT);

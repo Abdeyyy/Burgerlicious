@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>POS - Burgerlicious Admin Panel</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+    <script src="../frontend/js/tailwind-admin-config.js"></script>
+    <style>
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        body { font-family: 'Be Vietnam Pro', sans-serif; }
+        h1, h2, h3, h4 { font-family: 'Plus Jakarta Sans', sans-serif; }
+        
+        /* Custom scrollbar for better look */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.2); }
+    </style>
+</head>
+<body class="bg-surface text-on-surface overflow-hidden h-screen flex flex-col">
+    <!-- Header -->
+    <header class="bg-surface-container-lowest border-b border-outline-variant/10 px-8 py-4 flex justify-between items-center z-10">
+        <div class="flex items-center gap-4">
+            <a href="dashboard.html" class="p-2 hover:bg-surface-container rounded-full transition-colors flex items-center justify-center">
+                <span class="material-symbols-outlined">arrow_back</span>
+            </a>
+            <div>
+                <h2 class="text-xl font-extrabold tracking-tight">Point of Sale</h2>
+                <p class="text-[10px] text-on-surface-variant font-bold uppercase tracking-widest">Burgerlicious Terminal #01</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-6">
+            <div id="clock" class="font-black text-primary text-lg"></div>
+            <div class="flex items-center gap-3 pl-6 border-l border-outline-variant/20">
+                <div class="text-right">
+                    <p class="text-xs font-bold" id="admin-name">Admin User</p>
+                    <p class="text-[10px] text-on-surface-variant">Active Session</p>
+                </div>
+                <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                    <span class="material-symbols-outlined">person</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-1 flex overflow-hidden">
+        <!-- Left Side: Menu Grid -->
+        <section class="flex-1 overflow-y-auto p-8 space-y-8 bg-stone-50/50">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div class="flex gap-2 overflow-x-auto pb-2 no-scrollbar" id="category-tabs">
+                    <!-- Categories will be loaded here -->
+                </div>
+                <div class="relative w-full md:w-80">
+                    <span class="material-symbols-outlined absolute left-4 top-3 text-on-surface-variant text-sm">search</span>
+                    <input id="search-menu" class="w-full pl-11 pr-4 py-3 bg-surface-container-lowest border-none shadow-sm rounded-2xl text-sm focus:ring-2 focus:ring-primary/20 transition-all" placeholder="Search delicious menu..." type="text" />
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-6" id="menu-grid">
+                <!-- Menu items will be loaded here -->
+            </div>
+        </section>
+
+        <!-- Right Side: Cart -->
+        <aside class="w-96 bg-surface-container-lowest border-l border-outline-variant/10 flex flex-col shadow-2xl relative z-20">
+            <div class="p-6 border-b border-outline-variant/10 space-y-6">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-xl font-black">Cart</h3>
+                    <button id="clear-cart" class="text-[10px] font-bold text-red-500 hover:bg-red-50 px-2 py-1 rounded-md transition-colors uppercase tracking-wider">Clear All</button>
+                </div>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-[10px] font-bold text-on-surface-variant mb-1.5 uppercase tracking-widest">Customer Name</label>
+                        <input id="customer-name" type="text" class="w-full bg-surface-container-low border-none rounded-xl text-sm px-4 py-3.5 focus:ring-2 focus:ring-primary/10 transition-all" placeholder="Guest Name" value="Pelanggan" />
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold text-on-surface-variant mb-1.5 uppercase tracking-widest">Order Type</label>
+                        <div class="flex gap-2 p-1 bg-surface-container-low rounded-xl">
+                            <button data-type="dine-in" class="order-type-btn flex-1 py-2.5 rounded-lg font-bold text-xs transition-all duration-200">Dine In</button>
+                            <button data-type="takeaway" class="order-type-btn flex-1 py-2.5 rounded-lg font-bold text-xs transition-all duration-200">Takeaway</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex-1 overflow-y-auto p-6 space-y-4" id="cart-items">
+                <!-- Cart items will appear here -->
+            </div>
+
+            <div class="p-6 bg-surface-container-low/50 border-t border-outline-variant/10 space-y-4">
+                <div class="space-y-3">
+                    <div class="flex justify-between text-sm">
+                        <span class="text-on-surface-variant font-medium">Subtotal</span>
+                        <span class="font-bold" id="cart-subtotal">Rp 0</span>
+                    </div>
+                    <div class="flex justify-between text-sm">
+                        <span class="text-on-surface-variant font-medium">Tax (0%)</span>
+                        <span class="font-bold">Rp 0</span>
+                    </div>
+                    <div class="flex justify-between text-xl font-black text-primary border-t border-dashed border-outline-variant/30 pt-3">
+                        <span>Total</span>
+                        <span id="cart-total">Rp 0</span>
+                    </div>
+                </div>
+                <button id="checkout-btn" class="w-full py-4 bg-primary text-on-primary rounded-2xl font-black shadow-xl shadow-primary/20 hover:bg-primary-dim transition-all active:scale-[0.98] disabled:opacity-50 disabled:grayscale disabled:active:scale-100 mt-2 flex items-center justify-center gap-3" disabled>
+                    <span class="material-symbols-outlined">payments</span>
+                    CONFIRM & PAY
+                </button>
+            </div>
+        </aside>
+    </main>
+
+    <!-- Modal Success -->
+    <div id="success-modal" class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center hidden backdrop-blur-md">
+        <div class="bg-surface-container-lowest p-10 rounded-[2.5rem] max-w-sm w-full text-center shadow-2xl scale-90 opacity-0 transition-all duration-500 ease-out">
+            <div class="w-24 h-24 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-8 shadow-inner">
+                <span class="material-symbols-outlined text-5xl">check_circle</span>
+            </div>
+            <h3 class="text-3xl font-black mb-3">Order Placed!</h3>
+            <p class="text-on-surface-variant mb-10 font-medium">Transaction completed. Order has been queued for the kitchen.</p>
+            <div class="space-y-3">
+                <button id="modal-print" class="w-full py-4 bg-primary text-on-primary rounded-2xl font-black hover:bg-primary-dim transition-all flex items-center justify-center gap-2">
+                    <span class="material-symbols-outlined">print</span>
+                    PRINT RECEIPT
+                </button>
+                <button id="modal-close" class="w-full py-4 bg-surface-container-highest text-on-surface rounded-2xl font-bold hover:bg-outline-variant/20 transition-all">NEW TRANSACTION</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../frontend/js/session.js"></script>
+    <script src="../frontend/js/pos.js"></script>
+</body>
+</html>
