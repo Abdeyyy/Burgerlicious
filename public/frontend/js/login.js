@@ -90,8 +90,8 @@ document.addEventListener('DOMContentLoaded', function () {
             formData.append('password', passwordInput.value);
 
             try {
-                const basePath = window.location.pathname.includes('/public/pages/') ? '../../' : './';
-                const response = await fetch(basePath + 'auth/login.php', {
+const basePath = window.location.pathname.includes('/public/pages/') ? '../../' : './';
+const response = await fetch(basePath + 'public/index.php?r=auth.login', {
                     method: 'POST',
                     body: formData
                 });

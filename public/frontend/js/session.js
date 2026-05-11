@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     loginBtns.forEach(btn => { btn.style.visibility = 'hidden'; });
 
     try {
-        const res = await fetch(basePath + 'auth/check_session.php');
+const res = await fetch(basePath + 'public/index.php?r=auth.checkSession', { credentials: 'same-origin' });
         const data = await res.json();
 
         if (!data.loggedIn) {
@@ -20,7 +20,8 @@ document.addEventListener('DOMContentLoaded', async function () {
 
         const dropdown = document.createElement('div');
         dropdown.id = 'profile-dropdown';
-        dropdown.style.cssText = [
+dropdown.style.cssText = [
+            
             'position:fixed',
             'top:72px',
             'right:16px',

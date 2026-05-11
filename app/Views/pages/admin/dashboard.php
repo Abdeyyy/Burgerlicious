@@ -1,0 +1,190 @@
+<?php
+// Auto-migrated from: public/pages/dashboard.html
+?>
+<!DOCTYPE html>
+
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Burgerlicious Admin Panel</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Be+Vietnam+Pro:wght@300;400;500;600;700&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script src="../../../../public/frontend/js/tailwind-admin-config.js"></script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        body {
+            font-family: 'Be Vietnam Pro', sans-serif;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4 {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+    </style>
+</head>
+
+<body class="bg-surface text-on-surface">
+    <!-- SideNavBar -->
+    <nav
+        class="h-screen w-64 fixed left-0 top-0 bg-stone-50 dark:bg-stone-950 border-r border-stone-200 dark:border-stone-800 flex flex-col h-full py-6 font-['Be_Vietnam_Pro'] text-sm z-40">
+        <div class="px-6 mb-10">
+            <h1 class="text-xl font-bold text-stone-900 dark:text-stone-50">Admin Panel</h1>
+            <p class="text-xs text-stone-500 uppercase tracking-wider">Burgerlicious Management</p>
+        </div>
+        <div class="flex-1 space-y-1">
+            <!-- Active Tab: Dashboard -->
+            <a class="bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300 rounded-full mx-2 px-4 py-3 font-semibold flex items-center gap-3 transition-all duration-200 ease-in-out"
+                href="dashboard.html">
+                <span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+                <span>Dashboard</span>
+            </a>
+            <a class="text-stone-500 dark:text-stone-400 px-4 py-3 mx-2 flex items-center gap-3 hover:bg-stone-200 dark:hover:bg-stone-800 rounded-full transition-all duration-200 ease-in-out"
+                href="menu_management.html">
+                <span class="material-symbols-outlined" data-icon="restaurant_menu">restaurant_menu</span>
+                <span>Menu Management</span>
+            </a>
+            <a class="text-stone-500 dark:text-stone-400 px-4 py-3 mx-2 flex items-center gap-3 hover:bg-stone-200 dark:hover:bg-stone-800 rounded-full transition-all duration-200 ease-in-out"
+                href="order_queue.html">
+                <span class="material-symbols-outlined" data-icon="pending_actions">pending_actions</span>
+                <span>Order Queue</span>
+            </a>
+            <a class="text-stone-500 dark:text-stone-400 px-4 py-3 mx-2 flex items-center gap-3 hover:bg-stone-200 dark:hover:bg-stone-800 rounded-full transition-all duration-200 ease-in-out"
+                href="analytics.html">
+                <span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+                <span>Analytics</span>
+            </a>
+            <a class="text-stone-500 dark:text-stone-400 px-4 py-3 mx-2 flex items-center gap-3 hover:bg-stone-200 dark:hover:bg-stone-800 rounded-full transition-all duration-200 ease-in-out"
+                href="promo_management.html">
+                <span class="material-symbols-outlined" data-icon="campaign">campaign</span>
+                <span>Promos</span>
+            </a>
+        </div>
+        <div class="mt-auto px-4">
+            <div class="flex items-center gap-3 p-4 bg-surface-container-low rounded-xl mb-4">
+                <img class="w-10 h-10 rounded-full object-cover"
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuC8Cu_BIerUaUneo_LN-UBetnxt_RAVsG3RKh76Cd3_aIa2x1fs6W6x3sBlzSvmdraNm8JrNL3qRptRtDbGKWDT07KUjrO0cO_3-Uyv0o-YGtg2VLBeOIlDMO_5C9Lhiv-t10UO9VhDg2pGQtEurYnQI4FLc6YTSjtEVi3tDuqSgNyl_-reVQ7p5mMqc5i6FrqPbplc2SyKv4aX1PiqG_9DYi_624HH1nT9bd4vLj1GFtXfe0JawSEUE_mF-WLBEqlUiyukvI9sPhM" />
+                <div>
+                    <p class="font-bold text-on-surface text-xs">Admin User</p>
+                    <p class="text-[10px] text-on-surface-variant">Admin User Profile</p>
+                </div>
+            <button
+                class="w-full py-3 px-4 text-red-600 font-bold hover:bg-red-50 rounded-full transition-colors flex items-center justify-center gap-2">
+                <span class="material-symbols-outlined" data-icon="logout">logout</span>
+                Logout
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Content Canvas -->
+    <main class="ml-64 p-8 min-h-screen">
+        <!-- Header & Notifications -->
+        <header class="flex justify-between items-center mb-10">
+            <div>
+                <h2 class="text-3xl font-extrabold tracking-tight text-on-surface">Daily Overview</h2>
+                <p class="text-on-surface-variant font-medium">Welcome back, Chef. Here's what's cooking today.</p>
+            </div>
+            <div class="flex gap-4 items-center">
+                <div class="relative group">
+                    <button
+                        class="p-3 bg-surface-container-lowest rounded-full shadow-sm hover:bg-surface-container transition-colors relative">
+                        <span class="material-symbols-outlined text-on-surface"
+                            data-icon="notifications">notifications</span>
+                        <span
+                            class="absolute top-2 right-2 w-2.5 h-2.5 bg-primary rounded-full border-2 border-surface-container-lowest"></span>
+                    </button>
+                    <div
+                        class="absolute right-0 mt-2 w-80 bg-surface-container-lowest rounded-xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 p-4 border border-outline-variant/10">
+                        <h4 class="font-bold text-sm mb-3">Recent Alerts</h4>
+                        <div class="space-y-3" id="notification-container"></div>
+                </div>
+                <button
+                    class="bg-primary hover:bg-primary-dim text-on-primary px-6 py-3 rounded-full font-bold shadow-lg shadow-primary/20 transition-all active:scale-95 flex items-center gap-2">
+                    <span class="material-symbols-outlined" data-icon="add">add</span>
+                    New Trascation
+                </button>
+            </div>
+        </header>
+
+        <!-- Stats Bento Grid -->
+        <section class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
+            <div class="md:col-span-1 bg-surface-container-lowest p-6 rounded-lg shadow-sm border border-outline-variant/10">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="p-3 bg-primary/10 rounded-xl text-primary">
+                        <span class="material-symbols-outlined" data-icon="payments">payments</span>
+                    </div>
+                    <span class="text-xs font-bold text-green-600 bg-green-50 px-2 py-1 rounded-full">+12.5%</span>
+                </div>
+                <p class="text-on-surface-variant text-sm font-medium">Daily Revenue</p>
+                <h3 class="text-2xl font-black mt-1" id="daily-revenue">Rp.0.00</h3>
+            </div>
+            <div class="md:col-span-1 bg-surface-container-lowest p-6 rounded-lg shadow-sm border border-outline-variant/10">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="p-3 bg-secondary-container/30 rounded-xl text-secondary">
+                        <span class="material-symbols-outlined" data-icon="shopping_bag">shopping_bag</span>
+                    </div>
+                    <span class="text-xs font-bold text-green-600 bg-green-50 px-2 py-1 rounded-full">+8%</span>
+                </div>
+                <p class="text-on-surface-variant text-sm font-medium">Orders Today</p>
+                <h3 class="text-2xl font-black mt-1" id="orders-today">0</h3>
+            </div>
+            <div class="md:col-span-2 bg-inverse-surface p-6 rounded-lg shadow-sm relative overflow-hidden group">
+                <div class="relative z-10 flex h-full items-center justify-between">
+                    <div>
+                        <p class="text-inverse-on-surface text-sm font-medium uppercase tracking-widest">Trending Item</p>
+                        <h3 class="text-surface-bright text-3xl font-black mt-2" id="trending-item-name">-</h3>
+                        <p class="text-inverse-on-surface/60 mt-1" id="trending-item-sales">-</p>
+                    </div>
+                <div class="absolute -bottom-10 -right-10 w-40 h-40 bg-primary/20 rounded-full blur-3xl"></div>
+        </section>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <section class="lg:col-span-2 space-y-6">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-xl font-extrabold flex items-center gap-2">
+                        <span class="material-symbols-outlined text-primary" data-icon="list_alt">list_alt</span>
+                        Live Order Queue
+                    </h3>
+                    <div class="flex gap-2">
+                        <button
+                            class="px-4 py-1.5 rounded-full text-xs font-bold bg-surface-container-high text-on-surface">All</button>
+                        <button
+                            class="px-4 py-1.5 rounded-full text-xs font-bold text-on-surface-variant hover:bg-surface-container-high">Preparing</button>
+                    </div>
+                <div class="space-y-4" id="order-queue-container"></div>
+            </section>
+
+            <section class="space-y-6">
+                <h3 class="text-xl font-extrabold flex items-center gap-2">
+                    <span class="material-symbols-outlined text-secondary" data-icon="inventory">inventory</span>
+                    Stock Monitor
+                </h3>
+                <div class="bg-surface-container-lowest rounded-lg border border-outline-variant/10 overflow-hidden">
+                    <div class="p-4 border-b border-surface-container">
+                        <div class="relative">
+                            <span class="material-symbols-outlined absolute left-3 top-2.5 text-on-surface-variant text-sm" data-icon="search">search</span>
+                            <input class="w-full pl-9 pr-4 py-2 bg-surface-container-low border-none rounded-full text-xs focus:ring-1 focus:ring-primary" placeholder="Search menu..." type="text" />
+                        </div>
+                    <div class="divide-y divide-surface-container" id="stock-monitor-container"></div>
+                    <button
+                        class="w-full py-3 bg-surface-container-low text-xs font-bold text-primary hover:bg-surface-container-high transition-colors">
+                        View Full Inventory Management
+                    </button>
+                </div>
+            </section>
+        </div>
+    </main>
+</body>
+
+</html>
