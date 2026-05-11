@@ -62,7 +62,7 @@
                 <aside class="w-full md:w-1/4 flex flex-col gap-6">
                     <!-- Search Bar -->
                     <div class="relative">
-                        <input type="text" placeholder="Cari menu..."
+                        <input type="text" id="search-input" placeholder="Cari menu..."
                             class="w-full py-3 px-4 pr-12 rounded-lg bg-white text-black outline-none shadow-xl border-2 border-transparent focus:border-[#FEBB19] transition-colors">
                         <button
                             class="absolute right-0 top-0 h-full px-4 rounded-r-lg bg-[#FEBB19] text-[#BA0000] hover:bg-yellow-400 transition-colors flex items-center justify-center">
@@ -75,189 +75,15 @@
                     </div>
 
                     <!-- Kategori Menu -->
-                    <div class="flex flex-col gap-3">
-                        <a href="#"
-                            class="bg-[#FEBB19] text-[#BA0000] font-extrabold py-3.5 px-5 rounded-lg shadow-[0_4px_15px_rgba(254,187,25,0.4)] transition-all hover:translate-x-1">
-                            Best Seller
-                        </a>
-                        <a href="#"
-                            class="bg-white/95 text-gray-800 font-bold py-3.5 px-5 rounded-lg shadow-md hover:bg-white hover:text-[#BA0000] transition-all hover:translate-x-1">
-                            Beef Burger
-                        </a>
-                        <a href="#"
-                            class="bg-white/95 text-gray-800 font-bold py-3.5 px-5 rounded-lg shadow-md hover:bg-white hover:text-[#BA0000] transition-all hover:translate-x-1">
-                            Chicken Burger
-                        </a>
-                        <a href="#"
-                            class="bg-white/95 text-gray-800 font-bold py-3.5 px-5 rounded-lg shadow-md hover:bg-white hover:text-[#BA0000] transition-all hover:translate-x-1">
-                            Snacks & Sides
-                        </a>
-                        <a href="#"
-                            class="bg-white/95 text-gray-800 font-bold py-3.5 px-5 rounded-lg shadow-md hover:bg-white hover:text-[#BA0000] transition-all hover:translate-x-1">
-                            Beverages
-                        </a>
+                    <div class="flex flex-col gap-3" id="category-container">
+                        <!-- Categories will be injected here via JS -->
                     </div>
                 </aside>
 
                 <!-- Main Content (Grid Menu) -->
                 <main class="w-full md:w-3/4">
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-
-                        <!-- Card Original Flavour -->
-                        <a href="pesan.html?menu=original-flavour"
-                            class="bg-white rounded-xl p-5 shadow-2xl hover:shadow-[0_15px_30px_rgba(254,187,25,0.2)] transition-all duration-300 hover:-translate-y-2 flex flex-col items-center group relative border-2 border-transparent hover:border-[#FEBB19]">
-                            <div
-                                class="absolute top-4 left-4 bg-gradient-to-r from-[#FEBB19] to-yellow-400 text-[#BA0000] text-xs font-black px-3 py-1.5 rounded-lg shadow-md z-10">
-                                [New] Favorit
-                            </div>
-                            <div class="w-40 h-40 sm:w-48 sm:h-48 mb-4 relative flex justify-center items-center">
-                                <img loading="lazy" src="../../assets/images/BestSeller_1.png" alt="Original Flavour"
-                                    class="w-full h-full object-contain drop-shadow-xl group-hover:scale-110 transition-transform duration-500 ease-out">
-                            </div>
-                            <h3
-                                class="font-extrabold text-xl text-center text-[#BA0000] mb-1 group-hover:text-[#8F0919] transition-colors leading-snug">
-                                Original Flavour</h3>
-                            <div class="mt-auto font-black text-[#FFAD5B] text-lg pt-4">Rp 35.000</div>
-                        </a>
-
-                        <!-- Card Chicken Original -->
-                        <a href="pesan.html?menu=chicken-original"
-                            class="bg-white rounded-xl p-5 shadow-2xl hover:shadow-[0_15px_30px_rgba(254,187,25,0.2)] transition-all duration-300 hover:-translate-y-2 flex flex-col items-center group relative border-2 border-transparent hover:border-[#FEBB19]">
-                            <div class="w-40 h-40 sm:w-48 sm:h-48 mb-4 relative flex justify-center items-center">
-                                <img loading="lazy" src="../../assets/images/BestSeller_2.png" alt="Chicken Original"
-                                    class="w-full h-full object-contain drop-shadow-xl group-hover:scale-110 transition-transform duration-500 ease-out">
-                            </div>
-                            <h3
-                                class="font-extrabold text-xl text-center text-[#BA0000] mb-1 group-hover:text-[#8F0919] transition-colors leading-snug">
-                                Chicken Original</h3>
-                            <div class="mt-auto font-black text-[#FFAD5B] text-lg pt-4">Rp 32.000</div>
-                        </a>
-
-                        <!-- Card Spicy Chicken -->
-                        <a href="pesan.html?menu=spicy-chicken"
-                            class="bg-white rounded-xl p-5 shadow-2xl hover:shadow-[0_15px_30px_rgba(254,187,25,0.2)] transition-all duration-300 hover:-translate-y-2 flex flex-col items-center group relative border-2 border-transparent hover:border-[#FEBB19]">
-                            <div
-                                class="absolute top-4 left-4 bg-red-600 text-white text-xs font-black px-3 py-1.5 rounded-lg shadow-md z-10">
-                                Spicy 🔥
-                            </div>
-                            <div class="w-40 h-40 sm:w-48 sm:h-48 mb-4 relative flex justify-center items-center">
-                                <img loading="lazy" src="../../assets/images/BestSeller_3.png" alt="Spicy Chicken"
-                                    class="w-full h-full object-contain drop-shadow-xl group-hover:scale-110 transition-transform duration-500 ease-out">
-                            </div>
-                            <h3
-                                class="font-extrabold text-xl text-center text-[#BA0000] mb-1 group-hover:text-[#8F0919] transition-colors leading-snug">
-                                Spicy Chicken</h3>
-                            <div class="mt-auto font-black text-[#FFAD5B] text-lg pt-4">Rp 34.000</div>
-                        </a>
-
-                        <!-- Card Double Meat Burger -->
-                        <a href="pesan.html?menu=double-meat-burger"
-                            class="bg-white rounded-xl p-5 shadow-2xl hover:shadow-[0_15px_30px_rgba(254,187,25,0.2)] transition-all duration-300 hover:-translate-y-2 flex flex-col items-center group relative border-2 border-transparent hover:border-[#FEBB19]">
-                            <div class="w-40 h-40 sm:w-48 sm:h-48 mb-4 relative flex justify-center items-center">
-                                <img loading="lazy" src="../../assets/images/menu_1.png" alt="Double Meat Burger"
-                                    class="w-full h-full object-contain drop-shadow-xl group-hover:scale-110 transition-transform duration-500 ease-out">
-                            </div>
-                            <h3
-                                class="font-extrabold text-xl text-center text-[#BA0000] mb-1 group-hover:text-[#8F0919] transition-colors leading-snug">
-                                Double Meat Burger</h3>
-                            <div class="mt-auto font-black text-[#FFAD5B] text-lg pt-4">Rp 32.999</div>
-                        </a>
-
-                        <!-- Card Darth Vader Burger -->
-                        <a href="pesan.html?menu=darth-vader-burger"
-                            class="bg-white rounded-xl p-5 shadow-2xl hover:shadow-[0_15px_30px_rgba(254,187,25,0.2)] transition-all duration-300 hover:-translate-y-2 flex flex-col items-center group relative border-2 border-transparent hover:border-[#FEBB19]">
-                            <div
-                                class="absolute top-4 left-4 bg-gray-900 text-[#FEBB19] text-xs font-black px-3 py-1.5 rounded-lg shadow-md z-10">
-                                [Limited]
-                            </div>
-                            <div class="w-40 h-40 sm:w-48 sm:h-48 mb-4 relative flex justify-center items-center">
-                                <img loading="lazy" src="../../assets/images/menu_2.png" alt="Darth Vader Burger"
-                                    class="w-full h-full object-contain drop-shadow-xl group-hover:scale-110 transition-transform duration-500 ease-out">
-                            </div>
-                            <h3
-                                class="font-extrabold text-xl text-center text-[#BA0000] mb-1 group-hover:text-[#8F0919] transition-colors leading-snug">
-                                Darth Vader Burger</h3>
-                            <div class="mt-auto font-black text-[#FFAD5B] text-lg pt-4">Rp 40.000</div>
-                        </a>
-
-                        <!-- Card Egg Cheese Burger -->
-                        <a href="pesan.html?menu=egg-cheese-burger"
-                            class="bg-white rounded-xl p-5 shadow-2xl hover:shadow-[0_15px_30px_rgba(254,187,25,0.2)] transition-all duration-300 hover:-translate-y-2 flex flex-col items-center group relative border-2 border-transparent hover:border-[#FEBB19]">
-                            <div class="w-40 h-40 sm:w-48 sm:h-48 mb-4 relative flex justify-center items-center">
-                                <img loading="lazy" src="../../assets/images/menu_3.png" alt="Egg Cheese Burger"
-                                    class="w-full h-full object-contain drop-shadow-xl group-hover:scale-110 transition-transform duration-500 ease-out">
-                            </div>
-                            <h3
-                                class="font-extrabold text-xl text-center text-[#BA0000] mb-1 group-hover:text-[#8F0919] transition-colors leading-snug">
-                                Egg Cheese Burger</h3>
-                            <div class="mt-auto font-black text-[#FFAD5B] text-lg pt-4">Rp 37.000</div>
-                        </a>
-
-                        <!-- Card Red Bun Burger -->
-                        <a href="pesan.html?menu=red-bun-burger"
-                            class="bg-white rounded-xl p-5 shadow-2xl hover:shadow-[0_15px_30px_rgba(254,187,25,0.2)] transition-all duration-300 hover:-translate-y-2 flex flex-col items-center group relative border-2 border-transparent hover:border-[#FEBB19]">
-                            <div class="w-40 h-40 sm:w-48 sm:h-48 mb-4 relative flex justify-center items-center">
-                                <img loading="lazy" src="../../assets/images/menu_4.png" alt="Red Bun Burger"
-                                    class="w-full h-full object-contain drop-shadow-xl group-hover:scale-110 transition-transform duration-500 ease-out">
-                            </div>
-                            <h3
-                                class="font-extrabold text-xl text-center text-[#BA0000] mb-1 group-hover:text-[#8F0919] transition-colors leading-snug">
-                                Red Bun Burger</h3>
-                            <div class="mt-auto font-black text-[#FFAD5B] text-lg pt-4">Rp 32.499</div>
-                        </a>
-
-                        <!-- Card Fried Fries -->
-                        <a href="pesan.html?menu=fried-fries"
-                            class="bg-white rounded-xl p-5 shadow-2xl hover:shadow-[0_15px_30px_rgba(254,187,25,0.2)] transition-all duration-300 hover:-translate-y-2 flex flex-col items-center group relative border-2 border-transparent hover:border-[#FEBB19]">
-                            <div class="w-40 h-40 sm:w-48 sm:h-48 mb-4 relative flex justify-center items-center">
-                                <img loading="lazy" src="../../assets/images/menu_5.png" alt="Fried Fries"
-                                    class="w-full h-full object-contain drop-shadow-xl group-hover:scale-110 transition-transform duration-500 ease-out">
-                            </div>
-                            <h3
-                                class="font-extrabold text-xl text-center text-[#BA0000] mb-1 group-hover:text-[#8F0919] transition-colors leading-snug">
-                                Fried Fries</h3>
-                            <div class="mt-auto font-black text-[#FFAD5B] text-lg pt-4">Rp 15.900</div>
-                        </a>
-
-                        <!-- Card Cheese Hot Dogs -->
-                        <a href="pesan.html?menu=cheese-hot-dogs"
-                            class="bg-white rounded-xl p-5 shadow-2xl hover:shadow-[0_15px_30px_rgba(254,187,25,0.2)] transition-all duration-300 hover:-translate-y-2 flex flex-col items-center group relative border-2 border-transparent hover:border-[#FEBB19]">
-                            <div class="w-40 h-40 sm:w-48 sm:h-48 mb-4 relative flex justify-center items-center">
-                                <img loading="lazy" src="../../assets/images/menu_6.png" alt="Cheese Hot Dogs"
-                                    class="w-full h-full object-contain drop-shadow-xl group-hover:scale-110 transition-transform duration-500 ease-out">
-                            </div>
-                            <h3
-                                class="font-extrabold text-xl text-center text-[#BA0000] mb-1 group-hover:text-[#8F0919] transition-colors leading-snug">
-                                Cheese Hot Dogs</h3>
-                            <div class="mt-auto font-black text-[#FFAD5B] text-lg pt-4">Rp 20.000</div>
-                        </a>
-
-                        <!-- Card Fried Wings -->
-                        <a href="pesan.html?menu=fried-wings"
-                            class="bg-white rounded-xl p-5 shadow-2xl hover:shadow-[0_15px_30px_rgba(254,187,25,0.2)] transition-all duration-300 hover:-translate-y-2 flex flex-col items-center group relative border-2 border-transparent hover:border-[#FEBB19]">
-                            <div class="w-40 h-40 sm:w-48 sm:h-48 mb-4 relative flex justify-center items-center">
-                                <img loading="lazy" src="../../assets/images/menu_7.png" alt="Fried Wings"
-                                    class="w-full h-full object-contain drop-shadow-xl group-hover:scale-110 transition-transform duration-500 ease-out">
-                            </div>
-                            <h3
-                                class="font-extrabold text-xl text-center text-[#BA0000] mb-1 group-hover:text-[#8F0919] transition-colors leading-snug">
-                                Fried Wings</h3>
-                            <div class="mt-auto font-black text-[#FFAD5B] text-lg pt-4">Rp 39.000</div>
-                        </a>
-
-                        <!-- Card Bucket Nugget -->
-                        <a href="pesan.html?menu=bucket-nugget"
-                            class="bg-white rounded-xl p-5 shadow-2xl hover:shadow-[0_15px_30px_rgba(254,187,25,0.2)] transition-all duration-300 hover:-translate-y-2 flex flex-col items-center group relative border-2 border-transparent hover:border-[#FEBB19]">
-                            <div class="w-40 h-40 sm:w-48 sm:h-48 mb-4 relative flex justify-center items-center">
-                                <img loading="lazy" src="../../assets/images/menu_8.png" alt="Bucket Nugget"
-                                    class="w-full h-full object-contain drop-shadow-xl group-hover:scale-110 transition-transform duration-500 ease-out">
-                            </div>
-                            <h3
-                                class="font-extrabold text-xl text-center text-[#BA0000] mb-1 group-hover:text-[#8F0919] transition-colors leading-snug">
-                                Bucket Nugget</h3>
-                            <div class="mt-auto font-black text-[#FFAD5B] text-lg pt-4">Rp 25.000</div>
-                        </a>
-
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="menu-container">
+                        <!-- Menu cards will be injected here via JS -->
                     </div>
                 </main>
             </div>
@@ -329,6 +155,7 @@
 
     <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
     <script src="../frontend/js/session.js?v=14"></script>
+    <script src="../frontend/js/public_menu.js"></script>
 </body>
 
 </html>
