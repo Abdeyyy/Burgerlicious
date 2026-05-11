@@ -9,6 +9,40 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     let currentFilter = 'all';
+    let isModalOpen = false;
+
+    const showConfirm = () => {
+        return new Promise((resolve) => {
+            const modal = document.getElementById('confirm-modal');
+            const executeBtn = document.getElementById('execute-confirm');
+            const cancelBtn = document.getElementById('cancel-confirm');
+            
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            isModalOpen = true;
+            
+            const handleConfirm = () => {
+                cleanup();
+                resolve(true);
+            };
+            
+            const handleCancel = () => {
+                cleanup();
+                resolve(false);
+            };
+            
+            const cleanup = () => {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+                isModalOpen = false;
+                executeBtn.removeEventListener('click', handleConfirm);
+                cancelBtn.removeEventListener('click', handleCancel);
+            };
+            
+            executeBtn.addEventListener('click', handleConfirm);
+            cancelBtn.addEventListener('click', handleCancel);
+        });
+    };
 
     const fetchOrders = async () => {
         try {
@@ -116,6 +150,10 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     window.updateStatus = async (id, status) => {
+        if (status === 'cancelled') {
+            const confirmed = await showConfirm();
+            if (!confirmed) return;
+        }
         try {
             const res = await fetch('../../api/order/update_status.php', {
                 method: 'POST',
