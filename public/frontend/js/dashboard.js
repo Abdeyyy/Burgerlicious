@@ -7,6 +7,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const revenueEl = document.getElementById('daily-revenue');
     const trendingItemEl = document.getElementById('trending-item-name');
     const trendingSalesEl = document.getElementById('trending-item-sales');
+    
+    // Notification elements
+    const notificationContainer = document.getElementById('notification-container');
+    const notificationBadge = document.querySelector('header .relative.group button span.absolute');
 
     const fetchDashboardData = async () => {
         try {
@@ -41,9 +45,84 @@ document.addEventListener('DOMContentLoaded', () => {
             if (menuData.status === 'success') {
                 renderStock(menuData.data);
             }
+
+            // Fetch Notifications
+            fetchNotifications();
         } catch (error) {
             console.error('Dashboard error:', error);
         }
+    };
+
+    const fetchNotifications = async () => {
+        try {
+            const res = await fetch('../../api/notification/read.php');
+            const result = await res.json();
+            if (result.status === 'success') {
+                renderNotifications(result.data);
+            }
+        } catch (error) {
+            console.error('Notification error:', error);
+        }
+    };
+
+    const renderNotifications = (notifications) => {
+        if (!notificationContainer) return;
+
+        // Update badge
+        if (notificationBadge) {
+            if (notifications.length > 0) {
+                notificationBadge.classList.remove('hidden');
+                // Optional: add count if badge was bigger, but here it's just a dot
+            } else {
+                notificationBadge.classList.add('hidden');
+            }
+        }
+
+        if (notifications.length === 0) {
+            notificationContainer.innerHTML = `
+                <div class="text-center py-4">
+                    <p class="text-xs text-on-surface-variant italic">No new alerts</p>
+                </div>
+            `;
+            return;
+        }
+
+        notificationContainer.innerHTML = notifications.slice(0, 5).map(n => {
+            let icon = 'info';
+            let iconColor = 'text-blue-500';
+            if (n.type === 'new_order') {
+                icon = 'shopping_cart';
+                iconColor = 'text-primary';
+            } else if (n.type === 'stock_alert') {
+                icon = 'inventory_2';
+                iconColor = 'text-red-500';
+            }
+
+            return `
+            <a href="${n.link}" class="flex items-start gap-3 p-2 hover:bg-surface-container rounded-lg transition-colors group/item">
+                <div class="p-2 bg-surface-container-low rounded-full group-hover/item:bg-surface-container">
+                    <span class="material-symbols-outlined text-sm ${iconColor}">${icon}</span>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <p class="text-xs font-bold text-on-surface">${n.title}</p>
+                    <p class="text-[10px] text-on-surface-variant truncate">${n.message}</p>
+                    <p class="text-[8px] text-on-surface-variant/60 mt-1">${formatTime(n.time)}</p>
+                </div>
+            </a>
+            `;
+        }).join('');
+    };
+
+    const formatTime = (dateString) => {
+        const date = new Date(dateString);
+        const now = new Date();
+        const diffMs = now - date;
+        const diffMins = Math.floor(diffMs / 60000);
+        
+        if (diffMins < 1) return 'Just now';
+        if (diffMins < 60) return `${diffMins}m ago`;
+        if (diffMins < 1440) return `${Math.floor(diffMins / 60)}h ago`;
+        return date.toLocaleDateString();
     };
 
     const renderStock = (menus) => {
