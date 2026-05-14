@@ -105,16 +105,29 @@ if ($conn->query($sql_menu) === TRUE) {
 // Tambah Tabel Transaksi
 $sql_transaksi = "CREATE TABLE IF NOT EXISTS `transaksi` (
   `id_transaksi` int(11) NOT NULL AUTO_INCREMENT,
+  `id_user` int(11) DEFAULT NULL,
   `nama_pelanggan` varchar(100) NOT NULL,
   `tipe_pesanan` enum('dine-in','takeaway') NOT NULL DEFAULT 'dine-in',
   `status_pesanan` enum('pending','preparing','ready','completed','cancelled') NOT NULL DEFAULT 'pending',
   `total_harga` decimal(10,2) NOT NULL,
   `tanggal_transaksi` datetime DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id_transaksi`)
+  PRIMARY KEY (`id_transaksi`),
+  KEY `fk_user_transaksi` (`id_user`),
+  CONSTRAINT `fk_user_transaksi` FOREIGN KEY (`id_user`) REFERENCES `user` (`id_user`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
 
 if ($conn->query($sql_transaksi) === TRUE) {
     echo "Tabel transaksi siap!\n";
+    
+    // Migrasi: tambah kolom id_user jika belum ada (untuk DB yang sudah existing)
+    $check_col = $conn->query("SHOW COLUMNS FROM `transaksi` LIKE 'id_user'");
+    if ($check_col->num_rows == 0) {
+        $conn->query("ALTER TABLE `transaksi` ADD `id_user` int(11) DEFAULT NULL AFTER `id_transaksi`");
+        $conn->query("ALTER TABLE `transaksi` ADD KEY `fk_user_transaksi` (`id_user`)");
+        // Tambah FK hanya jika belum ada
+        $conn->query("ALTER TABLE `transaksi` ADD CONSTRAINT `fk_user_transaksi` FOREIGN KEY (`id_user`) REFERENCES `user` (`id_user`) ON DELETE SET NULL");
+        echo "Kolom 'id_user' berhasil ditambahkan ke tabel transaksi.\n";
+    }
 } else {
     die("Error creating table transaksi: " . $conn->error . "\n");
 }

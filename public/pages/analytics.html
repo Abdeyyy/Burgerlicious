@@ -13,6 +13,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
         rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
     <script src="../frontend/js/tailwind-admin-config.js"></script>
     <script src="../frontend/js/session.js"></script>
     <script src="../frontend/js/admin_sidebar.js"></script>
@@ -31,6 +32,16 @@
         h4 {
             font-family: 'Plus Jakarta Sans', sans-serif;
         }
+
+        /* Smooth loading animation for KPI values */
+        @keyframes shimmer {
+            0% { opacity: 0.5; }
+            50% { opacity: 0.8; }
+            100% { opacity: 0.5; }
+        }
+        .loading-shimmer {
+            animation: shimmer 1.5s ease-in-out infinite;
+        }
     </style>
 </head>
 
@@ -45,18 +56,37 @@
                 <h2 class="text-3xl font-extrabold tracking-tight text-on-surface">Analytics & Reports</h2>
                 <p class="text-on-surface-variant font-medium">Track business performance and customer insights.</p>
             </div>
-            <div class="flex gap-2">
-                <select
+            <div class="flex gap-2 items-center">
+                <!-- Category Filter -->
+                <select id="kategori-filter"
                     class="px-4 py-2 bg-surface-container border border-outline-variant rounded-lg text-sm focus:ring-1 focus:ring-primary">
-                    <option>Last 7 days</option>
-                    <option>Last 30 days</option>
-                    <option>Last 90 days</option>
-                    <option>This year</option>
+                    <option value="">All Categories</option>
+                    <!-- Options loaded dynamically -->
                 </select>
-                <button
+                <!-- Order Type Filter -->
+                <select id="tipe-filter"
+                    class="px-4 py-2 bg-surface-container border border-outline-variant rounded-lg text-sm focus:ring-1 focus:ring-primary">
+                    <option value="">All Types</option>
+                    <option value="dine-in">Dine-in</option>
+                    <option value="takeaway">Takeaway</option>
+                </select>
+                <!-- Date Range Selector -->
+                <select id="date-range-select"
+                    class="px-4 py-2 bg-surface-container border border-outline-variant rounded-lg text-sm focus:ring-1 focus:ring-primary">
+                    <option value="7">Last 7 days</option>
+                    <option value="30">Last 30 days</option>
+                    <option value="90">Last 90 days</option>
+                    <option value="365">This year</option>
+                </select>
+                <button id="export-btn"
                     class="px-4 py-2 bg-surface-container border border-outline-variant rounded-lg text-sm font-bold hover:bg-surface-container-high transition-colors flex items-center gap-2">
                     <span class="material-symbols-outlined text-sm">download</span>
                     Export Report
+                </button>
+                <button id="delete-all-btn"
+                    class="px-4 py-2 bg-red-50 border border-red-200 rounded-lg text-sm font-bold text-red-600 hover:bg-red-100 transition-colors flex items-center gap-2">
+                    <span class="material-symbols-outlined text-sm">delete_forever</span>
+                    Clear All Data
                 </button>
             </div>
         </header>
@@ -125,23 +155,12 @@
                     <span class="material-symbols-outlined text-primary">trending_up</span>
                     Revenue Trend
                 </h3>
-                <div class="h-64 bg-surface-container rounded-lg flex items-center justify-center">
-                    <div class="text-center text-on-surface-variant">
-                        <span class="material-symbols-outlined text-4xl mb-2">bar_chart</span>
-                        <p class="text-sm">Chart visualization placeholder</p>
-                        <p class="text-xs mt-2">Integration with Chart.js or similar recommended</p>
-                    </div>
+                <div class="h-64">
+                    <canvas id="revenue-chart"></canvas>
                 </div>
-                <div class="mt-4 grid grid-cols-3 gap-2 text-xs">
-                    <div class="p-2 bg-surface-container rounded text-center">
-                        <p class="font-bold">Senin: Rp.2,100</p>
-                    </div>
-                    <div class="p-2 bg-surface-container rounded text-center">
-                        <p class="font-bold">Rabu: Rp.2,450</p>
-                    </div>
-                    <div class="p-2 bg-surface-container rounded text-center">
-                        <p class="font-bold">Jumat: Rp.3,200</p>
-                    </div>
+                <div class="mt-4 flex items-center gap-2 text-xs text-on-surface-variant">
+                    <span class="material-symbols-outlined text-sm">info</span>
+                    <span>Only completed orders are counted in revenue</span>
                 </div>
             </div>
 
@@ -151,15 +170,11 @@
                     <span class="material-symbols-outlined text-secondary">donut_small</span>
                     Sales by Category
                 </h3>
-                <div class="h-64 bg-surface-container rounded-lg flex items-center justify-center">
-                    <div class="text-center text-on-surface-variant">
-                        <span class="material-symbols-outlined text-4xl mb-2">pie_chart</span>
-                        <p class="text-sm">Chart visualization placeholder</p>
-                        <p class="text-xs mt-2">Integration with Chart.js or similar recommended</p>
-                    </div>
+                <div class="h-64 flex items-center justify-center">
+                    <canvas id="category-chart"></canvas>
                 </div>
                 <div class="mt-4 space-y-2 text-xs" id="category-breakdown">
-                    <!-- Category data will be loaded here dynamically -->
+                    <!-- Category legend will be loaded here dynamically -->
                 </div>
             </div>
         </div>
@@ -172,7 +187,7 @@
                     <span class="material-symbols-outlined text-orange-600">star</span>
                     Top Selling Items
                 </h3>
-                <div class="space-y-3" id="top-items-container">
+                <div class="space-y-1" id="top-items-container">
                     <!-- Top selling items will be loaded here dynamically -->
                 </div>
             </section>
@@ -183,12 +198,90 @@
                     <span class="material-symbols-outlined text-green-600">insights</span>
                     Customer Insights
                 </h3>
-                <div class="space-y-4" id="insights-container">
+                <div class="space-y-1" id="insights-container">
                     <!-- Customer insights will be loaded here dynamically -->
                 </div>
             </section>
         </div>
+
+        <!-- Auto-refresh indicator -->
+        <div class="fixed bottom-4 right-4 z-50">
+            <div class="flex items-center gap-2 bg-surface-container-lowest px-3 py-2 rounded-full shadow-md border border-outline-variant/10 text-xs text-on-surface-variant">
+                <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                Live — auto-refreshing
+            </div>
+        </div>
     </main>
+
+    <!-- Delete All Confirmation Modal -->
+    <div id="delete-modal" class="fixed inset-0 z-[100] hidden">
+        <!-- Backdrop -->
+        <div id="delete-modal-backdrop" class="absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity"></div>
+        <!-- Modal -->
+        <div class="absolute inset-0 flex items-center justify-center p-4">
+            <div class="bg-surface-container-lowest rounded-2xl shadow-2xl w-full max-w-md relative overflow-hidden" id="delete-modal-content">
+                <!-- Danger Header -->
+                <div class="bg-red-50 border-b border-red-100 px-6 py-5">
+                    <div class="flex items-center gap-3">
+                        <div class="p-3 bg-red-100 rounded-full">
+                            <span class="material-symbols-outlined text-red-600 text-2xl">warning</span>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-extrabold text-red-900">Hapus Semua Data</h3>
+                            <p class="text-xs text-red-600 font-medium">Tindakan ini tidak dapat dibatalkan</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Body -->
+                <div class="px-6 py-5">
+                    <p class="text-sm text-on-surface-variant mb-4">
+                        Anda akan menghapus <strong class="text-on-surface">seluruh data transaksi dan detail pesanan</strong> secara permanen. Semua data analytics, revenue, dan histori order akan hilang.
+                    </p>
+                    <div class="bg-surface-container rounded-lg p-4 mb-4">
+                        <p class="text-xs font-bold text-on-surface-variant uppercase tracking-wider mb-2">Yang akan dihapus:</p>
+                        <ul class="text-xs text-on-surface-variant space-y-1">
+                            <li class="flex items-center gap-2"><span class="material-symbols-outlined text-red-400 text-sm">close</span> Semua data transaksi</li>
+                            <li class="flex items-center gap-2"><span class="material-symbols-outlined text-red-400 text-sm">close</span> Semua detail pesanan</li>
+                            <li class="flex items-center gap-2"><span class="material-symbols-outlined text-red-400 text-sm">close</span> Histori revenue & analytics</li>
+                        </ul>
+                    </div>
+                    <label class="block mb-2">
+                        <p class="text-xs font-bold text-on-surface mb-1">Ketik <code class="bg-red-50 text-red-600 px-1.5 py-0.5 rounded font-mono text-[11px]">HAPUS</code> untuk konfirmasi:</p>
+                        <input id="delete-confirm-input" type="text" placeholder="Ketik HAPUS di sini..."
+                            class="w-full px-4 py-2.5 bg-surface-container border border-outline-variant rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500 font-mono" autocomplete="off" />
+                    </label>
+                </div>
+                <!-- Actions -->
+                <div class="px-6 py-4 bg-surface-container-low flex items-center justify-end gap-3 border-t border-outline-variant/10">
+                    <button id="delete-cancel-btn"
+                        class="px-5 py-2.5 rounded-lg text-sm font-bold text-on-surface-variant hover:bg-surface-container transition-colors">
+                        Batal
+                    </button>
+                    <button id="delete-confirm-btn" disabled
+                        class="px-5 py-2.5 rounded-lg text-sm font-bold bg-red-600 text-white hover:bg-red-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2">
+                        <span class="material-symbols-outlined text-sm">delete_forever</span>
+                        Hapus Semua Data
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success/Error Alert Toast -->
+    <div id="alert-toast" class="fixed top-6 right-6 z-[110] hidden">
+        <div id="alert-toast-content" class="flex items-center gap-3 px-5 py-4 rounded-xl shadow-2xl border min-w-[320px] transition-all transform translate-x-full opacity-0">
+            <span class="material-symbols-outlined text-xl" id="alert-toast-icon">check_circle</span>
+            <div class="flex-1">
+                <p class="text-sm font-bold" id="alert-toast-title">Berhasil</p>
+                <p class="text-xs" id="alert-toast-message">Data berhasil dihapus.</p>
+            </div>
+            <button onclick="hideAlertToast()" class="p-1 hover:bg-black/10 rounded-full transition-colors">
+                <span class="material-symbols-outlined text-sm">close</span>
+            </button>
+        </div>
+    </div>
+
+    <script src="../frontend/js/analytics.js"></script>
 </body>
 
 </html>

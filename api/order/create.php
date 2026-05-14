@@ -19,6 +19,7 @@ if (!$data) {
 
 $nama_pelanggan = $data['nama_pelanggan'] ?? 'Pelanggan';
 $tipe_pesanan = $data['tipe_pesanan'] ?? 'dine-in';
+$id_user = isset($data['id_user']) && !empty($data['id_user']) ? (int)$data['id_user'] : null;
 $items = $data['items'] ?? [];
 
 if (empty($items)) {
@@ -50,9 +51,9 @@ try {
         $stmt->close();
     }
 
-    // 2. Insert into transaksi
-    $stmt = $conn->prepare("INSERT INTO transaksi (nama_pelanggan, tipe_pesanan, total_harga, status_pesanan) VALUES (?, ?, ?, 'pending')");
-    $stmt->bind_param("ssd", $nama_pelanggan, $tipe_pesanan, $total_harga);
+    // 2. Insert into transaksi (id_user = null for guest purchases)
+    $stmt = $conn->prepare("INSERT INTO transaksi (id_user, nama_pelanggan, tipe_pesanan, total_harga, status_pesanan) VALUES (?, ?, ?, ?, 'pending')");
+    $stmt->bind_param("issd", $id_user, $nama_pelanggan, $tipe_pesanan, $total_harga);
     $stmt->execute();
     $id_transaksi = $stmt->insert_id;
     $stmt->close();
