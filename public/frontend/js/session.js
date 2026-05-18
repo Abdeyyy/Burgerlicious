@@ -1,6 +1,10 @@
 document.addEventListener('DOMContentLoaded', async function () {
     const basePath = window.location.pathname.includes('/public/pages/') ? '../../' : './';
 
+    const currentPage = window.location.pathname.split('/').pop();
+    const adminPages = ['dashboard.html', 'menu_management.html', 'order_queue.html', 'analytics.html', 'promo_management.html', 'pos.html'];
+    const isCurrentPageAdmin = adminPages.includes(currentPage) || (currentPage === '' && window.location.pathname.includes('/public/pages/'));
+
     // Sembunyikan tombol Login SEGERA sebelum fetch, agar tidak ada glitch/flash
     const allLinks = document.querySelectorAll('a');
     const loginBtns = Array.from(allLinks).filter(a =>
@@ -15,6 +19,15 @@ document.addEventListener('DOMContentLoaded', async function () {
 
         if (!data.loggedIn) {
             loginBtns.forEach(btn => { btn.style.visibility = ''; });
+            if (isCurrentPageAdmin) {
+                window.location.href = basePath + 'public/pages/login.html';
+            }
+            return;
+        }
+
+        if (isCurrentPageAdmin && data.role !== 'admin') {
+            alert('Akses Ditolak: Halaman ini hanya dapat diakses oleh Administrator!');
+            window.location.href = basePath + 'index.html';
             return;
         }
 

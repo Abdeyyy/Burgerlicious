@@ -5,7 +5,8 @@ header('Content-Type: application/json');
 if (isLoggedIn()) {
     echo json_encode([
         'loggedIn' => true,
-        'nama' => $_SESSION['nama']
+        'nama' => $_SESSION['nama'],
+        'role' => $_SESSION['role'] ?? 'customer'
     ]);
 } else {
     echo json_encode(['loggedIn' => false]);

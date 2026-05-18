@@ -52,7 +52,7 @@
                                 <div class="relative w-64 group">
                                         <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant group-focus-within:text-primary transition-colors text-sm"
                                                 data-icon="search">search</span>
-                                        <input class="w-full bg-surface-container-low border-none rounded-full py-2.5 pl-12 pr-4 focus:ring-2 focus:ring-primary/20 focus:bg-surface-container-highest transition-all text-sm"
+                                        <input id="search-promo" class="w-full bg-surface-container-low border-none rounded-full py-2.5 pl-12 pr-4 focus:ring-2 focus:ring-primary/20 focus:bg-surface-container-highest transition-all text-sm"
                                                 placeholder="Search promos..." type="text" />
                                 </div>
                         </div>
@@ -67,11 +67,11 @@
                                                 <p
                                                         class="text-sm font-bold text-on-surface-variant uppercase tracking-widest mb-2">
                                                         Total Active Promos</p>
-                                                <h3 class="text-6xl font-black text-on-surface tracking-tighter">14</h3>
+                                                <h3 class="text-6xl font-black text-on-surface tracking-tighter" id="total-active-promos">0</h3>
                                                 <p class="mt-4 text-sm text-primary font-bold flex items-center gap-1">
                                                         <span class="material-symbols-outlined text-sm"
                                                                 data-icon="trending_up">trending_up</span>
-                                                        +2 from last month
+                                                        Running Campaigns
                                                 </p>
                                         </div>
                                         <div
@@ -85,26 +85,25 @@
                                         <div>
                                                 <p class="text-sm font-bold opacity-80 uppercase tracking-widest mb-2">
                                                         Total Redemptions</p>
-                                                <h3 class="text-4xl font-black tracking-tighter">12,402</h3>
+                                                <h3 class="text-4xl font-black tracking-tighter" id="total-redemptions">0</h3>
                                         </div>
                                         <div class="h-1 bg-white/20 rounded-full mt-6">
-                                                <div class="h-full bg-white rounded-full" style="width: 78%;"></div>
+                                                <div class="h-full bg-white rounded-full transition-all duration-500" id="target-progress" style="width: 0%;"></div>
                                         </div>
-                                        <p class="text-xs font-medium mt-2 opacity-80">78% of monthly target achieved
-                                        </p>
+                                        <p class="text-xs font-medium mt-2 opacity-80" id="target-text">0% of monthly target achieved</p>
                                 </div>
                                 <div class="flex flex-col gap-6">
                                         <div class="bg-surface-container-low p-6 rounded-lg flex-1">
                                                 <p
                                                         class="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-1">
-                                                        Revenue from Promos</p>
-                                                <h3 class="text-2xl font-black text-on-surface">$45.2k</h3>
+                                                        Total Discount Given</p>
+                                                <h3 class="text-2xl font-black text-on-surface" id="promo-discount-value">Rp 0</h3>
                                         </div>
                                         <div class="bg-tertiary-container p-6 rounded-lg flex-1">
                                                 <p
                                                         class="text-xs font-bold text-on-tertiary-container uppercase tracking-widest mb-1">
                                                         Active Customers</p>
-                                                <h3 class="text-2xl font-black text-on-tertiary-container">3.8k</h3>
+                                                <h3 class="text-2xl font-black text-on-tertiary-container" id="active-promo-users">0</h3>
                                         </div>
                                 </div>
                         </section>
@@ -118,13 +117,15 @@
                                                         current marketing campaigns.</p>
                                         </div>
                                         <div class="flex items-center gap-4">
-                                                <button
-                                                        class="flex items-center gap-2 px-6 py-2.5 rounded-full bg-surface-container-highest text-on-surface font-bold hover:bg-surface-container-high transition-colors">
-                                                        <span class="material-symbols-outlined"
-                                                                data-icon="filter_list">filter_list</span>
-                                                        <span>Filter</span>
-                                                </button>
-                                                <button
+                                                <select id="status-filter"
+                                                        class="px-6 py-2.5 rounded-full bg-surface-container-highest text-on-surface font-bold hover:bg-surface-container-high border-none transition-colors text-sm focus:ring-2 focus:ring-primary/20 cursor-pointer">
+                                                        <option value="all">All Promos</option>
+                                                        <option value="active">Active</option>
+                                                        <option value="scheduled">Scheduled</option>
+                                                        <option value="expired">Expired</option>
+                                                        <option value="inactive">Inactive</option>
+                                                </select>
+                                                <button id="add-promo-btn"
                                                         class="flex items-center gap-2 px-8 py-2.5 rounded-full bg-primary text-on-primary font-bold hover:scale-105 transition-all shadow-lg shadow-primary/20">
                                                         <span class="material-symbols-outlined"
                                                                 data-icon="add_circle">add_circle</span>
@@ -161,248 +162,8 @@
                                                                                 Actions</th>
                                                                 </tr>
                                                         </thead>
-                                                        <tbody class="divide-y divide-surface-container-low">
-                                                                <!-- Row 1 -->
-                                                                <tr
-                                                                        class="hover:bg-surface-container-low/30 transition-colors group">
-                                                                        <td class="px-8 py-6">
-                                                                                <div class="flex items-center gap-4">
-                                                                                        <div
-                                                                                                class="w-14 h-14 rounded-md overflow-hidden bg-surface-container flex-shrink-0 relative">
-                                                                                                <img alt="Weekend Feast Burger"
-                                                                                                        class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                                                                                                        data-alt="A top-down editorial shot of a gourmet double cheeseburger with melting cheddar, crispy bacon, and fresh lettuce on a toasted brioche bun. The lighting is warm and dramatic, highlighting the textures of the meat and bread. The background is a clean, dark slate surface, giving it a premium culinary feel."
-                                                                                                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuDLL2zAJImJoY04XFSllnEMrFBFCmoEheB1fSwPHFox0Xp93gHBBDdQBsGP9k4SZaNLn6FXTrO3LAJFN1Yz9P2ogiOyIOYj2qUWYxpa_0ZODu4rrReY5WsjTVreffWRqZ5xQ8uPdhpdjcv06mdNEO6CRrA2zi5A3YuxbNkjGhUDJSiHmXSaybyhH4eMzOCAJ_tdLSulgLZ_YId0F204ZWeqmx99RQIHk7WKsqkgvYXr5leyVawlCbHusHk-INovNZl1JUhQXnfRGNg" />
-                                                                                        </div>
-                                                                                        <div>
-                                                                                                <p
-                                                                                                        class="font-bold text-on-surface leading-tight">
-                                                                                                        Weekend Feast
-                                                                                                </p>
-                                                                                                <p
-                                                                                                        class="text-xs text-on-surface-variant">
-                                                                                                        Code: WEEKEND25
-                                                                                                </p>
-                                                                                        </div>
-                                                                                </div>
-                                                                        </td>
-                                                                        <td class="px-6 py-6">
-                                                                                <span
-                                                                                        class="px-3 py-1 bg-surface-container text-on-surface-variant rounded-full text-xs font-bold">Percentage</span>
-                                                                        </td>
-                                                                        <td class="px-6 py-6 text-center">
-                                                                                <span
-                                                                                        class="text-lg font-black text-primary">25%</span>
-                                                                        </td>
-                                                                        <td class="px-6 py-6">
-                                                                                <div class="text-sm">
-                                                                                        <p
-                                                                                                class="text-on-surface font-medium">
-                                                                                                Oct 20 - Oct 22</p>
-                                                                                        <p
-                                                                                                class="text-xs text-on-surface-variant">
-                                                                                                Recurring Weekly</p>
-                                                                                </div>
-                                                                        </td>
-                                                                        <td class="px-6 py-6">
-                                                                                <div
-                                                                                        class="flex items-center gap-1.5 px-3 py-1 bg-emerald-50 text-emerald-700 rounded-full w-fit">
-                                                                                        <span
-                                                                                                class="w-2 h-2 rounded-full bg-emerald-500"></span>
-                                                                                        <span
-                                                                                                class="text-xs font-bold">Active</span>
-                                                                                </div>
-                                                                        </td>
-                                                                        <td class="px-6 py-6">
-                                                                                <div class="space-y-1">
-                                                                                        <p
-                                                                                                class="text-sm font-bold text-on-surface">
-                                                                                                1,240 Uses</p>
-                                                                                        <p
-                                                                                                class="text-xs text-on-surface-variant">
-                                                                                                $18,450 Rev.</p>
-                                                                                </div>
-                                                                        </td>
-                                                                        <td class="px-8 py-6 text-right">
-                                                                                <div
-                                                                                        class="flex items-center justify-end gap-2">
-                                                                                        <button
-                                                                                                class="p-2 hover:bg-primary/10 hover:text-primary text-on-surface-variant rounded-full transition-all">
-                                                                                                <span class="material-symbols-outlined text-[20px]"
-                                                                                                        data-icon="edit">edit</span>
-                                                                                        </button>
-                                                                                        <button
-                                                                                                class="p-2 hover:bg-primary/10 hover:text-primary text-on-surface-variant rounded-full transition-all">
-                                                                                                <span class="material-symbols-outlined text-[20px]"
-                                                                                                        data-icon="content_copy">content_copy</span>
-                                                                                        </button>
-                                                                                        <button
-                                                                                                class="p-2 hover:bg-error-container/20 hover:text-error text-on-surface-variant rounded-full transition-all">
-                                                                                                <span class="material-symbols-outlined text-[20px]"
-                                                                                                        data-icon="block">block</span>
-                                                                                        </button>
-                                                                                </div>
-                                                                        </td>
-                                                                </tr>
-                                                                <!-- Row 2 -->
-                                                                <tr
-                                                                        class="hover:bg-surface-container-low/30 transition-colors group">
-                                                                        <td class="px-8 py-6">
-                                                                                <div class="flex items-center gap-4">
-                                                                                        <div
-                                                                                                class="w-14 h-14 rounded-md overflow-hidden bg-surface-container flex-shrink-0">
-                                                                                                <img alt="Burger BOGO"
-                                                                                                        class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                                                                                                        data-alt="A vibrant, close-up photograph of two identical, juicy sliders sitting side-by-side on a rustic wooden platter. The image uses a shallow depth of field to make the colorful layers of ingredients pop. Bright, high-key lighting creates an appetizing and fresh look, perfectly matching a premium delivery brand's aesthetic."
-                                                                                                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuBAIt2UHibhuyvrf8HlVA0TmABwUdwBFb6NM4BdCRg1J47Vx1Xnod4QNI9PfIXwtQdMCzfQPpNI05_BBObRXEs9uon3egrnMxPczULUZ4U3vdpvy1CZxb6FUDDnOssDFH-aofGCqlHvKugImPT-JxPX5vgUhcmk8smghSrAziyIiE40qu9R8zu9uvgP9Y3CwSY5_R4oGEoS4Z0as0mqhIEAQgPv1NMBZ7243DCcCOC6CcnVreLOT1TBuVNtHRCwEKhGldKv9w0jSsw" />
-                                                                                        </div>
-                                                                                        <div>
-                                                                                                <p
-                                                                                                        class="font-bold text-on-surface leading-tight">
-                                                                                                        Monday BOGO</p>
-                                                                                                <p
-                                                                                                        class="text-xs text-on-surface-variant">
-                                                                                                        Automatic</p>
-                                                                                        </div>
-                                                                                </div>
-                                                                        </td>
-                                                                        <td class="px-6 py-6">
-                                                                                <span
-                                                                                        class="px-3 py-1 bg-surface-container text-on-surface-variant rounded-full text-xs font-bold">BOGO</span>
-                                                                        </td>
-                                                                        <td class="px-6 py-6 text-center">
-                                                                                <span
-                                                                                        class="text-lg font-black text-primary">Free
-                                                                                        Item</span>
-                                                                        </td>
-                                                                        <td class="px-6 py-6">
-                                                                                <div class="text-sm">
-                                                                                        <p
-                                                                                                class="text-on-surface font-medium">
-                                                                                                Oct 23 - Dec 31</p>
-                                                                                        <p
-                                                                                                class="text-xs text-on-surface-variant">
-                                                                                                Lunch Hours Only</p>
-                                                                                </div>
-                                                                        </td>
-                                                                        <td class="px-6 py-6">
-                                                                                <div
-                                                                                        class="flex items-center gap-1.5 px-3 py-1 bg-orange-50 text-orange-700 rounded-full w-fit">
-                                                                                        <span
-                                                                                                class="w-2 h-2 rounded-full bg-orange-500"></span>
-                                                                                        <span
-                                                                                                class="text-xs font-bold">Scheduled</span>
-                                                                                </div>
-                                                                        </td>
-                                                                        <td class="px-6 py-6">
-                                                                                <div class="space-y-1">
-                                                                                        <p
-                                                                                                class="text-sm font-bold text-on-surface">
-                                                                                                0 Uses</p>
-                                                                                        <p
-                                                                                                class="text-xs text-on-surface-variant">
-                                                                                                $0 Rev.</p>
-                                                                                </div>
-                                                                        </td>
-                                                                        <td class="px-8 py-6 text-right">
-                                                                                <div
-                                                                                        class="flex items-center justify-end gap-2">
-                                                                                        <button
-                                                                                                class="p-2 hover:bg-primary/10 hover:text-primary text-on-surface-variant rounded-full transition-all">
-                                                                                                <span class="material-symbols-outlined text-[20px]"
-                                                                                                        data-icon="edit">edit</span>
-                                                                                        </button>
-                                                                                        <button
-                                                                                                class="p-2 hover:bg-primary/10 hover:text-primary text-on-surface-variant rounded-full transition-all">
-                                                                                                <span class="material-symbols-outlined text-[20px]"
-                                                                                                        data-icon="content_copy">content_copy</span>
-                                                                                        </button>
-                                                                                        <button
-                                                                                                class="p-2 hover:bg-error-container/20 hover:text-error text-on-surface-variant rounded-full transition-all">
-                                                                                                <span class="material-symbols-outlined text-[20px]"
-                                                                                                        data-icon="delete">delete</span>
-                                                                                        </button>
-                                                                                </div>
-                                                                        </td>
-                                                                </tr>
-                                                                <!-- Row 3 -->
-                                                                <tr
-                                                                        class="hover:bg-surface-container-low/30 transition-colors group opacity-60">
-                                                                        <td class="px-8 py-6">
-                                                                                <div class="flex items-center gap-4">
-                                                                                        <div
-                                                                                                class="w-14 h-14 rounded-md overflow-hidden bg-surface-container flex-shrink-0 grayscale">
-                                                                                                <img alt="Summer Drinks"
-                                                                                                        class="w-full h-full object-cover"
-                                                                                                        data-alt="A row of refreshing, colorful iced fruit lemonades in tall glasses with condensation and fresh mint sprigs. The scene is bright and sun-drenched, suggesting a summer patio setting. The style is crisp and editorial, highlighting the vivid colors of the drinks against a clean, white background."
-                                                                                                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuBzyeMXMWriS9ERefByPiExCViWy02S2pMAvkGaD0l9R6SudTH0Wl93o3Szf0gkdHklScxs9zx7Qg5kyi-mfShmUa_0rPYiWrpQCFmMgaObYehhEURVFtCN7nqdpHePJ8cRMcxM2bSBBolmogRO5fGTo3y4fyyAgvLyA7zeHzEingwZzhXwdtsL7yKU28nj-QpI33ObW0v22OJQhqzr_LzGtQ_hqtDDKeVU5nX_j_EaFAgXfXkKG4LTCEI1wFsV8BtAZgbYrci5TBU" />
-                                                                                        </div>
-                                                                                        <div>
-                                                                                                <p
-                                                                                                        class="font-bold text-on-surface leading-tight line-through">
-                                                                                                        Summer Coolers
-                                                                                                </p>
-                                                                                                <p
-                                                                                                        class="text-xs text-on-surface-variant">
-                                                                                                        Code: SUMMER10
-                                                                                                </p>
-                                                                                        </div>
-                                                                                </div>
-                                                                        </td>
-                                                                        <td class="px-6 py-6">
-                                                                                <span
-                                                                                        class="px-3 py-1 bg-surface-container text-on-surface-variant rounded-full text-xs font-bold">Fixed
-                                                                                        Amount</span>
-                                                                        </td>
-                                                                        <td class="px-6 py-6 text-center">
-                                                                                <span
-                                                                                        class="text-lg font-black text-on-surface-variant">$10.00</span>
-                                                                        </td>
-                                                                        <td class="px-6 py-6">
-                                                                                <div class="text-sm">
-                                                                                        <p
-                                                                                                class="text-on-surface font-medium">
-                                                                                                Jun 01 - Aug 31</p>
-                                                                                        <p
-                                                                                                class="text-xs text-on-surface-variant">
-                                                                                                Expired</p>
-                                                                                </div>
-                                                                        </td>
-                                                                        <td class="px-6 py-6">
-                                                                                <div
-                                                                                        class="flex items-center gap-1.5 px-3 py-1 bg-neutral-100 text-neutral-600 rounded-full w-fit">
-                                                                                        <span
-                                                                                                class="w-2 h-2 rounded-full bg-neutral-400"></span>
-                                                                                        <span
-                                                                                                class="text-xs font-bold">Ended</span>
-                                                                                </div>
-                                                                        </td>
-                                                                        <td class="px-6 py-6">
-                                                                                <div class="space-y-1">
-                                                                                        <p
-                                                                                                class="text-sm font-bold text-on-surface">
-                                                                                                5,410 Uses</p>
-                                                                                        <p
-                                                                                                class="text-xs text-on-surface-variant">
-                                                                                                $62,100 Rev.</p>
-                                                                                </div>
-                                                                        </td>
-                                                                        <td class="px-8 py-6 text-right">
-                                                                                <div
-                                                                                        class="flex items-center justify-end gap-2">
-                                                                                        <button
-                                                                                                class="p-2 hover:bg-primary/10 hover:text-primary text-on-surface-variant rounded-full transition-all">
-                                                                                                <span class="material-symbols-outlined text-[20px]"
-                                                                                                        data-icon="visibility">visibility</span>
-                                                                                        </button>
-                                                                                        <button
-                                                                                                class="p-2 hover:bg-primary/10 hover:text-primary text-on-surface-variant rounded-full transition-all">
-                                                                                                <span class="material-symbols-outlined text-[20px]"
-                                                                                                        data-icon="content_copy">content_copy</span>
-                                                                                        </button>
-                                                                                </div>
-                                                                        </td>
-                                                                </tr>
+                                                        <tbody class="divide-y divide-surface-container-low" id="promo-table-body">
+                                                                <!-- Promos will be loaded here dynamically -->
                                                         </tbody>
                                                 </table>
                                         </div>
@@ -483,13 +244,86 @@
                 </div>
         </main>
         <!-- FAB for quick action (Contextually suppressed on some screens, but kept here for promo dashboard utility) -->
-        <button
-                class="fixed bottom-8 right-8 w-16 h-16 bg-primary text-on-primary rounded-full shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all z-50">
-                <span class="material-symbols-outlined text-3xl" data-icon="bolt"
-                        style="font-variation-settings: 'FILL' 1;">bolt</span>
-        </button>
+        <!-- Modal structure for adding/editing promo -->
+        <div id="promo-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] hidden items-center justify-center p-4">
+                <div class="bg-surface-container-lowest w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
+                        <div class="px-6 py-4 border-b border-outline-variant/20 flex justify-between items-center text-on-surface">
+                                <h3 id="modal-title" class="text-xl font-bold">Add New Promo</h3>
+                                <button id="close-modal" class="p-2 hover:bg-surface-container rounded-full transition-colors flex items-center justify-center">
+                                        <span class="material-symbols-outlined">close</span>
+                                </button>
+                        </div>
+                        <form id="promo-form" class="p-6 space-y-4 max-h-[80vh] overflow-y-auto">
+                                <div class="space-y-1">
+                                        <label class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Promo Name</label>
+                                        <input id="promo-name" name="nama_promo" type="text" required class="w-full bg-surface-container border-none rounded-lg focus:ring-2 focus:ring-primary/20 text-on-surface">
+                                </div>
+                                <div class="grid grid-cols-2 gap-4">
+                                        <div class="space-y-1">
+                                                <label class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Voucher Code</label>
+                                                <input id="promo-code" name="kode_promo" type="text" placeholder="e.g. WEEKEND25" class="w-full bg-surface-container border-none rounded-lg focus:ring-2 focus:ring-primary/20 text-on-surface uppercase">
+                                        </div>
+                                        <div class="space-y-1">
+                                                <label class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Promo Type</label>
+                                                <select id="promo-type" name="tipe_promo" required class="w-full bg-surface-container border-none rounded-lg focus:ring-2 focus:ring-primary/20 text-on-surface">
+                                                        <option value="percentage">Percentage Discount</option>
+                                                        <option value="fixed">Fixed Amount Potongan</option>
+                                                        <option value="bogo">BOGO (Buy 1 Get 1)</option>
+                                                </select>
+                                        </div>
+                                </div>
+                                <div class="grid grid-cols-2 gap-4">
+                                        <div class="space-y-1" id="discount-val-container">
+                                                <label id="discount-val-label" class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Discount Value (%)</label>
+                                                <input id="promo-discount" name="nilai_diskon" type="number" step="0.01" class="w-full bg-surface-container border-none rounded-lg focus:ring-2 focus:ring-primary/20 text-on-surface">
+                                        </div>
+                                        <div class="space-y-1">
+                                                <label class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Minimum Order (IDR)</label>
+                                                <input id="promo-min-order" name="min_order" type="number" value="0" class="w-full bg-surface-container border-none rounded-lg focus:ring-2 focus:ring-primary/20 text-on-surface">
+                                        </div>
+                                </div>
+                                <div class="grid grid-cols-2 gap-4">
+                                        <div class="space-y-1">
+                                                <label class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Usage Quota (Max)</label>
+                                                <input id="promo-max-usage" name="max_usage" type="number" placeholder="Unlimited" class="w-full bg-surface-container border-none rounded-lg focus:ring-2 focus:ring-primary/20 text-on-surface">
+                                        </div>
+                                        <div class="space-y-1">
+                                                <label class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Target Category</label>
+                                                <select id="promo-target-category" name="id_kategori_target" class="w-full bg-surface-container border-none rounded-lg focus:ring-2 focus:ring-primary/20 text-on-surface">
+                                                        <option value="">All Categories</option>
+                                                </select>
+                                        </div>
+                                </div>
+                                <div class="grid grid-cols-2 gap-4">
+                                        <div class="space-y-1">
+                                                <label class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Start Date</label>
+                                                <input id="promo-start-date" name="tanggal_mulai" type="date" required class="w-full bg-surface-container border-none rounded-lg focus:ring-2 focus:ring-primary/20 text-on-surface">
+                                        </div>
+                                        <div class="space-y-1">
+                                                <label class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">End Date</label>
+                                                <input id="promo-end-date" name="tanggal_selesai" type="date" required class="w-full bg-surface-container border-none rounded-lg focus:ring-2 focus:ring-primary/20 text-on-surface">
+                                        </div>
+                                </div>
+                                <div class="space-y-1">
+                                        <label class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Description</label>
+                                        <textarea id="promo-description" name="deskripsi" rows="2" class="w-full bg-surface-container border-none rounded-lg focus:ring-2 focus:ring-primary/20 text-on-surface"></textarea>
+                                </div>
+                                <div class="space-y-1">
+                                        <label class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Banner Image</label>
+                                        <input id="promo-image" name="gambar" type="file" accept="image/*" class="w-full text-sm text-on-surface-variant file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-primary/10 file:text-primary hover:file:bg-primary/20">
+                                </div>
+                                <div class="pt-4">
+                                        <button type="submit" class="w-full py-3 bg-primary text-on-primary rounded-full font-bold shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all">
+                                                Save Promo Campaign
+                                        </button>
+                                </div>
+                        </form>
+                </div>
+        </div>
+
         <script src="../frontend/js/session.js"></script>
         <script src="../frontend/js/admin_sidebar.js"></script>
+        <script src="../frontend/js/promo_management.js"></script>
 </body>
 
 </html>
