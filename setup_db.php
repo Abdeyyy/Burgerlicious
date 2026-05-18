@@ -153,6 +153,68 @@ if ($conn->query($sql_detail) === TRUE) {
     die("Error creating table detail_transaksi: " . $conn->error . "\n");
 }
 
+// Tambah Tabel Promo
+$sql_promo = "CREATE TABLE IF NOT EXISTS `promo` (
+  `id_promo` int(11) NOT NULL AUTO_INCREMENT,
+  `nama_promo` varchar(100) NOT NULL,
+  `deskripsi` text DEFAULT NULL,
+  `tipe_promo` enum('percentage','fixed','bogo') NOT NULL,
+  `nilai_diskon` decimal(10,2) NOT NULL DEFAULT 0,
+  `kode_promo` varchar(50) DEFAULT NULL,
+  `min_order` decimal(10,2) DEFAULT 0,
+  `max_usage` int(11) DEFAULT NULL,
+  `current_usage` int(11) DEFAULT 0,
+  `id_kategori_target` int(11) DEFAULT NULL,
+  `gambar_url` varchar(255) DEFAULT NULL,
+  `tanggal_mulai` date NOT NULL,
+  `tanggal_selesai` date NOT NULL,
+  `is_active` tinyint(1) DEFAULT 1,
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id_promo`),
+  UNIQUE KEY `kode_promo_unique` (`kode_promo`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
+
+if ($conn->query($sql_promo) === TRUE) {
+    echo "Tabel promo siap!\n";
+
+    // Tambah FK ke kategori jika belum ada
+    $check_fk = $conn->query("SELECT CONSTRAINT_NAME FROM information_schema.TABLE_CONSTRAINTS WHERE TABLE_SCHEMA = 'burgerlicious' AND TABLE_NAME = 'promo' AND CONSTRAINT_NAME = 'fk_promo_kategori'");
+    if ($check_fk->num_rows == 0) {
+        $conn->query("ALTER TABLE `promo` ADD KEY `fk_promo_kategori` (`id_kategori_target`)");
+        $conn->query("ALTER TABLE `promo` ADD CONSTRAINT `fk_promo_kategori` FOREIGN KEY (`id_kategori_target`) REFERENCES `kategori_menu` (`id_kategori`) ON DELETE SET NULL");
+    }
+} else {
+    die("Error creating table promo: " . $conn->error . "\n");
+}
+
+// Tambah Tabel Promo Usage (tracking penggunaan per transaksi)
+$sql_promo_usage = "CREATE TABLE IF NOT EXISTS `promo_usage` (
+  `id_usage` int(11) NOT NULL AUTO_INCREMENT,
+  `id_promo` int(11) NOT NULL,
+  `id_transaksi` int(11) NOT NULL,
+  `nilai_potongan` decimal(10,2) NOT NULL,
+  `tanggal_digunakan` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id_usage`),
+  KEY `fk_usage_promo` (`id_promo`),
+  KEY `fk_usage_transaksi` (`id_transaksi`),
+  CONSTRAINT `fk_usage_promo` FOREIGN KEY (`id_promo`) REFERENCES `promo` (`id_promo`) ON DELETE CASCADE,
+  CONSTRAINT `fk_usage_transaksi` FOREIGN KEY (`id_transaksi`) REFERENCES `transaksi` (`id_transaksi`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
+
+if ($conn->query($sql_promo_usage) === TRUE) {
+    echo "Tabel promo_usage siap!\n";
+} else {
+    die("Error creating table promo_usage: " . $conn->error . "\n");
+}
+
+// Migrasi: tambah kolom id_promo dan nilai_diskon di transaksi jika belum ada
+$check_promo_col = $conn->query("SHOW COLUMNS FROM `transaksi` LIKE 'id_promo'");
+if ($check_promo_col->num_rows == 0) {
+    $conn->query("ALTER TABLE `transaksi` ADD `id_promo` int(11) DEFAULT NULL AFTER `total_harga`");
+    $conn->query("ALTER TABLE `transaksi` ADD `nilai_diskon` decimal(10,2) DEFAULT 0 AFTER `id_promo`");
+    echo "Kolom 'id_promo' dan 'nilai_diskon' berhasil ditambahkan ke tabel transaksi.\n";
+}
+
 // Tambahkan User Admin Default
 $admin_email = 'admin@burgerlicious.com';
 $admin_pass  = password_hash('admin123', PASSWORD_DEFAULT);
