@@ -136,6 +136,204 @@ document.addEventListener('DOMContentLoaded', () => {
         updateCart();
     };
 
+    let appliedPromo = null;
+
+    const resetPromo = () => {
+        appliedPromo = null;
+        const inputEl = document.getElementById('promo-code-input');
+        if (inputEl) {
+            inputEl.value = '';
+            inputEl.disabled = false;
+        }
+        const btnEl = document.getElementById('apply-promo-btn');
+        if (btnEl) btnEl.disabled = false;
+        
+        const appliedInfoEl = document.getElementById('applied-promo-info');
+        if (appliedInfoEl) appliedInfoEl.classList.add('hidden');
+        
+        const errorEl = document.getElementById('promo-error-msg');
+        if (errorEl) errorEl.classList.add('hidden');
+        
+        const discountLabelEl = document.getElementById('discount-label');
+        if (discountLabelEl) discountLabelEl.textContent = 'Promo Discount';
+        
+        const discountEl = document.getElementById('cart-discount');
+        if (discountEl) discountEl.textContent = 'Rp 0';
+        
+        updateCartTotalsOnly();
+    };
+
+    const revalidateAppliedPromo = async () => {
+        if (!appliedPromo) return;
+
+        const subtotal = cart.reduce((acc, curr) => acc + (curr.harga * curr.jumlah), 0);
+        const items = cart.map(c => ({ 
+            id_menu: c.id_menu, 
+            id_kategori: c.id_kategori,
+            harga: c.harga,
+            jumlah: c.jumlah 
+        }));
+
+        try {
+            const res = await fetch('../../api/promo/validate.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    kode_promo: appliedPromo.kode_promo,
+                    total_belanja: subtotal,
+                    items: items
+                })
+            });
+            
+            if (res.status === 403) {
+                showPromoError('Session expired or access forbidden. Please login as Admin!');
+                resetPromo();
+                return;
+            }
+
+            const result = await res.json();
+            if (result.status === 'success') {
+                appliedPromo = result.data;
+                renderPromoDiscount(result.data.nilai_potongan);
+            } else {
+                showPromoError(`Promo cancelled: ${result.message}`);
+                appliedPromo = null;
+                const infoEl = document.getElementById('applied-promo-info');
+                if (infoEl) infoEl.classList.add('hidden');
+                
+                const discountLabelEl = document.getElementById('discount-label');
+                if (discountLabelEl) discountLabelEl.textContent = 'Promo Discount';
+                
+                const discountEl = document.getElementById('cart-discount');
+                if (discountEl) discountEl.textContent = 'Rp 0';
+                
+                const inputEl = document.getElementById('promo-code-input');
+                if (inputEl) {
+                    inputEl.disabled = false;
+                    inputEl.value = '';
+                }
+                
+                updateCartTotalsOnly();
+            }
+        } catch (error) {
+            console.error('Error revalidating promo:', error);
+        }
+    };
+
+    const updateCartTotalsOnly = () => {
+        const subtotal = cart.reduce((acc, curr) => acc + (curr.harga * curr.jumlah), 0);
+        cartSubtotal.textContent = `Rp ${subtotal.toLocaleString('id-ID')}`;
+        
+        let discount = 0;
+        if (appliedPromo) {
+            discount = parseFloat(appliedPromo.nilai_potongan);
+        } else {
+            const discountLabelEl = document.getElementById('discount-label');
+            if (discountLabelEl) discountLabelEl.textContent = 'Promo Discount';
+            
+            const discountEl = document.getElementById('cart-discount');
+            if (discountEl) discountEl.textContent = 'Rp 0';
+        }
+
+        const grandTotal = Math.max(0, subtotal - discount);
+        cartTotal.textContent = `Rp ${grandTotal.toLocaleString('id-ID')}`;
+    };
+
+    const renderPromoDiscount = (nilai_potongan) => {
+        const discountVal = parseFloat(nilai_potongan);
+        const subtotal = cart.reduce((acc, curr) => acc + (curr.harga * curr.jumlah), 0);
+        
+        const discountLabelEl = document.getElementById('discount-label');
+        if (discountLabelEl && appliedPromo) {
+            discountLabelEl.textContent = `Discount (${appliedPromo.nama_promo})`;
+        }
+        
+        const discountEl = document.getElementById('cart-discount');
+        if (discountEl) {
+            discountEl.textContent = `- Rp ${discountVal.toLocaleString('id-ID')}`;
+        }
+        
+        const grandTotal = Math.max(0, subtotal - discountVal);
+        cartTotal.textContent = `Rp ${grandTotal.toLocaleString('id-ID')}`;
+    };
+
+    const applyPromo = async () => {
+        const inputEl = document.getElementById('promo-code-input');
+        const code = inputEl.value.trim().toUpperCase();
+        const errorEl = document.getElementById('promo-error-msg');
+
+        if (!code) {
+            showPromoError('Please enter a voucher code');
+            return;
+        }
+
+        if (cart.length === 0) {
+            showPromoError('Cannot apply promo: Cart is empty');
+            return;
+        }
+
+        errorEl.classList.add('hidden');
+        document.getElementById('apply-promo-btn').disabled = true;
+
+        const subtotal = cart.reduce((acc, curr) => acc + (curr.harga * curr.jumlah), 0);
+        const items = cart.map(c => ({ 
+            id_menu: c.id_menu, 
+            id_kategori: c.id_kategori,
+            harga: c.harga,
+            jumlah: c.jumlah 
+        }));
+
+        try {
+            const res = await fetch('../../api/promo/validate.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    kode_promo: code,
+                    total_belanja: subtotal,
+                    items: items
+                })
+            });
+
+            if (res.status === 403) {
+                showPromoError('Session expired or access forbidden. Please login as Admin!');
+                return;
+            }
+
+            const result = await res.json();
+            
+            if (result.status === 'success') {
+                appliedPromo = result.data;
+                
+                // Show applied info UI
+                const infoEl = document.getElementById('applied-promo-info');
+                if (infoEl) infoEl.classList.remove('hidden');
+                const nameEl = document.getElementById('applied-promo-name');
+                if (nameEl) nameEl.textContent = `${result.data.nama_promo} (${code})`;
+                
+                inputEl.value = '';
+                inputEl.disabled = true;
+                
+                renderPromoDiscount(result.data.nilai_potongan);
+            } else {
+                showPromoError(result.message);
+            }
+        } catch (error) {
+            console.error('Apply promo error:', error);
+            showPromoError('Connection error validating promo');
+        } finally {
+            document.getElementById('apply-promo-btn').disabled = false;
+        }
+    };
+
+    const showPromoError = (msg) => {
+        const errorEl = document.getElementById('promo-error-msg');
+        if (errorEl) {
+            errorEl.textContent = msg;
+            errorEl.classList.remove('hidden');
+            setTimeout(() => errorEl.classList.add('hidden'), 5000);
+        }
+    };
+
     const updateCart = () => {
         if (cart.length === 0) {
             cartContainer.innerHTML = `
@@ -147,6 +345,7 @@ document.addEventListener('DOMContentLoaded', () => {
             cartSubtotal.textContent = 'Rp 0';
             cartTotal.textContent = 'Rp 0';
             checkoutBtn.disabled = true;
+            resetPromo();
             return;
         }
 
@@ -173,10 +372,14 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
         `).join('');
 
-        const total = cart.reduce((acc, curr) => acc + (curr.harga * curr.jumlah), 0);
-        cartSubtotal.textContent = `Rp ${total.toLocaleString('id-ID')}`;
-        cartTotal.textContent = `Rp ${total.toLocaleString('id-ID')}`;
         checkoutBtn.disabled = false;
+        
+        // Re-evaluate applied promo or update totals
+        if (appliedPromo) {
+            revalidateAppliedPromo();
+        } else {
+            updateCartTotalsOnly();
+        }
     };
 
     window.changeQty = (id, delta) => {
@@ -207,6 +410,7 @@ document.addEventListener('DOMContentLoaded', () => {
     checkoutBtn.onclick = async () => {
         const name = customerNameInput.value || 'Pelanggan';
         const items = cart.map(c => ({ id_menu: c.id_menu, jumlah: c.jumlah }));
+        const id_promo = appliedPromo ? appliedPromo.id_promo : null;
 
         checkoutBtn.disabled = true;
         const originalBtnText = checkoutBtn.innerHTML;
@@ -219,7 +423,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const res = await fetch('../../api/order/create.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ nama_pelanggan: name, tipe_pesanan: orderType, items })
+                body: JSON.stringify({ 
+                    nama_pelanggan: name, 
+                    tipe_pesanan: orderType, 
+                    items,
+                    id_promo: id_promo
+                })
             });
             const result = await res.json();
             
@@ -232,6 +441,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     modalContent.classList.remove('scale-90', 'opacity-0');
                 }, 10);
                 cart = [];
+                resetPromo();
                 updateCart();
                 customerNameInput.value = 'Pelanggan';
             } else {
@@ -244,6 +454,23 @@ document.addEventListener('DOMContentLoaded', () => {
             checkoutBtn.innerHTML = originalBtnText;
         }
     };
+
+    // Bind promo action listeners
+    const applyBtn = document.getElementById('apply-promo-btn');
+    if (applyBtn) applyBtn.onclick = applyPromo;
+    
+    const removeBtn = document.getElementById('remove-promo-btn');
+    if (removeBtn) removeBtn.onclick = resetPromo;
+    
+    const promoInput = document.getElementById('promo-code-input');
+    if (promoInput) {
+        promoInput.onkeypress = (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                applyPromo();
+            }
+        };
+    }
 
     document.getElementById('modal-close').onclick = () => {
         document.getElementById('success-modal').classList.add('hidden');
