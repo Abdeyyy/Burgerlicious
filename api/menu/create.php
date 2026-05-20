@@ -29,7 +29,13 @@ if (isset($_FILES['gambar']) && $_FILES['gambar']['error'] === UPLOAD_ERR_OK) {
     $fileExtension = strtolower(end($fileNameCmps));
     
     $newFileName = md5(time() . $fileName) . '.webp';
-    $uploadFileDir = '../../assets/images/menu/';
+    $uploadFileDir = __DIR__ . '/../../assets/images/menu/';
+    
+    // Ensure directory exists
+    if (!is_dir($uploadFileDir)) {
+        mkdir($uploadFileDir, 0775, true);
+    }
+    
     $dest_path = $uploadFileDir . $newFileName;
 
     // Logic Konversi ke WebP
@@ -39,7 +45,7 @@ if (isset($_FILES['gambar']) && $_FILES['gambar']['error'] === UPLOAD_ERR_OK) {
     } else if ($fileExtension == 'png') {
         $image = imagecreatefrompng($fileTmpPath);
         imagepalettetotruecolor($image);
-        imagealphablending($image, true);
+        imagealphablending($image, false);
         imagesavealpha($image, true);
     } else if ($fileExtension == 'webp') {
         $image = imagecreatefromwebp($fileTmpPath);

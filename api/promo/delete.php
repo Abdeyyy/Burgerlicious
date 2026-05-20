@@ -25,7 +25,7 @@ $result = $check->get_result()->fetch_assoc();
 $check->close();
 
 if ($result && !empty($result['gambar_url'])) {
-    $img_path = '../../' . $result['gambar_url'];
+    $img_path = __DIR__ . '/../../' . $result['gambar_url'];
     if (file_exists($img_path)) {
         unlink($img_path);
     }

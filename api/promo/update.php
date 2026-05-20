@@ -67,7 +67,7 @@ if (isset($_FILES['gambar']) && $_FILES['gambar']['error'] === UPLOAD_ERR_OK) {
     $fileExtension = strtolower(end($fileNameCmps));
 
     $newFileName = md5(time() . $fileName) . '.webp';
-    $uploadFileDir = '../../assets/images/promo/';
+    $uploadFileDir = __DIR__ . '/../../assets/images/promo/';
     
     if (!is_dir($uploadFileDir)) {
         mkdir($uploadFileDir, 0777, true);
@@ -81,7 +81,7 @@ if (isset($_FILES['gambar']) && $_FILES['gambar']['error'] === UPLOAD_ERR_OK) {
     } else if ($fileExtension == 'png') {
         $image = imagecreatefrompng($fileTmpPath);
         imagepalettetotruecolor($image);
-        imagealphablending($image, true);
+        imagealphablending($image, false);
         imagesavealpha($image, true);
     } else if ($fileExtension == 'webp') {
         $image = imagecreatefromwebp($fileTmpPath);
@@ -90,7 +90,7 @@ if (isset($_FILES['gambar']) && $_FILES['gambar']['error'] === UPLOAD_ERR_OK) {
     if ($image) {
         // Hapus gambar lama jika ada
         if (!empty($existing['gambar_url'])) {
-            $old_path = '../../' . $existing['gambar_url'];
+            $old_path = __DIR__ . '/../../' . $existing['gambar_url'];
             if (file_exists($old_path)) {
                 unlink($old_path);
             }

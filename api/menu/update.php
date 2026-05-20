@@ -35,7 +35,13 @@ if (isset($_FILES['gambar']) && $_FILES['gambar']['error'] === UPLOAD_ERR_OK) {
     $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
     
     $newFileName = md5(time() . $fileName) . '.webp';
-    $uploadFileDir = '../../assets/images/menu/';
+    $uploadFileDir = __DIR__ . '/../../assets/images/menu/';
+    
+    // Ensure directory exists
+    if (!is_dir($uploadFileDir)) {
+        mkdir($uploadFileDir, 0775, true);
+    }
+    
     $dest_path = $uploadFileDir . $newFileName;
 
     $image = null;
@@ -44,7 +50,7 @@ if (isset($_FILES['gambar']) && $_FILES['gambar']['error'] === UPLOAD_ERR_OK) {
     } else if ($fileExtension == 'png') {
         $image = imagecreatefrompng($fileTmpPath);
         imagepalettetotruecolor($image);
-        imagealphablending($image, true);
+        imagealphablending($image, false);
         imagesavealpha($image, true);
     } else if ($fileExtension == 'webp') {
         $image = imagecreatefromwebp($fileTmpPath);
@@ -53,8 +59,9 @@ if (isset($_FILES['gambar']) && $_FILES['gambar']['error'] === UPLOAD_ERR_OK) {
     if ($image) {
         if (imagewebp($image, $dest_path, 80)) {
             // Hapus gambar lama jika ada
-            if ($old_image && file_exists('../../' . $old_image)) {
-                unlink('../../' . $old_image);
+            $oldImagePath = __DIR__ . '/../../' . $old_image;
+            if ($old_image && file_exists($oldImagePath)) {
+                unlink($oldImagePath);
             }
             $gambar_url = 'assets/images/menu/' . $newFileName;
         }
