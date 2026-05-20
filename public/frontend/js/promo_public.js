@@ -1,5 +1,9 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const promoGrid = document.getElementById('promo-grid');
+    const promoTrack = document.getElementById('promo-carousel-track');
+    const promoContainer = document.getElementById('promo-carousel-container');
+    const prevBtn = document.getElementById('carousel-prev');
+    const nextBtn = document.getElementById('carousel-next');
+    const dotsContainer = document.getElementById('carousel-dots');
     const promoLoading = document.getElementById('promo-loading');
     const promoEmpty = document.getElementById('promo-empty');
     const promoCount = document.getElementById('promo-count');
@@ -8,8 +12,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Badge styles based on promo type
     const badgeStyles = {
-        percentage: { bg: '#BD0202', text: '#FFFFFF', label: 'Diskon' },
-        fixed: { bg: '#FFAD5B', text: '#BD0202', label: 'Potongan' },
+        percentage: { bg: '#BA0000', text: '#FFFFFF', label: 'Diskon' },
+        fixed: { bg: '#FFAD5B', text: '#BA0000', label: 'Potongan' },
         bogo: { bg: '#2E7D32', text: '#FFFFFF', label: 'BOGO' }
     };
 
@@ -46,7 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // Build promo card HTML
+    // Build promo card slide HTML
     const buildPromoCard = (promo, index) => {
         const badge = badgeStyles[promo.tipe_promo] || badgeStyles.percentage;
         const remaining = getRemainingDays(promo.tanggal_selesai);
@@ -58,9 +62,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (promo.gambar_url) {
             imgSrc = `${basePath}${promo.gambar_url}`;
         }
-
-        // Badge rotation alternation
-        const rotation = index % 2 === 0 ? '-rotate-3' : 'rotate-3';
 
         // Urgency badge
         let urgencyBadge = '';
@@ -74,93 +75,64 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>`;
         }
 
-        // Category info
-        let categoryInfo = '';
-        if (promo.nama_kategori) {
-            categoryInfo = `
-                <div class="flex items-center gap-1.5 mt-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-[#FEBB19]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-                    </svg>
-                    <span class="text-[#FEBB19] text-xs font-medium">${promo.nama_kategori}</span>
-                </div>`;
-        }
-
-        // Min order info
-        let minOrderInfo = '';
-        if (promo.min_order && Number(promo.min_order) > 0) {
-            minOrderInfo = `
-                <div class="flex items-center gap-1.5 mt-1">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-white/60" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z" />
-                    </svg>
-                    <span class="text-white/60 text-xs">Min. ${formatRupiah(promo.min_order)}</span>
-                </div>`;
-        }
-
-        // Voucher code display
-        let voucherCode = '';
-        if (promo.kode_promo) {
-            voucherCode = `
-                <div class="mt-3 bg-white/15 backdrop-blur-sm rounded-lg px-3 py-2 border border-white/20 
-                            flex items-center justify-between gap-2 cursor-pointer group/code hover:bg-white/25 transition-colors"
-                     onclick="copyPromoCode('${promo.kode_promo}', this)" title="Klik untuk menyalin kode">
-                    <div class="flex items-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-[#FEBB19]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" />
-                        </svg>
-                        <span class="text-white font-bold tracking-widest text-sm">${promo.kode_promo}</span>
-                    </div>
-                    <span class="text-white/50 text-xs group-hover/code:text-white/80 transition-colors copy-label">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                        </svg>
-                        Salin
-                    </span>
-                </div>`;
-        }
-
         return `
-            <div class="group relative bg-white rounded-3xl p-3 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 cursor-pointer h-[520px] promo-card"
-                 style="animation: fadeInUp 0.5s ease-out ${index * 0.1}s both;">
-                <!-- Type Badge -->
-                <div class="absolute top-6 left-6 z-20 text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-wider shadow-md transform ${rotation}"
+            <div class="w-full shrink-0 relative aspect-video md:aspect-[21/9] overflow-hidden cursor-pointer select-none">
+                <!-- Main Image -->
+                <img loading="lazy"
+                     class="w-full h-full object-cover transition-transform duration-700 ease-in-out"
+                     src="${imgSrc}" alt="${promo.nama_promo}"
+                     onerror="this.src='${basePath}assets/images/promo_default.png'">
+                
+                <!-- Bottom Dark Overlay to enhance text readability -->
+                <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent"></div>
+                
+                <!-- Top Left Badge -->
+                <div class="absolute top-6 left-6 z-20 text-xs font-extrabold px-4 py-1.5 rounded-full uppercase tracking-wider shadow-md transform rotate-2"
                      style="background-color: ${badge.bg}; color: ${badge.text};">
                     ${badge.label} ${promo.tipe_promo === 'bogo' ? '' : discountText}
                 </div>
                 ${urgencyBadge}
 
-                <!-- Image & Overlay -->
-                <div class="overflow-hidden rounded-2xl relative h-full w-full">
-                    <img loading="lazy"
-                         class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700 ease-in-out"
-                         src="${imgSrc}" alt="${promo.nama_promo}"
-                         onerror="this.src='${basePath}assets/images/promo_default.png'">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent opacity-90 transition-opacity duration-300 group-hover:opacity-100"></div>
+                <!-- Content Overlay -->
+                <div class="absolute bottom-0 left-0 p-6 md:p-8 w-full z-10 text-left">
+                    <!-- Discount Pill -->
+                    <div class="inline-block bg-[#FEBB19] text-[#8F0919] font-extrabold text-xs md:text-sm px-2.5 py-1 rounded-lg mb-2 shadow-md">
+                        ${promo.tipe_promo === 'bogo' ? 'BOGO FREE' : (promo.tipe_promo === 'percentage' ? `Diskon ${discountText}` : `Hemat ${discountText}`)}
+                    </div>
+
+                    <h3 class="text-xl md:text-3xl font-extrabold text-white mb-1.5 drop-shadow-md">${promo.nama_promo}</h3>
                     
-                    <!-- Content Overlay -->
-                    <div class="absolute bottom-0 left-0 p-6 w-full transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
-                        <!-- Discount Highlight -->
-                        <div class="inline-block bg-[#FEBB19] text-[#8F0919] font-extrabold text-lg px-3 py-1 rounded-lg mb-2 shadow-md">
-                            ${promo.tipe_promo === 'bogo' ? 'BOGO FREE' : (promo.tipe_promo === 'percentage' ? `Diskon ${discountText}` : `Hemat ${discountText}`)}
-                        </div>
+                    ${promo.deskripsi ? `<p class="text-white/75 text-xs md:text-sm mb-3 line-clamp-2 max-w-2xl">${promo.deskripsi}</p>` : ''}
 
-                        <h3 class="text-2xl font-bold text-white mb-1 drop-shadow-md">${promo.nama_promo}</h3>
-                        
-                        ${promo.deskripsi ? `<p class="text-white/70 text-sm mb-2 line-clamp-2">${promo.deskripsi}</p>` : ''}
-
-                        <!-- Period -->
-                        <div class="flex items-center gap-2 text-[#FEBB19] font-medium text-sm">
+                    <!-- Details Row -->
+                    <div class="flex flex-wrap items-center gap-x-5 gap-y-1">
+                        <div class="flex items-center gap-1.5 text-[#FEBB19] font-semibold text-xs md:text-sm">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                             </svg>
                             <span>${formatDate(promo.tanggal_mulai)} — ${formatDate(promo.tanggal_selesai)}</span>
                         </div>
 
-                        ${categoryInfo}
-                        ${minOrderInfo}
-                        ${voucherCode}
+                        ${promo.min_order && Number(promo.min_order) > 0 ? `
+                        <div class="flex items-center gap-1.5 text-white/60 text-xs md:text-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-[#FEBB19]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z" />
+                            </svg>
+                            <span>Min. ${formatRupiah(promo.min_order)}</span>
+                        </div>` : ''}
                     </div>
+
+                    <!-- Voucher code -->
+                    ${promo.kode_promo ? `
+                    <div class="mt-3.5 inline-flex items-center gap-2.5 bg-white/15 backdrop-blur-md hover:bg-white/25 border border-white/20 px-3.5 py-1.5 rounded-xl cursor-pointer transition-all duration-300 group/code"
+                         onclick="event.stopPropagation(); copyPromoCode('${promo.kode_promo}', this)" title="Klik untuk menyalin kode">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-[#FEBB19]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" />
+                        </svg>
+                        <span class="text-white font-bold tracking-widest text-xs md:text-sm">${promo.kode_promo}</span>
+                        <div class="h-3 w-px bg-white/30"></div>
+                        <span class="text-white/70 text-xs font-semibold group-hover/code:text-white transition-colors copy-label">Salin</span>
+                    </div>` : ''}
                 </div>
             </div>`;
     };
@@ -171,11 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
             await navigator.clipboard.writeText(code);
             const label = el.querySelector('.copy-label');
             const originalHTML = label.innerHTML;
-            label.innerHTML = `
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                </svg>
-                <span class="text-green-400">Tersalin!</span>`;
+            label.innerHTML = `<span class="text-green-400">Tersalin!</span>`;
             setTimeout(() => { label.innerHTML = originalHTML; }, 2000);
         } catch (err) {
             // Fallback for older browsers
@@ -188,20 +156,152 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    // Initialize carousel slider behavior
+    const initCarousel = (slideCount) => {
+        if (slideCount <= 0) return;
+
+        let currentIndex = 0;
+        let startX = 0;
+        let currentTranslate = 0;
+        let prevTranslate = 0;
+        let isDragging = false;
+        let autoPlayTimer = null;
+
+        const updateCarousel = () => {
+            const offset = -currentIndex * 100;
+            promoTrack.style.transform = `translateX(${offset}%)`;
+
+            // Update dots to match active red-pill / inactive gray dots style
+            const dots = dotsContainer.querySelectorAll('.carousel-dot');
+            dots.forEach((dot, i) => {
+                if (i === currentIndex) {
+                    dot.className = 'carousel-dot bg-[#BA0000] w-6 h-2 rounded-full transition-all duration-300 cursor-pointer';
+                } else {
+                    dot.className = 'carousel-dot bg-gray-300 w-2 h-2 rounded-full transition-all duration-300 cursor-pointer';
+                }
+            });
+        };
+
+        const nextSlide = () => {
+            currentIndex = (currentIndex + 1) % slideCount;
+            updateCarousel();
+        };
+
+        const prevSlide = () => {
+            currentIndex = (currentIndex - 1 + slideCount) % slideCount;
+            updateCarousel();
+        };
+
+        const startAutoPlay = () => {
+            stopAutoPlay();
+            autoPlayTimer = setInterval(nextSlide, 4000);
+        };
+
+        const stopAutoPlay = () => {
+            if (autoPlayTimer) {
+                clearInterval(autoPlayTimer);
+                autoPlayTimer = null;
+            }
+        };
+
+        // Navigation Buttons
+        if (prevBtn) {
+            prevBtn.onclick = () => {
+                prevSlide();
+                startAutoPlay();
+            };
+        }
+        if (nextBtn) {
+            nextBtn.onclick = () => {
+                nextSlide();
+                startAutoPlay();
+            };
+        }
+
+        // Indicator Dots clicking
+        const dots = dotsContainer.querySelectorAll('.carousel-dot');
+        dots.forEach((dot) => {
+            dot.onclick = () => {
+                const idx = parseInt(dot.getAttribute('data-index'), 10);
+                currentIndex = idx;
+                updateCarousel();
+                startAutoPlay();
+            };
+        });
+
+        // Swipe & Drag Events
+        const handleDragStart = (e) => {
+            isDragging = true;
+            stopAutoPlay();
+            startX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
+            promoTrack.style.transition = 'none';
+        };
+
+        const handleDragMove = (e) => {
+            if (!isDragging) return;
+            const currentX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
+            const diffX = currentX - startX;
+
+            const width = promoContainer.offsetWidth;
+            const percentage = (diffX / width) * 100;
+            const baseOffset = -currentIndex * 100;
+            currentTranslate = baseOffset + percentage;
+
+            promoTrack.style.transform = `translateX(${currentTranslate}%)`;
+        };
+
+        const handleDragEnd = () => {
+            if (!isDragging) return;
+            isDragging = false;
+
+            promoTrack.style.transition = 'transform 0.5s ease-out';
+
+            const width = promoContainer.offsetWidth;
+            const baseOffset = -currentIndex * 100;
+            const diffPct = currentTranslate - baseOffset;
+
+            if (diffPct < -15) {
+                currentIndex = (currentIndex + 1) % slideCount;
+            } else if (diffPct > 15) {
+                currentIndex = (currentIndex - 1 + slideCount) % slideCount;
+            }
+
+            updateCarousel();
+            startAutoPlay();
+        };
+
+        // Attach listeners
+        promoTrack.addEventListener('mousedown', handleDragStart);
+        promoTrack.addEventListener('mousemove', handleDragMove);
+        window.addEventListener('mouseup', handleDragEnd);
+
+        promoTrack.addEventListener('touchstart', handleDragStart, { passive: true });
+        promoTrack.addEventListener('touchmove', handleDragMove, { passive: true });
+        promoTrack.addEventListener('touchend', handleDragEnd);
+
+        // Autoplay play/pause on mouse hover
+        promoContainer.onmouseenter = stopAutoPlay;
+        promoContainer.onmouseleave = startAutoPlay;
+
+        // Initialize state
+        updateCarousel();
+        startAutoPlay();
+    };
+
     // Fetch and render promos
     const loadPromos = async () => {
-        promoLoading.classList.remove('hidden');
-        promoGrid.innerHTML = '';
-        promoEmpty.classList.add('hidden');
+        if (promoLoading) promoLoading.classList.remove('hidden');
+        if (promoTrack) promoTrack.innerHTML = '';
+        if (promoEmpty) promoEmpty.classList.add('hidden');
 
         try {
             const res = await fetch(`${basePath}api/promo/read_public.php`);
             const json = await res.json();
 
-            promoLoading.classList.add('hidden');
+            if (promoLoading) promoLoading.classList.add('hidden');
 
             if (json.status !== 'success' || !json.data || json.data.length === 0) {
-                promoEmpty.classList.remove('hidden');
+                if (promoEmpty) promoEmpty.classList.remove('hidden');
                 if (promoCount) promoCount.textContent = '0';
                 return;
             }
@@ -209,15 +309,26 @@ document.addEventListener('DOMContentLoaded', () => {
             const promos = json.data;
             if (promoCount) promoCount.textContent = promos.length;
 
-            promoGrid.innerHTML = promos.map((promo, i) => buildPromoCard(promo, i)).join('');
+            // Render slides
+            promoTrack.innerHTML = promos.map((promo, i) => buildPromoCard(promo, i)).join('');
+
+            // Render navigation dots
+            if (dotsContainer) {
+                dotsContainer.innerHTML = promos.map((_, i) => `
+                    <button class="carousel-dot bg-gray-300 w-2 h-2 rounded-full transition-all duration-300 cursor-pointer" data-index="${i}"></button>
+                `).join('');
+            }
+
+            // Initialize carousel actions
+            initCarousel(promos.length);
 
         } catch (err) {
-            promoLoading.classList.add('hidden');
-            promoEmpty.classList.remove('hidden');
+            if (promoLoading) promoLoading.classList.add('hidden');
+            if (promoEmpty) promoEmpty.classList.remove('hidden');
             console.error('Gagal memuat promo:', err);
         }
     };
 
-    // Start
+    // Start loading
     loadPromos();
 });
