@@ -25,7 +25,7 @@
 <body class="bg-white font-sans">
 
     <!-- Navbar Header -->
-    <header class="w-screen sticky top-0 bg-white md:fixed md:bg-transparent sm:bg-transparent z-50">
+    <header class="w-full sticky top-0 bg-white md:fixed md:bg-transparent sm:bg-transparent z-50">
         <div class="mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
             <a href="#" class="">
                 <img loading="lazy" class="h-15 w-15 rounded-full" src="assets/icon/Logo_Burgerlicious_square.png"
@@ -49,7 +49,7 @@
     </header>
 
     <!-- Hero Section -->
-    <section id="home" class="w-full max-h-screen bg-linear-to-b from-[#BA0000] to-[#5D0303]">
+    <section id="home" class="w-full max-h-screen">
         <div class="flex flex-col items-center py-9">
             <img loading="lazy" src="assets/images/Hero_section.png" alt="Hero Burger" class="w-2/3">
 
@@ -65,89 +65,122 @@
     </section>
 
     <!-- Promo Section -->
-    <section id="promo" class="relative bg-[#FEBB19] py-16 md:py-24 overflow-hidden">
+    <section id="promo" class="relative py-16 md:py-24 overflow-hidden">
         <!-- Dekorasi Background -->
-        <div class="absolute top-0 left-0 w-64 h-64 bg-white opacity-20 rounded-full blur-3xl -ml-20 -mt-20"></div>
-        <div class="absolute bottom-0 right-0 w-80 h-80 bg-[#BA0000] opacity-10 rounded-full blur-3xl -mr-20 -mb-20">
-        </div>
+
+        <!-- Background circles, offset to not interfere with top transitions -->
+        <div class="absolute top-20 left-0 w-64 h-64 bg-white opacity-10 rounded-full blur-3xl -ml-20"></div>
+        <div class="absolute bottom-24 right-0 w-80 h-80 bg-black opacity-15 rounded-full blur-3xl -mr-20"></div>
 
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div class="text-center mb-16">
-                <h2 class="text-4xl md:text-5xl font-extrabold text-[#BA0000] mb-4 drop-shadow-sm">
-                    Promo Menarik
+            <div class="text-center mb-12 flex flex-col items-center">
+                <!-- Title -->
+                <h2 class="text-5xl md:text-7xl font-extrabold text-white leading-tight tracking-tight mb-6 drop-shadow-lg uppercase">
+                    CYBER SALE <br class="hidden sm:inline">
+                    <span class="text-yellow-400">30% OFF</span>
                 </h2>
-                <p class="text-xl text-white font-medium drop-shadow-sm">Penawaran terbatas, jangan sampai terlewatkan!
-                </p>
+                <!-- Voucher Code and Subtitle -->
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-4 max-w-3xl">
+                    <p class="text-sm md:text-base text-white/90 font-medium max-w-md text-center sm:text-sm drop-shadow-sm">
+                        Jangan lewatkan kesempatan emas untuk menikmati menu lezat kami dengan diskon hingga 30%.
+                    </p>
+                </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-10 mb-16">
-                <!-- Promo 1 -->
-                <div
-                    class="group relative bg-white rounded-3xl p-3 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 cursor-pointer h-full">
-                    <div
-                        class="absolute top-6 left-6 z-20 bg-[#BD0202] text-white text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-wider shadow-md transform -rotate-3">
-                        Terbatas
-                    </div>
-                    <div class="overflow-hidden rounded-2xl relative">
-                        <img loading="lazy"
-                            class="w-full h-auto object-cover transform group-hover:scale-110 transition-transform duration-700 ease-in-out"
-                            src="assets/images/Promo_ramadhan.png" alt="Promo Ramadhan">
-                        <!-- Overlay Gradient -->
-                        <div
-                            class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-90 transition-opacity duration-300 group-hover:opacity-100">
-                        </div>
-                        <div
-                            class="absolute bottom-0 left-0 p-6 w-full transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
-                            <h3 class="text-2xl font-bold text-white mb-1 drop-shadow-md">Berkah Ramadhan</h3>
-                            <div class="flex items-center gap-2 text-[#FFAD5B] font-medium text-sm">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
-                                    stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
-                                <span>Berlaku hingga 18 Maret 2026</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <!-- Continuous Moving Marquee of Promo Cards -->
+            <div id="promo-marquee" class="w-full overflow-hidden py-8 flex relative select-none cursor-grab active:cursor-grabbing">
 
-                <div class="flex flex-col gap-10 h-full">
-                    <!-- Promo 2 -->
-                    <div
-                        class="group relative bg-white rounded-3xl p-3 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 cursor-pointer">
-                        <div
-                            class="absolute top-6 left-6 z-20 bg-[#FFAD5B] text-[#BD0202] text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-wider shadow-md transform rotate-3">
+                <!-- Track 1 -->
+                <div class="animate-marquee flex gap-6 pr-6 shrink-0">
+                    <!-- Card 1: Promo Mantap Kamis -->
+                    <div class="group relative bg-white rounded-3xl p-3 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 cursor-pointer w-[320px] md:w-[460px] shrink-0 h-[200px] md:h-[290px] flex flex-col">
+                        <div class="absolute top-6 left-6 z-20 bg-yellow-400 text-red-600 text-xs font-extrabold px-4 py-1.5 rounded-full uppercase tracking-wider shadow-md transform rotate-3">
                             Setiap Kamis
                         </div>
-                        <div class="overflow-hidden rounded-2xl relative">
-                            <img loading="lazy"
-                                class="w-full h-auto object-cover transform group-hover:scale-110 transition-transform duration-700 ease-in-out"
-                                src="assets/images/Promo_mantap_kamis.png" alt="Promo Mantap Kamis">
-                            <div
-                                class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-90 transition-opacity duration-300 group-hover:opacity-100">
-                            </div>
-                            <div
-                                class="absolute bottom-0 left-0 p-6 w-full transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
-                                <h3 class="text-2xl font-bold text-white mb-1 drop-shadow-md">Mantap Kamis</h3>
-                                <div class="flex items-center gap-2 text-[#FFAD5B] font-medium text-sm">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
-                                        viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                    </svg>
-                                    <span>Diskon spesial setiap hari Kamis</span>
-                                </div>
-                            </div>
+                        <div class="overflow-hidden rounded-2xl relative flex-1">
+                            <img loading="lazy" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-in-out" src="assets/images/Promo_mantap_kamis.png" alt="Promo Mantap Kamis">
+                        </div>
+                    </div>
+
+                    <!-- Card 2: Tawaran Spesial -->
+                    <div class="group relative bg-white rounded-3xl p-3 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 cursor-pointer w-[320px] md:w-[460px] shrink-0 h-[200px] md:h-[290px] flex flex-col">
+                        <div class="absolute top-6 left-6 z-20 bg-red-600 text-white text-xs font-extrabold px-4 py-1.5 rounded-full uppercase tracking-wider shadow-md transform -rotate-3">
+                            Terbatas
+                        </div>
+                        <div class="overflow-hidden rounded-2xl relative flex-1">
+                            <img loading="lazy" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-in-out" src="assets/images/promo3.jpeg" alt="Tawaran Spesial">
+                        </div>
+                    </div>
+
+                    <!-- Card 3: Double Meat Burger -->
+                    <div class="group relative bg-white rounded-3xl p-3 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 cursor-pointer w-[320px] md:w-[460px] shrink-0 h-[200px] md:h-[290px] flex flex-col">
+                        <div class="absolute top-6 left-6 z-20 bg-yellow-400 text-red-600 text-xs font-extrabold px-4 py-1.5 rounded-full uppercase tracking-wider shadow-md transform rotate-3">
+                            Rekomendasi
+                        </div>
+                        <div class="overflow-hidden rounded-2xl relative flex-1">
+                            <img loading="lazy" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-in-out" src="assets/images/doublemeatburger.png" alt="Double Meat Burger">
+                        </div>
+                    </div>
+
+                    <!-- Card 4: Truffle Mushroom Burger -->
+                    <div class="group relative bg-white rounded-3xl p-3 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 cursor-pointer w-[320px] md:w-[460px] shrink-0 h-[200px] md:h-[290px] flex flex-col">
+                        <div class="absolute top-6 left-6 z-20 bg-yellow-400 text-red-600 text-xs font-extrabold px-4 py-1.5 rounded-full uppercase tracking-wider shadow-md transform -rotate-3">
+                            Menu Baru
+                        </div>
+                        <div class="overflow-hidden rounded-2xl relative flex-1">
+                            <img loading="lazy" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-in-out" src="assets/images/new_truffle_mushwoom.png" alt="Truffle Mushroom Burger">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Track 2 (Duplicate for seamless scroll) -->
+                <div class="animate-marquee flex gap-6 pr-6 shrink-0" aria-hidden="true">
+                    <!-- Card 1: Promo Mantap Kamis -->
+                    <div class="group relative bg-white rounded-3xl p-3 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 cursor-pointer w-[320px] md:w-[460px] shrink-0 h-[200px] md:h-[290px] flex flex-col">
+                        <div class="absolute top-6 left-6 z-20 bg-yellow-400 text-red-600 text-xs font-extrabold px-4 py-1.5 rounded-full uppercase tracking-wider shadow-md transform rotate-3">
+                            Setiap Kamis
+                        </div>
+                        <div class="overflow-hidden rounded-2xl relative flex-1">
+                            <img loading="lazy" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-in-out" src="assets/images/Promo_mantap_kamis.png" alt="Promo Mantap Kamis">
+                        </div>
+                    </div>
+
+                    <!-- Card 2: Tawaran Spesial -->
+                    <div class="group relative bg-white rounded-3xl p-3 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 cursor-pointer w-[320px] md:w-[460px] shrink-0 h-[200px] md:h-[290px] flex flex-col">
+                        <div class="absolute top-6 left-6 z-20 bg-red-600 text-white text-xs font-extrabold px-4 py-1.5 rounded-full uppercase tracking-wider shadow-md transform -rotate-3">
+                            Terbatas
+                        </div>
+                        <div class="overflow-hidden rounded-2xl relative flex-1">
+                            <img loading="lazy" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-in-out" src="assets/images/promo3.jpeg" alt="Tawaran Spesial">
+                        </div>
+                    </div>
+
+                    <!-- Card 3: Double Meat Burger -->
+                    <div class="group relative bg-white rounded-3xl p-3 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 cursor-pointer w-[320px] md:w-[460px] shrink-0 h-[200px] md:h-[290px] flex flex-col">
+                        <div class="absolute top-6 left-6 z-20 bg-yellow-400 text-red-600 text-xs font-extrabold px-4 py-1.5 rounded-full uppercase tracking-wider shadow-md transform rotate-3">
+                            Rekomendasi
+                        </div>
+                        <div class="overflow-hidden rounded-2xl relative flex-1">
+                            <img loading="lazy" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-in-out" src="assets/images/doublemeatburger.png" alt="Double Meat Burger">
+                        </div>
+                    </div>
+
+                    <!-- Card 4: Truffle Mushroom Burger -->
+                    <div class="group relative bg-white rounded-3xl p-3 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 cursor-pointer w-[320px] md:w-[460px] shrink-0 h-[200px] md:h-[290px] flex flex-col">
+                        <div class="absolute top-6 left-6 z-20 bg-yellow-400 text-red-600 text-xs font-extrabold px-4 py-1.5 rounded-full uppercase tracking-wider shadow-md transform -rotate-3">
+                            Menu Baru
+                        </div>
+                        <div class="overflow-hidden rounded-2xl relative flex-1">
+                            <img loading="lazy" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-in-out" src="assets/images/new_truffle_mushwoom.png" alt="Truffle Mushroom Burger">
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="flex justify-center">
+            <!-- "Lihat Promo Lainnya" button at the bottom -->
+            <div class="flex justify-center mt-12">
                 <a href="./public/pages/promo.html"
-                    class="group relative inline-flex items-center justify-center px-8 py-3.5 text-base font-bold text-white transition-all duration-300 bg-[#BA0000] rounded-full hover:bg-[#8F0919] hover:shadow-[0_0_20px_rgba(186,0,0,0.4)] overflow-hidden">
-                    <span
-                        class="absolute inset-0 w-full h-full rounded-full opacity-30 bg-gradient-to-b from-transparent via-transparent to-black"></span>
+                    class="group relative inline-flex items-center justify-center px-10 py-4 text-base font-bold text-red-600 transition-all duration-300 bg-white rounded-full hover:bg-yellow-400 hover:text-red-700 hover:shadow-[0_0_30px_rgba(255,255,255,0.4)] overflow-hidden">
                     <span class="relative">Lihat Promo Lainnya</span>
                     <svg class="w-5 h-5 ml-2 transition-transform duration-300 group-hover:translate-x-1 relative"
                         fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -157,17 +190,15 @@
                 </a>
             </div>
         </div>
-
-
     </section>
 
     <!-- Menu Section -->
-    <section id="menu" class="bg-linear-to-b from-[#BA0000] to-[#5D0303] py-16 md:py-24">
+    <section id="home-menu" class="py-16 md:py-24">
         <div class="py-12 mb-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-16">
-                <h1 class="text-5xl font-extrabold text-white mb-4 drop-shadow-md">Menu <span
-                        class="text-[#FEBB19]">Best Seller</span></h1>
-                <p class="text-lg text-white/80 font-medium max-w-2xl mx-auto">Pilihan favorit pelanggan kami. Roti
+                <h1 class="text-5xl font-extrabold text-[#8F0919] mb-4 drop-shadow-sm">Menu <span
+                        class="text-[#BA0000]">Best Seller</span></h1>
+                <p class="text-lg text-red-950/80 font-medium max-w-2xl mx-auto">Pilihan favorit pelanggan kami. Roti
                     lembut dengan isian daging premium yang dijamin bikin Anda ketagihan!</p>
             </div>
 
@@ -279,7 +310,7 @@
 
         <div class="flex justify-center mt-8 px-4 sm:px-6 pb-12">
             <a href="./public/pages/menu.html"
-                class="group relative inline-flex items-center justify-center px-8 py-3.5 text-base font-bold text-[#5D0303] transition-all duration-300 bg-[#FEBB19] rounded-full hover:bg-yellow-400 hover:shadow-[0_0_20px_rgba(254,187,25,0.4)] overflow-hidden">
+                class="group relative inline-flex items-center justify-center px-10 py-4 text-base font-bold text-red-600 transition-all duration-300 bg-white rounded-full hover:bg-yellow-400 hover:text-red-700 hover:shadow-[0_0_30px_rgba(255,255,255,0.4)] overflow-hidden">
                 <span class="relative">Lihat Seluruh Menu</span>
                 <svg class="w-5 h-5 ml-2 transition-transform duration-300 group-hover:translate-x-1 relative"
                     fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -293,7 +324,7 @@
     </section>
 
     <!-- CTA PEMBELIAN -->
-    <section id="order-cta" class="py-16 bg-linear-to-r from-[#BA0000] to-[#5D0303] relative overflow-hidden">
+    <section id="order-cta" class="py-16 relative overflow-hidden">
         <div
             class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-transparent via-[#000000]/20 to-[#000000]/40">
         </div>
@@ -304,9 +335,9 @@
                 favoritmu dari menu fresh kami, siap dihidangkan hangat langsung untukmu. Bahagiakan perutmu hari ini!
             </p>
             <a href="./public/pages/menu.html"
-                class="inline-flex items-center justify-center px-10 py-4 text-lg font-bold text-[#5D0303] bg-[#FEBB19] rounded-full hover:bg-yellow-400 hover:scale-105 transition-all duration-300 shadow-[0_0_20px_rgba(254,187,25,0.4)]">
-                Pesan Sekarang
-                <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                class="group relative inline-flex items-center justify-center px-10 py-4 text-lg font-bold text-red-600 transition-all duration-300 bg-white rounded-full hover:bg-yellow-400 hover:text-red-700 hover:scale-105 hover:shadow-[0_0_30px_rgba(255,255,255,0.4)] overflow-hidden">
+                <span class="relative">Pesan Sekarang</span>
+                <svg class="w-5 h-5 ml-2 transition-transform duration-300 group-hover:translate-x-1 relative" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                     xmlns="http://www.w3.org/2000/svg">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
@@ -380,6 +411,7 @@
 
     <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
     <script src="./public/frontend/js/session.js?v=14"></script>
+    <script src="./public/frontend/js/promo-drag.js"></script>
 </body>
 
 </html>
