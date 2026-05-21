@@ -36,14 +36,6 @@ function initializeSidebar() {
                 }).join('')}
             </div>
             <div class="mt-auto px-4">
-                <div class="flex items-center gap-3 p-4 bg-surface-container-low rounded-xl mb-4">
-                    <img class="w-10 h-10 rounded-full object-cover"
-                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuC8Cu_BIerUaUneo_LN-UBetnxt_RAVsG3RKh76Cd3_aIa2x1fs6W6x3sBlzSvmdraNm8JrNL3qRptRtDbGKWDT07KUjrO0cO_3-Uyv0o-YGtg2VLBeOIlDMO_5C9Lhiv-t10UO9VhDg2pGQtEurYnQI4FLc6YTSjtEVi3tDuqSgNyl_-reVQ7p5mMqc5i6FrqPbplc2SyKv4aX1PiqG_9DYi_624HH1nT9bd4vLj1GFtXfe0JawSEUE_mF-WLBEqlUiyukvI9sPhM" />
-                    <div>
-                        <p class="font-bold text-on-surface text-xs">Admin User</p>
-                        <p class="text-[10px] text-on-surface-variant">Admin User Profile</p>
-                    </div>
-                </div>
                 <a href="${basePath}auth/logout.php"
                     class="w-full py-3 px-4 text-red-600 font-bold hover:bg-red-50 rounded-full transition-colors flex items-center justify-center gap-2">
                     <span class="material-symbols-outlined" data-icon="logout">logout</span>

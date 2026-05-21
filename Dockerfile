@@ -21,5 +21,7 @@ COPY . .
 
 # Set permissions for Apache
 RUN chown -R www-data:www-data /var/www/html \
+    && mkdir -p /var/www/html/assets/images/menu \
+    && mkdir -p /var/www/html/assets/images/promo \
     && chmod -R 777 /var/www/html/assets/images/menu/ \
     && chmod -R 777 /var/www/html/assets/images/promo/
