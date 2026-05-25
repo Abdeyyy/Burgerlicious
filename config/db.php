@@ -32,3 +32,16 @@ if ($conn->connect_error) {
 }
 
 $conn->set_charset('utf8mb4');
+
+// Pastikan tabel remember_tokens tersedia secara dinamis
+$conn->query("CREATE TABLE IF NOT EXISTS `remember_tokens` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id_user` int(11) NOT NULL,
+  `selector` varchar(16) NOT NULL,
+  `token_hash` varchar(64) NOT NULL,
+  `expires_at` datetime NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `selector` (`selector`),
+  KEY `fk_remember_user` (`id_user`),
+  CONSTRAINT `fk_remember_user` FOREIGN KEY (`id_user`) REFERENCES `user` (`id_user`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");

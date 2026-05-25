@@ -34,7 +34,6 @@ if (isset($_FILES['gambar']) && $_FILES['gambar']['error'] === UPLOAD_ERR_OK) {
     $fileName = $_FILES['gambar']['name'];
     $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
     
-    $newFileName = md5(time() . $fileName) . '.webp';
     $uploadFileDir = __DIR__ . '/../../assets/images/menu/';
     
     // Ensure directory exists
@@ -42,30 +41,53 @@ if (isset($_FILES['gambar']) && $_FILES['gambar']['error'] === UPLOAD_ERR_OK) {
         mkdir($uploadFileDir, 0775, true);
     }
     
-    $dest_path = $uploadFileDir . $newFileName;
+    $upload_success = false;
 
-    $image = null;
-    if ($fileExtension == 'jpg' || $fileExtension == 'jpeg') {
-        $image = imagecreatefromjpeg($fileTmpPath);
-    } else if ($fileExtension == 'png') {
-        $image = imagecreatefrompng($fileTmpPath);
-        imagepalettetotruecolor($image);
-        imagealphablending($image, false);
-        imagesavealpha($image, true);
-    } else if ($fileExtension == 'webp') {
-        $image = imagecreatefromwebp($fileTmpPath);
+    // Cek apakah ekstensi GD aktif
+    if (function_exists('imagewebp')) {
+        $newFileName = md5(time() . $fileName) . '.webp';
+        $dest_path = $uploadFileDir . $newFileName;
+        $image = null;
+        
+        if (($fileExtension == 'jpg' || $fileExtension == 'jpeg') && function_exists('imagecreatefromjpeg')) {
+            $image = @imagecreatefromjpeg($fileTmpPath);
+        } else if ($fileExtension == 'png' && function_exists('imagecreatefrompng')) {
+            $image = @imagecreatefrompng($fileTmpPath);
+            if ($image) {
+                imagepalettetotruecolor($image);
+                imagealphablending($image, false);
+                imagesavealpha($image, true);
+            }
+        } else if ($fileExtension == 'webp' && function_exists('imagecreatefromwebp')) {
+            $image = @imagecreatefromwebp($fileTmpPath);
+        }
+
+        if ($image) {
+            if (@imagewebp($image, $dest_path, 80)) {
+                // Hapus gambar lama jika ada
+                $oldImagePath = __DIR__ . '/../../' . $old_image;
+                if ($old_image && file_exists($oldImagePath)) {
+                    @unlink($oldImagePath);
+                }
+                $gambar_url = 'assets/images/menu/' . $newFileName;
+                $upload_success = true;
+            }
+            imagedestroy($image);
+        }
     }
 
-    if ($image) {
-        if (imagewebp($image, $dest_path, 80)) {
+    // Fallback: Jika GD tidak aktif atau konversi gagal, upload file asli secara langsung
+    if (!$upload_success) {
+        $newFileName = md5(time() . $fileName) . '.' . $fileExtension;
+        $dest_path = $uploadFileDir . $newFileName;
+        if (move_uploaded_file($fileTmpPath, $dest_path)) {
             // Hapus gambar lama jika ada
             $oldImagePath = __DIR__ . '/../../' . $old_image;
             if ($old_image && file_exists($oldImagePath)) {
-                unlink($oldImagePath);
+                @unlink($oldImagePath);
             }
             $gambar_url = 'assets/images/menu/' . $newFileName;
         }
-        imagedestroy($image);
     }
 }
 

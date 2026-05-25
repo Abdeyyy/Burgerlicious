@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const emails    = document.querySelectorAll('#email');
     const passwords = document.querySelectorAll('#password');
     const showPasses= document.querySelectorAll('#showPassword');
+    const rememberMes=document.querySelectorAll('#rememberMe');
     const btnLogins = document.querySelectorAll('#btnLogin');
     const emailErrs = document.querySelectorAll('#emailError');
     const passErrs  = document.querySelectorAll('#passwordError');
@@ -9,12 +10,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
     for (let i = 0; i < btnLogins.length; i++) {
         setupForm(
-            emails[i], passwords[i], showPasses[i], btnLogins[i], 
+            emails[i], passwords[i], showPasses[i], rememberMes[i], btnLogins[i], 
             emailErrs[i], passErrs[i], formMsgs[i]
         );
     }
 
-    function setupForm(emailInput, passwordInput, showPassCheck, submitBtn, emailError, passwordError, formMessage) {
+    function setupForm(emailInput, passwordInput, showPassCheck, rememberMeCheck, submitBtn, emailError, passwordError, formMessage) {
         if (!submitBtn || !emailInput || !passwordInput) return;
         
         showPassCheck.addEventListener('change', function () {
@@ -88,6 +89,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const formData = new FormData();
             formData.append('email', emailInput.value.trim());
             formData.append('password', passwordInput.value);
+            formData.append('remember', rememberMeCheck && rememberMeCheck.checked ? '1' : '0');
 
             try {
                 const basePath = window.location.pathname.includes('/public/pages/') ? '../../' : './';

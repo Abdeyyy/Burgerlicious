@@ -73,32 +73,49 @@ if (isset($_FILES['gambar']) && $_FILES['gambar']['error'] === UPLOAD_ERR_OK) {
     $fileNameCmps = explode(".", $fileName);
     $fileExtension = strtolower(end($fileNameCmps));
 
-    $newFileName = md5(time() . $fileName) . '.webp';
     $uploadFileDir = __DIR__ . '/../../assets/images/promo/';
     
     if (!is_dir($uploadFileDir)) {
         mkdir($uploadFileDir, 0777, true);
     }
     
-    $dest_path = $uploadFileDir . $newFileName;
+    $upload_success = false;
 
-    $image = null;
-    if ($fileExtension == 'jpg' || $fileExtension == 'jpeg') {
-        $image = imagecreatefromjpeg($fileTmpPath);
-    } else if ($fileExtension == 'png') {
-        $image = imagecreatefrompng($fileTmpPath);
-        imagepalettetotruecolor($image);
-        imagealphablending($image, false);
-        imagesavealpha($image, true);
-    } else if ($fileExtension == 'webp') {
-        $image = imagecreatefromwebp($fileTmpPath);
+    // Cek apakah ekstensi GD aktif
+    if (function_exists('imagewebp')) {
+        $newFileName = md5(time() . $fileName) . '.webp';
+        $dest_path = $uploadFileDir . $newFileName;
+        $image = null;
+        
+        if (($fileExtension == 'jpg' || $fileExtension == 'jpeg') && function_exists('imagecreatefromjpeg')) {
+            $image = @imagecreatefromjpeg($fileTmpPath);
+        } else if ($fileExtension == 'png' && function_exists('imagecreatefrompng')) {
+            $image = @imagecreatefrompng($fileTmpPath);
+            if ($image) {
+                imagepalettetotruecolor($image);
+                imagealphablending($image, false);
+                imagesavealpha($image, true);
+            }
+        } else if ($fileExtension == 'webp' && function_exists('imagecreatefromwebp')) {
+            $image = @imagecreatefromwebp($fileTmpPath);
+        }
+
+        if ($image) {
+            if (@imagewebp($image, $dest_path, 80)) {
+                $gambar_url = 'assets/images/promo/' . $newFileName;
+                $upload_success = true;
+            }
+            imagedestroy($image);
+        }
     }
 
-    if ($image) {
-        if (imagewebp($image, $dest_path, 80)) {
+    // Fallback: Jika GD tidak aktif atau konversi gagal, upload file asli secara langsung
+    if (!$upload_success) {
+        $newFileName = md5(time() . $fileName) . '.' . $fileExtension;
+        $dest_path = $uploadFileDir . $newFileName;
+        if (move_uploaded_file($fileTmpPath, $dest_path)) {
             $gambar_url = 'assets/images/promo/' . $newFileName;
         }
-        imagedestroy($image);
     }
 }
 

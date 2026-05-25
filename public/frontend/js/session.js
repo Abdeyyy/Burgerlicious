@@ -1,3 +1,33 @@
+// Intercept fetch secara global untuk melampirkan X-XSRF-TOKEN header pada request mutasi (POST/PUT/DELETE/PATCH)
+(function() {
+    const originalFetch = window.fetch;
+    window.fetch = function (url, options = {}) {
+        const method = (options.method || 'GET').toUpperCase();
+        if (['POST', 'PUT', 'DELETE', 'PATCH'].includes(method)) {
+            // Dapatkan token CSRF dari cookie XSRF-TOKEN
+            const xsrfToken = document.cookie
+                .split('; ')
+                .find(row => row.startsWith('XSRF-TOKEN='))
+                ?.split('=')[1];
+
+            if (xsrfToken) {
+                options.headers = options.headers || {};
+                if (options.headers instanceof Headers) {
+                    options.headers.set('X-XSRF-TOKEN', decodeURIComponent(xsrfToken));
+                } else if (Array.isArray(options.headers)) {
+                    const hasToken = options.headers.some(h => h[0].toLowerCase() === 'x-xsrf-token');
+                    if (!hasToken) {
+                        options.headers.push(['X-XSRF-TOKEN', decodeURIComponent(xsrfToken)]);
+                    }
+                } else {
+                    options.headers['X-XSRF-TOKEN'] = decodeURIComponent(xsrfToken);
+                }
+            }
+        }
+        return originalFetch(url, options);
+    };
+})();
+
 document.addEventListener('DOMContentLoaded', async function () {
     const basePath = window.location.pathname.includes('/public/pages/') ? '../../' : './';
 

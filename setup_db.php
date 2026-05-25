@@ -62,6 +62,25 @@ if ($conn->query($sql_table) === TRUE) {
     die("Error creating table user: " . $conn->error . "\n");
 }
 
+// Tambah Tabel Remember Tokens
+$sql_remember = "CREATE TABLE IF NOT EXISTS `remember_tokens` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id_user` int(11) NOT NULL,
+  `selector` varchar(16) NOT NULL,
+  `token_hash` varchar(64) NOT NULL,
+  `expires_at` datetime NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `selector` (`selector`),
+  KEY `fk_remember_user` (`id_user`),
+  CONSTRAINT `fk_remember_user` FOREIGN KEY (`id_user`) REFERENCES `user` (`id_user`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
+
+if ($conn->query($sql_remember) === TRUE) {
+    echo "Tabel remember_tokens siap!\n";
+} else {
+    die("Error creating table remember_tokens: " . $conn->error . "\n");
+}
+
 // Tambah Tabel Kategori Menu
 $sql_kategori = "CREATE TABLE IF NOT EXISTS `kategori_menu` (
   `id_kategori` int(11) NOT NULL AUTO_INCREMENT,

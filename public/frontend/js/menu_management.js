@@ -160,7 +160,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 method: 'POST',
                 body: formData
             });
-            const result = await response.json();
+            
+            const responseText = await response.text();
+            let result;
+            try {
+                result = JSON.parse(responseText);
+            } catch (jsonError) {
+                console.error('Failed to parse JSON. Raw response:', responseText);
+                alert('Server returned invalid response: ' + responseText.substring(0, 500));
+                return;
+            }
             
             if (result.status === 'success') {
                 closeModal();
@@ -171,7 +180,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         } catch (error) {
             console.error('Error saving menu:', error);
-            alert('An error occurred while saving.');
+            alert('An error occurred while saving: ' + error.message);
         }
     });
 
