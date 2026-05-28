@@ -43,6 +43,9 @@ $sql_table = "CREATE TABLE IF NOT EXISTS `user` (
   `code_expires_at` datetime DEFAULT NULL,
   `reset_code` varchar(6) DEFAULT NULL,
   `reset_expires_at` datetime DEFAULT NULL,
+  `telepon` varchar(15) DEFAULT NULL,
+  `alamat` text DEFAULT NULL,
+  `foto_profil` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id_user`),
   UNIQUE KEY `email` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
@@ -57,6 +60,15 @@ if ($check_reset_code->num_rows == 0) {
     $conn->query("ALTER TABLE `user` ADD `reset_code` varchar(6) DEFAULT NULL AFTER `code_expires_at`");
     $conn->query("ALTER TABLE `user` ADD `reset_expires_at` datetime DEFAULT NULL AFTER `reset_code`");
     echo "Kolom 'reset_code' dan 'reset_expires_at' berhasil ditambahkan.\n";
+}
+
+// Pastikan kolom telepon, alamat, dan foto_profil ada (Tugas 1.1)
+$check_telepon = $conn->query("SHOW COLUMNS FROM `user` LIKE 'telepon'");
+if ($check_telepon->num_rows == 0) {
+    $conn->query("ALTER TABLE `user` ADD `telepon` varchar(15) DEFAULT NULL AFTER `reset_expires_at`");
+    $conn->query("ALTER TABLE `user` ADD `alamat` text DEFAULT NULL AFTER `telepon`");
+    $conn->query("ALTER TABLE `user` ADD `foto_profil` varchar(255) DEFAULT NULL AFTER `alamat`");
+    echo "Kolom 'telepon', 'alamat', dan 'foto_profil' berhasil ditambahkan ke tabel user.\n";
 }
 
 if ($conn->query($sql_table) === TRUE) {

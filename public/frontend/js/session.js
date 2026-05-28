@@ -79,12 +79,12 @@ document.addEventListener('DOMContentLoaded', async function () {
         ].join(';');
 
         const menuItems = [
-            { icon: 'far fa-calendar-alt', label: 'Aktivitas' },
-            { icon: 'fas fa-coins', label: 'Promo dan Voucher' },
-            { icon: 'fas fa-globe', label: 'Bahasa' },
-            { icon: 'fas fa-shield-alt', label: 'Keamanan Akun' },
-            { icon: 'far fa-file-alt', label: 'Ketentuan Layanan' },
-            { icon: 'fas fa-wallet', label: 'Metode Pembayaran' },
+            { icon: 'far fa-calendar-alt', label: 'Aktivitas', link: basePath + 'public/pages/profile.html?tab=history' },
+            { icon: 'fas fa-coins', label: 'Promo dan Voucher', link: basePath + 'public/pages/profile.html?tab=promo' },
+            { icon: 'fas fa-globe', label: 'Bahasa', link: '#' },
+            { icon: 'fas fa-shield-alt', label: 'Keamanan Akun', link: basePath + 'public/pages/profile.html?tab=security' },
+            { icon: 'far fa-file-alt', label: 'Ketentuan Layanan', link: '#' },
+            { icon: 'fas fa-wallet', label: 'Metode Pembayaran', link: '#' },
         ];
 
         dropdown.innerHTML = `
@@ -104,7 +104,7 @@ document.addEventListener('DOMContentLoaded', async function () {
             <!-- Menu Items -->
             <div style="padding:6px 0;">
                 ${menuItems.map(item => `
-                    <a href="#"
+                    <a href="${item.link}"
                         style="display:flex;align-items:center;padding:10px 16px;color:#1c1e21;text-decoration:none;gap:14px;transition:background 0.15s;"
                         onmouseover="this.style.background='#f0f2f5';"
                         onmouseout="this.style.background='';">
@@ -131,6 +131,15 @@ document.addEventListener('DOMContentLoaded', async function () {
             </div>
         `;
         document.body.appendChild(dropdown);
+
+        // Tambahkan event listener untuk tombol edit pensil di dropdown
+        const editBtn = dropdown.querySelector('#dd-edit-btn');
+        if (editBtn) {
+            editBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                window.location.href = basePath + 'public/pages/profile.html';
+            });
+        }
 
         // Toggle dropdown
         function openDropdown() {
