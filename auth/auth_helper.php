@@ -121,7 +121,9 @@ if (in_array($_SERVER['REQUEST_METHOD'], ['POST', 'PUT', 'DELETE', 'PATCH'])) {
     if (strpos($current_uri, '/auth/login.php') === false && 
         strpos($current_uri, '/auth/register.php') === false &&
         strpos($current_uri, '/auth/verify_otp.php') === false &&
-        strpos($current_uri, '/auth/resend_otp.php') === false) {
+        strpos($current_uri, '/auth/resend_otp.php') === false &&
+        strpos($current_uri, '/auth/forgot_password.php') === false &&
+        strpos($current_uri, '/auth/reset_password.php') === false) {
         
         $token = $_SERVER['HTTP_X_XSRF_TOKEN'] ?? '';
         if (!$token || !hash_equals($_SESSION['csrf_token'], $token)) {

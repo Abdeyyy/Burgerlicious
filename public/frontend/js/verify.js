@@ -24,6 +24,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (!otpInput || !btnVerify) return;
 
+        let isRequesting = false;
+
         function showMessage(msg, type = 'error') {
             formMessage.textContent = msg;
             formMessage.className = 'text-sm text-center px-4 py-2 rounded-lg ';
@@ -41,6 +43,8 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         btnVerify.addEventListener('click', async () => {
+            if (isRequesting) return;
+
             const otpCode = otpInput.value.trim();
             if (otpCode.length !== 6) {
                 otpError.textContent = 'Kode OTP harus 6 digit angka.';
@@ -48,6 +52,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 return;
             }
 
+            isRequesting = true;
             btnVerify.disabled = true;
             btnVerify.textContent = 'Memproses...';
             
@@ -75,18 +80,23 @@ document.addEventListener('DOMContentLoaded', function () {
                     showMessage(result.message || 'Verifikasi gagal. Coba lagi.', 'error');
                     btnVerify.disabled = false;
                     btnVerify.textContent = 'VERIFIKASI';
+                    isRequesting = false;
                 }
             } catch (error) {
                 console.error("Fetch Error Detail:", error);
                 showMessage('Koneksi Error: ' + error.message, 'error');
                 btnVerify.disabled = false;
                 btnVerify.textContent = 'VERIFIKASI';
+                isRequesting = false;
             }
         });
 
         const btnResend = otpId === 'otpMobile' ? document.getElementById('btnResendMobile') : document.getElementById('btnResendDesktop');
         if (btnResend) {
             btnResend.addEventListener('click', async () => {
+                if (isRequesting) return;
+                isRequesting = true;
+
                 btnResend.disabled = true;
                 const originalText = btnResend.textContent;
                 btnResend.textContent = 'Mengirim...';
@@ -115,6 +125,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                 clearInterval(timer);
                                 btnResend.textContent = originalText;
                                 btnResend.disabled = false;
+                                isRequesting = false;
                             } else {
                                 btnResend.textContent = `Tunggu ${countdown}s`;
                             }
@@ -124,12 +135,14 @@ document.addEventListener('DOMContentLoaded', function () {
                         showMessage(result.message || 'Gagal mengirim ulang OTP.', 'error');
                         btnResend.disabled = false;
                         btnResend.textContent = originalText;
+                        isRequesting = false;
                     }
                 } catch (error) {
                     console.error("Fetch Error Detail:", error);
                     showMessage('Koneksi Error: ' + error.message, 'error');
                     btnResend.disabled = false;
                     btnResend.textContent = originalText;
+                    isRequesting = false;
                 }
             });
         }

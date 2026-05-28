@@ -41,6 +41,8 @@ $sql_table = "CREATE TABLE IF NOT EXISTS `user` (
   `is_verified` tinyint(1) DEFAULT 0,
   `verification_code` varchar(6) DEFAULT NULL,
   `code_expires_at` datetime DEFAULT NULL,
+  `reset_code` varchar(6) DEFAULT NULL,
+  `reset_expires_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id_user`),
   UNIQUE KEY `email` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
@@ -48,6 +50,14 @@ $sql_table = "CREATE TABLE IF NOT EXISTS `user` (
 // Pastikan kolom verification_code & code_expires_at nullable (fix untuk DB yang sudah ada)
 $conn->query("ALTER TABLE `user` MODIFY `verification_code` varchar(6) DEFAULT NULL");
 $conn->query("ALTER TABLE `user` MODIFY `code_expires_at` datetime DEFAULT NULL");
+
+// Pastikan kolom reset_code & reset_expires_at ada
+$check_reset_code = $conn->query("SHOW COLUMNS FROM `user` LIKE 'reset_code'");
+if ($check_reset_code->num_rows == 0) {
+    $conn->query("ALTER TABLE `user` ADD `reset_code` varchar(6) DEFAULT NULL AFTER `code_expires_at`");
+    $conn->query("ALTER TABLE `user` ADD `reset_expires_at` datetime DEFAULT NULL AFTER `reset_code`");
+    echo "Kolom 'reset_code' dan 'reset_expires_at' berhasil ditambahkan.\n";
+}
 
 if ($conn->query($sql_table) === TRUE) {
     echo "Tabel user berhasil dibuat/dikonfirmasi siap!\n";

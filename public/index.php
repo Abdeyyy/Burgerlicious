@@ -12,6 +12,8 @@ $routes = [
     'auth.verify_otp' => __DIR__ . '/../auth/verify_otp.php',
     'auth.resend_otp' => __DIR__ . '/../auth/resend_otp.php',
     'auth.check_session' => __DIR__ . '/../auth/check_session.php',
+    'auth.forgot_password' => __DIR__ . '/../auth/forgot_password.php',
+    'auth.reset_password' => __DIR__ . '/../auth/reset_password.php',
 ];
 
 if (isset($routes[$route]) && file_exists($routes[$route])) {

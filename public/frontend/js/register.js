@@ -23,6 +23,8 @@ document.addEventListener('DOMContentLoaded', function () {
                        submitBtn, namaError, emailError, passwordError, confirmPassError,
                        formMessage) {
         if (!submitBtn || !namaInput || !emailInput || !passwordInput) return;
+        
+        let isRequesting = false;
 
         showPassCheck.addEventListener('change', function () {
             const type = this.checked ? 'text' : 'password';
@@ -112,7 +114,9 @@ document.addEventListener('DOMContentLoaded', function () {
         confirmPassInput.addEventListener('input', () => clearError(confirmPassError));
 
         submitBtn.addEventListener('click', async function () {
+            if (isRequesting) return;
             if (!validate()) return;
+            isRequesting = true;
             submitBtn.disabled = true;
             submitBtn.textContent = 'Loading...';
 
@@ -142,11 +146,13 @@ document.addEventListener('DOMContentLoaded', function () {
                     showFormMessage(result.message || 'Registrasi gagal.');
                     submitBtn.disabled = false;
                     submitBtn.textContent = 'SIGN UP';
+                    isRequesting = false;
                 }
             } catch (error) {
                 showFormMessage('Terjadi kesalahan pada server saat registrasi.');
                 submitBtn.disabled = false;
                 submitBtn.textContent = 'SIGN UP';
+                isRequesting = false;
             }
         });
     }
