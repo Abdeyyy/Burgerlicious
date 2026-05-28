@@ -17,7 +17,7 @@ $conn = @new mysqli($host_docker, $user_docker, $pass_docker);
 if ($conn->connect_error) {
     // Jika gagal ke Docker, coba koneksi ke Laragon/Lokal
     $conn = @new mysqli($host_local, $user_local, $pass_local);
-    
+
     if ($conn->connect_error) {
         die("Connection failed: " . $conn->connect_error . "\nPastikan MySQL Laragon sudah Start atau container Docker berjalan.\n");
     }
@@ -62,7 +62,7 @@ if ($check_reset_code->num_rows == 0) {
     echo "Kolom 'reset_code' dan 'reset_expires_at' berhasil ditambahkan.\n";
 }
 
-// Pastikan kolom telepon, alamat, dan foto_profil ada (Tugas 1.1)
+// Pastikan kolom telepon, alamat, dan foto_profil ada 
 $check_telepon = $conn->query("SHOW COLUMNS FROM `user` LIKE 'telepon'");
 if ($check_telepon->num_rows == 0) {
     $conn->query("ALTER TABLE `user` ADD `telepon` varchar(15) DEFAULT NULL AFTER `reset_expires_at`");
@@ -73,7 +73,7 @@ if ($check_telepon->num_rows == 0) {
 
 if ($conn->query($sql_table) === TRUE) {
     echo "Tabel user berhasil dibuat/dikonfirmasi siap!\n";
-    
+
     // Cek apakah kolom role sudah ada
     $check_column = $conn->query("SHOW COLUMNS FROM `user` LIKE 'role'");
     if ($check_column->num_rows == 0) {
@@ -112,7 +112,7 @@ $sql_kategori = "CREATE TABLE IF NOT EXISTS `kategori_menu` (
 
 if ($conn->query($sql_kategori) === TRUE) {
     echo "Tabel kategori_menu siap!\n";
-    
+
     // Tambah Kategori Default jika kosong
     $check_kat = $conn->query("SELECT id_kategori FROM kategori_menu LIMIT 1");
     if ($check_kat->num_rows == 0) {
@@ -159,7 +159,7 @@ $sql_transaksi = "CREATE TABLE IF NOT EXISTS `transaksi` (
 
 if ($conn->query($sql_transaksi) === TRUE) {
     echo "Tabel transaksi siap!\n";
-    
+
     // Migrasi: tambah kolom id_user jika belum ada (untuk DB yang sudah existing)
     $check_col = $conn->query("SHOW COLUMNS FROM `transaksi` LIKE 'id_user'");
     if ($check_col->num_rows == 0) {
@@ -258,8 +258,8 @@ if ($check_promo_col->num_rows == 0) {
 
 // Tambahkan User Admin Default
 $admin_email = 'admin@burgerlicious.com';
-$admin_pass  = password_hash('admin123', PASSWORD_DEFAULT);
-$admin_nama  = 'Administrator';
+$admin_pass = password_hash('admin123', PASSWORD_DEFAULT);
+$admin_nama = 'Administrator';
 
 $check_admin = $conn->query("SELECT id_user FROM user WHERE email = '$admin_email'");
 if ($check_admin->num_rows == 0) {
