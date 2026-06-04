@@ -19,6 +19,21 @@ document.addEventListener('DOMContentLoaded', function () {
         );
     }
 
+    // Propagate redirect parameter to login links if present
+    const urlParams = new URLSearchParams(window.location.search);
+    const redirectUrl = urlParams.get('redirect');
+    if (redirectUrl) {
+        document.querySelectorAll('a[href*="login.html"]').forEach(link => {
+            try {
+                const url = new URL(link.href, window.location.href);
+                url.searchParams.set('redirect', redirectUrl);
+                link.href = url.pathname + url.search;
+            } catch (e) {
+                console.error('Failed to parse login URL:', e);
+            }
+        });
+    }
+
     function setupForm(namaInput, emailInput, passwordInput, confirmPassInput, showPassCheck,
                        submitBtn, namaError, emailError, passwordError, confirmPassError,
                        formMessage) {
@@ -137,10 +152,16 @@ document.addEventListener('DOMContentLoaded', function () {
                 
                 if (result.status === 'success') {
                     showFormMessage(result.message, 'success');
+                    
+                    const params = new URLSearchParams(window.location.search);
+                    const redirectVal = params.get('redirect');
+                    const redirectQuery = redirectVal ? `&redirect=${encodeURIComponent(redirectVal)}` : '';
+                    const redirectQuerySimple = redirectVal ? `?redirect=${encodeURIComponent(redirectVal)}` : '';
+                    
                     if (result.requires_verification) {
-                        setTimeout(() => { window.location.href = `verify.html?email=${encodeURIComponent(emailInput.value.trim())}`; }, 1700);
+                        setTimeout(() => { window.location.href = `verify.html?email=${encodeURIComponent(emailInput.value.trim())}${redirectQuery}`; }, 1700);
                     } else {
-                        setTimeout(() => { window.location.href = 'login.html'; }, 1500);
+                        setTimeout(() => { window.location.href = `login.html${redirectQuerySimple}`; }, 1500);
                     }
                 } else {
                     showFormMessage(result.message || 'Registrasi gagal.');
