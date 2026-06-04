@@ -10,6 +10,7 @@ export default {
     "./src/**/*.{js,jsx,ts,tsx}",
     // Penambahan instruksi pindai khusus untuk folder pages tempat kita memisahkan about.html, menu.html, dll.
     "./public/pages/**/*.html",
+    "./public/frontend/js/**/*.js",
   ],
   theme: {
     extend: {
