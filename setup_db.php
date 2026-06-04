@@ -116,8 +116,15 @@ if ($conn->query($sql_kategori) === TRUE) {
     // Tambah Kategori Default jika kosong
     $check_kat = $conn->query("SELECT id_kategori FROM kategori_menu LIMIT 1");
     if ($check_kat->num_rows == 0) {
-        $conn->query("INSERT INTO kategori_menu (nama_kategori) VALUES ('Burgers'), ('Sides'), ('Drinks'), ('Desserts')");
+        $conn->query("INSERT INTO kategori_menu (nama_kategori) VALUES ('Burgers'), ('Sides'), ('Drinks'), ('Desserts'), ('Paket Bundling')");
         echo "Kategori default ditambahkan.\n";
+    } else {
+        // Tambah Kategori Paket Bundling jika belum ada
+        $check_bundling_kat = $conn->query("SELECT id_kategori FROM kategori_menu WHERE nama_kategori = 'Paket Bundling'");
+        if ($check_bundling_kat->num_rows == 0) {
+            $conn->query("INSERT INTO kategori_menu (nama_kategori) VALUES ('Paket Bundling')");
+            echo "Kategori 'Paket Bundling' berhasil ditambahkan.\n";
+        }
     }
 } else {
     die("Error creating table kategori_menu: " . $conn->error . "\n");
