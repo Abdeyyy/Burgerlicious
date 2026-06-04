@@ -56,6 +56,23 @@ if ($result) {
         } else {
             $row['computed_status'] = 'active';
         }
+
+        // Fetch bundling items if type is bundling
+        $row['bundling_items'] = [];
+        if ($row['tipe_promo'] === 'bundling') {
+            $id_promo_item = $row['id_promo'];
+            $items_res = $conn->query("SELECT bi.*, m.nama_menu, km.nama_kategori 
+                                       FROM promo_bundling_items bi 
+                                       LEFT JOIN menu m ON bi.id_menu = m.id_menu 
+                                       LEFT JOIN kategori_menu km ON bi.id_kategori = km.id_kategori 
+                                       WHERE bi.id_promo = $id_promo_item");
+            if ($items_res) {
+                while ($item_row = $items_res->fetch_assoc()) {
+                    $row['bundling_items'][] = $item_row;
+                }
+            }
+        }
+
         $promos[] = $row;
     }
     echo json_encode(['status' => 'success', 'data' => $promos]);

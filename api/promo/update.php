@@ -39,6 +39,18 @@ $id_kategori_target = $_POST['id_kategori_target'] ?? $existing['id_kategori_tar
 $tanggal_mulai = $_POST['tanggal_mulai'] ?? $existing['tanggal_mulai'];
 $tanggal_selesai = $_POST['tanggal_selesai'] ?? $existing['tanggal_selesai'];
 
+$hari_aktif = $existing['hari_aktif'];
+if (isset($_POST['nama_promo'])) {
+    $hari_aktif_input = $_POST['hari_aktif'] ?? null;
+    if (is_array($hari_aktif_input)) {
+        $hari_aktif = implode(',', $hari_aktif_input);
+    } else if (is_string($hari_aktif_input) && !empty($hari_aktif_input)) {
+        $hari_aktif = $hari_aktif_input;
+    } else {
+        $hari_aktif = null;
+    }
+}
+
 // Validasi kode promo unik (kecuali untuk promo ini sendiri)
 if (!empty($kode_promo) && $kode_promo !== $existing['kode_promo']) {
     $check_kode = $conn->prepare("SELECT id_promo FROM promo WHERE kode_promo = ? AND id_promo != ?");
@@ -126,10 +138,44 @@ if (isset($_FILES['gambar']) && $_FILES['gambar']['error'] === UPLOAD_ERR_OK) {
     }
 }
 
-$stmt = $conn->prepare("UPDATE promo SET nama_promo=?, deskripsi=?, tipe_promo=?, nilai_diskon=?, kode_promo=?, min_order=?, max_usage=?, id_kategori_target=?, gambar_url=?, tanggal_mulai=?, tanggal_selesai=? WHERE id_promo=?");
-$stmt->bind_param("sssdsdiisssi", $nama_promo, $deskripsi, $tipe_promo, $nilai_diskon, $kode_promo, $min_order, $max_usage, $id_kategori_target, $gambar_url, $tanggal_mulai, $tanggal_selesai, $id_promo);
+$stmt = $conn->prepare("UPDATE promo SET nama_promo=?, deskripsi=?, tipe_promo=?, nilai_diskon=?, kode_promo=?, min_order=?, max_usage=?, id_kategori_target=?, gambar_url=?, tanggal_mulai=?, tanggal_selesai=?, hari_aktif=? WHERE id_promo=?");
+$stmt->bind_param("sssdsdiissssi", $nama_promo, $deskripsi, $tipe_promo, $nilai_diskon, $kode_promo, $min_order, $max_usage, $id_kategori_target, $gambar_url, $tanggal_mulai, $tanggal_selesai, $hari_aktif, $id_promo);
 
 if ($stmt->execute()) {
+    // If tipe_promo === 'bundling', update bundling items (delete and re-insert)
+    if ($tipe_promo === 'bundling') {
+        // Delete existing
+        $conn->query("DELETE FROM promo_bundling_items WHERE id_promo = $id_promo");
+
+        $bundling_types = $_POST['bundling_types'] ?? [];
+        $bundling_menu_ids = $_POST['bundling_menu_ids'] ?? [];
+        $bundling_category_ids = $_POST['bundling_category_ids'] ?? [];
+        $bundling_qtys = $_POST['bundling_qtys'] ?? [];
+
+        for ($i = 0; $i < count($bundling_types); $i++) {
+            $type = $bundling_types[$i];
+            $qty = isset($bundling_qtys[$i]) ? (int)$bundling_qtys[$i] : 1;
+            $id_menu = null;
+            $id_kategori = null;
+
+            if ($type === 'menu' && !empty($bundling_menu_ids[$i])) {
+                $id_menu = (int)$bundling_menu_ids[$i];
+            } else if ($type === 'category' && !empty($bundling_category_ids[$i])) {
+                $id_kategori = (int)$bundling_category_ids[$i];
+            }
+
+            if ($id_menu !== null || $id_kategori !== null) {
+                $stmt_item = $conn->prepare("INSERT INTO promo_bundling_items (id_promo, id_menu, id_kategori, jumlah) VALUES (?, ?, ?, ?)");
+                $stmt_item->bind_param("iiii", $id_promo, $id_menu, $id_kategori, $qty);
+                $stmt_item->execute();
+                $stmt_item->close();
+            }
+        }
+    } else {
+        // If updated from bundling to another type, delete existing bundling items
+        $conn->query("DELETE FROM promo_bundling_items WHERE id_promo = $id_promo");
+    }
+
     echo json_encode(['status' => 'success', 'message' => 'Promo berhasil diupdate']);
 } else {
     echo json_encode(['status' => 'error', 'message' => 'Gagal update promo: ' . $conn->error]);

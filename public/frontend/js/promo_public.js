@@ -14,7 +14,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const badgeStyles = {
         percentage: { bg: '#BA0000', text: '#FFFFFF', label: 'Diskon' },
         fixed: { bg: '#FFAD5B', text: '#BA0000', label: 'Potongan' },
-        bogo: { bg: '#2E7D32', text: '#FFFFFF', label: 'BOGO' }
+        bogo: { bg: '#2E7D32', text: '#FFFFFF', label: 'BOGO' },
+        bundling: { bg: '#8F0919', text: '#FEBB19', label: 'Bundling' }
     };
 
     // Format currency to Rupiah
@@ -45,6 +46,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 return formatRupiah(promo.nilai_diskon);
             case 'bogo':
                 return 'Buy 1 Get 1';
+            case 'bundling':
+                return `Special Price ${formatRupiah(promo.nilai_diskon)}`;
             default:
                 return '';
         }
@@ -56,6 +59,46 @@ document.addEventListener('DOMContentLoaded', () => {
         const remaining = getRemainingDays(promo.tanggal_selesai);
         const isEndingSoon = remaining <= 3 && remaining > 0;
         const discountText = getDiscountText(promo);
+
+        // Active Days Text & Status Today
+        let activeDaysText = '';
+        let isActiveToday = true;
+        if (promo.hari_aktif) {
+            const dayTranslations = {
+                'Monday': 'Senin',
+                'Tuesday': 'Selasa',
+                'Wednesday': 'Rabu',
+                'Thursday': 'Kamis',
+                'Friday': 'Jumat',
+                'Saturday': 'Sabtu',
+                'Sunday': 'Minggu'
+            };
+            const days = promo.hari_aktif.split(',').map(d => d.trim());
+            const translatedDays = days.map(d => dayTranslations[d] || d);
+            activeDaysText = ` (Setiap hari ${translatedDays.join(', ')})`;
+            
+            // Check if today matches any active day
+            const todayName = new Date().toLocaleDateString('en-US', { weekday: 'long' }); // e.g. "Thursday"
+            if (!days.includes(todayName)) {
+                isActiveToday = false;
+            }
+        }
+
+        // Build bundling requirements description
+        let bundlingReqsText = '';
+        if (promo.tipe_promo === 'bundling' && promo.bundling_items && promo.bundling_items.length > 0) {
+            const itemsList = promo.bundling_items.map(item => {
+                const name = item.nama_menu || item.nama_kategori;
+                return `${item.jumlah} ${name}`;
+            });
+            bundlingReqsText = `
+            <div class="flex items-center gap-1.5 text-white/90 text-xs md:text-sm mt-1.5 mb-3 font-bold">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-[#FEBB19]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                </svg>
+                <span>Paket: ${itemsList.join(' + ')}</span>
+            </div>`;
+        }
 
         // Determine image source
         let imgSrc = `${basePath}assets/images/promo_default.png`;
@@ -89,7 +132,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <!-- Top Left Badge -->
                 <div class="absolute top-6 left-6 z-20 text-xs font-extrabold px-4 py-1.5 rounded-full uppercase tracking-wider shadow-md transform rotate-2"
                      style="background-color: ${badge.bg}; color: ${badge.text};">
-                    ${badge.label} ${promo.tipe_promo === 'bogo' ? '' : discountText}
+                    ${badge.label} ${promo.tipe_promo === 'bogo' ? '' : (promo.tipe_promo === 'bundling' ? formatRupiah(promo.nilai_diskon) : discountText)}
                 </div>
                 ${urgencyBadge}
 
@@ -97,12 +140,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="absolute bottom-0 left-0 p-6 md:p-8 w-full z-10 text-left">
                     <!-- Discount Pill -->
                     <div class="inline-block bg-[#FEBB19] text-[#8F0919] font-extrabold text-xs md:text-sm px-2.5 py-1 rounded-lg mb-2 shadow-md">
-                        ${promo.tipe_promo === 'bogo' ? 'BOGO FREE' : (promo.tipe_promo === 'percentage' ? `Diskon ${discountText}` : `Hemat ${discountText}`)}
+                        ${promo.tipe_promo === 'bogo' ? 'BOGO FREE' : (promo.tipe_promo === 'percentage' ? `Diskon ${discountText}` : (promo.tipe_promo === 'bundling' ? `Harga Paket ${formatRupiah(promo.nilai_diskon)}` : `Hemat ${discountText}`))}
                     </div>
 
                     <h3 class="text-xl md:text-3xl font-extrabold text-white mb-1.5 drop-shadow-md">${promo.nama_promo}</h3>
                     
                     ${promo.deskripsi ? `<p class="text-white/75 text-xs md:text-sm mb-3 line-clamp-2 max-w-2xl">${promo.deskripsi}</p>` : ''}
+                    ${bundlingReqsText}
 
                     <!-- Details Row -->
                     <div class="flex flex-wrap items-center gap-x-5 gap-y-1">
@@ -110,7 +154,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                             </svg>
-                            <span>${formatDate(promo.tanggal_mulai)} — ${formatDate(promo.tanggal_selesai)}</span>
+                            <span>${formatDate(promo.tanggal_mulai)} — ${formatDate(promo.tanggal_selesai)}${activeDaysText}</span>
                         </div>
 
                         ${promo.min_order && Number(promo.min_order) > 0 ? `
@@ -123,16 +167,26 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
 
                     <!-- Voucher code -->
-                    ${promo.kode_promo ? `
-                    <div class="mt-3.5 inline-flex items-center gap-2.5 bg-white/15 backdrop-blur-md hover:bg-white/25 border border-white/20 px-3.5 py-1.5 rounded-xl cursor-pointer transition-all duration-300 group/code"
-                         onclick="event.stopPropagation(); copyPromoCode('${promo.kode_promo}', this)" title="Klik untuk menyalin kode">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-[#FEBB19]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" />
-                        </svg>
-                        <span class="text-white font-bold tracking-widest text-xs md:text-sm">${promo.kode_promo}</span>
-                        <div class="h-3 w-px bg-white/30"></div>
-                        <span class="text-white/70 text-xs font-semibold group-hover/code:text-white transition-colors copy-label">Salin</span>
-                    </div>` : ''}
+                    ${promo.kode_promo ? (
+                        isActiveToday ? `
+                        <div class="mt-3.5 inline-flex items-center gap-2.5 bg-white/15 backdrop-blur-md hover:bg-white/25 border border-white/20 px-3.5 py-1.5 rounded-xl cursor-pointer transition-all duration-300 group/code"
+                             onclick="event.stopPropagation(); copyPromoCode('${promo.kode_promo}', this)" title="Klik untuk menyalin kode">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-[#FEBB19]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" />
+                            </svg>
+                            <span class="text-white font-bold tracking-widest text-xs md:text-sm">${promo.kode_promo}</span>
+                            <div class="h-3 w-px bg-white/30"></div>
+                            <span class="text-white/70 text-xs font-semibold group-hover/code:text-white transition-colors copy-label">Salin</span>
+                        </div>` : `
+                        <div class="mt-3.5 inline-flex items-center gap-2.5 bg-white/5 border border-white/10 px-3.5 py-1.5 rounded-xl cursor-not-allowed transition-all duration-300" title="Promo tidak aktif hari ini">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white/40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <span class="text-white/40 font-bold tracking-widest text-xs md:text-sm">${promo.kode_promo}</span>
+                            <div class="h-3 w-px bg-white/20"></div>
+                            <span class="text-white/40 text-xs font-semibold">Tidak Aktif Hari Ini</span>
+                        </div>`
+                    ) : ''}
                 </div>
             </div>`;
     };

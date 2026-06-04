@@ -33,11 +33,12 @@ $conn->begin_transaction();
 try {
     // 1. Calculate total price and verify menus
     $total_harga = 0;
+    $cart_details = [];
     foreach ($items as $item) {
         $id_menu = $item['id_menu'];
         $jumlah = $item['jumlah'];
         
-        $stmt = $conn->prepare("SELECT harga FROM menu WHERE id_menu = ? AND status_tersedia = 1");
+        $stmt = $conn->prepare("SELECT id_kategori, harga, nama_menu FROM menu WHERE id_menu = ? AND status_tersedia = 1");
         $stmt->bind_param("i", $id_menu);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -48,6 +49,13 @@ try {
         }
         
         $total_harga += $menu_data['harga'] * $jumlah;
+        $cart_details[] = [
+            'id_menu' => (int)$id_menu,
+            'id_kategori' => (int)$menu_data['id_kategori'],
+            'harga' => (float)$menu_data['harga'],
+            'jumlah' => (int)$jumlah,
+            'nama_menu' => $menu_data['nama_menu']
+        ];
         $stmt->close();
     }
 
@@ -69,6 +77,27 @@ try {
         $today = date('Y-m-d');
         if ($promo['tanggal_mulai'] > $today || $promo['tanggal_selesai'] < $today) {
             throw new Exception("Promo berada di luar periode aktif");
+        }
+
+        if (!empty($promo['hari_aktif'])) {
+            $current_day = date('l');
+            $active_days = array_map('trim', explode(',', $promo['hari_aktif']));
+            if (!in_array($current_day, $active_days)) {
+                $translations = [
+                    'Sunday' => 'Minggu',
+                    'Monday' => 'Senin',
+                    'Tuesday' => 'Selasa',
+                    'Wednesday' => 'Rabu',
+                    'Thursday' => 'Kamis',
+                    'Friday' => 'Jumat',
+                    'Saturday' => 'Sabtu'
+                ];
+                $translated = [];
+                foreach ($active_days as $day) {
+                    $translated[] = $translations[$day] ?? $day;
+                }
+                throw new Exception("Promo ini hanya berlaku pada hari: " . implode(', ', $translated));
+            }
         }
 
         if ($promo['max_usage'] !== null && $promo['current_usage'] >= $promo['max_usage']) {
@@ -147,6 +176,107 @@ try {
                 }
             } else {
                 throw new Exception("Syarat BOGO tidak terpenuhi");
+            }
+        } else if ($promo['tipe_promo'] === 'bundling') {
+            $stmt_req = $conn->prepare("SELECT * FROM promo_bundling_items WHERE id_promo = ?");
+            $stmt_req->bind_param("i", $id_promo);
+            $stmt_req->execute();
+            $reqs_res = $stmt_req->get_result();
+            $reqs = [];
+            while ($r_row = $reqs_res->fetch_assoc()) {
+                $reqs[] = $r_row;
+            }
+            $stmt_req->close();
+
+            if (empty($reqs)) {
+                throw new Exception("Konfigurasi bundling untuk promo ini tidak ditemukan");
+            }
+
+            $cart_qtys = [];
+            foreach ($cart_details as $cd) {
+                $cart_qtys[$cd['id_menu']] = [
+                    'id_kategori' => $cd['id_kategori'],
+                    'harga' => $cd['harga'],
+                    'qty' => $cd['jumlah']
+                ];
+            }
+
+            $bundles_formed = 0;
+            while (true) {
+                $can_form_bundle = true;
+                $temp_cart_qtys = $cart_qtys;
+                $bundle_regular_price = 0;
+                
+                foreach ($reqs as $req) {
+                    $qty_needed = $req['jumlah'];
+                    
+                    if ($req['id_menu'] !== null) {
+                        $menu_id = $req['id_menu'];
+                        if (isset($temp_cart_qtys[$menu_id]) && $temp_cart_qtys[$menu_id]['qty'] >= $qty_needed) {
+                            $temp_cart_qtys[$menu_id]['qty'] -= $qty_needed;
+                            $bundle_regular_price += $temp_cart_qtys[$menu_id]['harga'] * $qty_needed;
+                        } else {
+                            $can_form_bundle = false;
+                            break;
+                        }
+                    } else if ($req['id_kategori'] !== null) {
+                        $cat_id = $req['id_kategori'];
+                        $qty_found = 0;
+                        
+                        foreach ($temp_cart_qtys as $m_id => &$cd_item) {
+                            if ($cd_item['id_kategori'] === (int)$cat_id && $cd_item['qty'] > 0) {
+                                $take = min($cd_item['qty'], $qty_needed - $qty_found);
+                                $cd_item['qty'] -= $take;
+                                $qty_found += $take;
+                                $bundle_regular_price += $cd_item['harga'] * $take;
+                                
+                                if ($qty_found >= $qty_needed) {
+                                    break;
+                                }
+                            }
+                        }
+                        
+                        if ($qty_found < $qty_needed) {
+                            $can_form_bundle = false;
+                            break;
+                        }
+                    }
+                }
+                
+                if ($can_form_bundle) {
+                    $cart_qtys = $temp_cart_qtys;
+                    $bundles_formed++;
+                    
+                    $special_price = (float)$promo['nilai_diskon'];
+                    $discount_for_set = max(0, $bundle_regular_price - $special_price);
+                    $nilai_diskon += $discount_for_set;
+                } else {
+                    break;
+                }
+            }
+
+            if ($bundles_formed === 0) {
+                $req_strings = [];
+                foreach ($reqs as $req) {
+                    if ($req['id_menu'] !== null) {
+                        $stmt_m_name = $conn->prepare("SELECT nama_menu FROM menu WHERE id_menu = ?");
+                        $stmt_m_name->bind_param("i", $req['id_menu']);
+                        $stmt_m_name->execute();
+                        $m_res = $stmt_m_name->get_result()->fetch_assoc();
+                        $stmt_m_name->close();
+                        $name = $m_res ? $m_res['nama_menu'] : 'Menu ID ' . $req['id_menu'];
+                        $req_strings[] = $req['jumlah'] . "x " . $name;
+                    } else if ($req['id_kategori'] !== null) {
+                        $stmt_c_name = $conn->prepare("SELECT nama_kategori FROM kategori_menu WHERE id_kategori = ?");
+                        $stmt_c_name->bind_param("i", $req['id_kategori']);
+                        $stmt_c_name->execute();
+                        $c_res = $stmt_c_name->get_result()->fetch_assoc();
+                        $stmt_c_name->close();
+                        $name = $c_res ? $c_res['nama_kategori'] : 'Kategori ID ' . $req['id_kategori'];
+                        $req_strings[] = $req['jumlah'] . "x dari kategori " . $name;
+                    }
+                }
+                throw new Exception("Syarat paket bundling tidak terpenuhi. Anda harus membeli: " . implode(" + ", $req_strings));
             }
         }
     }

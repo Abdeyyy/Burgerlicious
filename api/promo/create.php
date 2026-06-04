@@ -19,6 +19,13 @@ $max_usage = $_POST['max_usage'] ?? null;
 $id_kategori_target = $_POST['id_kategori_target'] ?? null;
 $tanggal_mulai = $_POST['tanggal_mulai'] ?? '';
 $tanggal_selesai = $_POST['tanggal_selesai'] ?? '';
+$hari_aktif_input = $_POST['hari_aktif'] ?? null;
+$hari_aktif = null;
+if (is_array($hari_aktif_input)) {
+    $hari_aktif = implode(',', $hari_aktif_input);
+} else if (is_string($hari_aktif_input) && !empty($hari_aktif_input)) {
+    $hari_aktif = $hari_aktif_input;
+}
 
 // Validasi input wajib
 if (empty($nama_promo) || empty($tipe_promo) || empty($tanggal_mulai) || empty($tanggal_selesai)) {
@@ -119,11 +126,41 @@ if (isset($_FILES['gambar']) && $_FILES['gambar']['error'] === UPLOAD_ERR_OK) {
     }
 }
 
-$stmt = $conn->prepare("INSERT INTO promo (nama_promo, deskripsi, tipe_promo, nilai_diskon, kode_promo, min_order, max_usage, id_kategori_target, gambar_url, tanggal_mulai, tanggal_selesai) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-$stmt->bind_param("sssdsdiisss", $nama_promo, $deskripsi, $tipe_promo, $nilai_diskon, $kode_promo, $min_order, $max_usage, $id_kategori_target, $gambar_url, $tanggal_mulai, $tanggal_selesai);
+$stmt = $conn->prepare("INSERT INTO promo (nama_promo, deskripsi, tipe_promo, nilai_diskon, kode_promo, min_order, max_usage, id_kategori_target, gambar_url, tanggal_mulai, tanggal_selesai, hari_aktif) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+$stmt->bind_param("sssdsdiissss", $nama_promo, $deskripsi, $tipe_promo, $nilai_diskon, $kode_promo, $min_order, $max_usage, $id_kategori_target, $gambar_url, $tanggal_mulai, $tanggal_selesai, $hari_aktif);
 
 if ($stmt->execute()) {
-    echo json_encode(['status' => 'success', 'message' => 'Promo berhasil dibuat', 'id_promo' => $stmt->insert_id]);
+    $id_promo = $stmt->insert_id;
+    
+    // Save bundling items if type is bundling
+    if ($tipe_promo === 'bundling') {
+        $bundling_types = $_POST['bundling_types'] ?? [];
+        $bundling_menu_ids = $_POST['bundling_menu_ids'] ?? [];
+        $bundling_category_ids = $_POST['bundling_category_ids'] ?? [];
+        $bundling_qtys = $_POST['bundling_qtys'] ?? [];
+
+        for ($i = 0; $i < count($bundling_types); $i++) {
+            $type = $bundling_types[$i];
+            $qty = isset($bundling_qtys[$i]) ? (int)$bundling_qtys[$i] : 1;
+            $id_menu = null;
+            $id_kategori = null;
+
+            if ($type === 'menu' && !empty($bundling_menu_ids[$i])) {
+                $id_menu = (int)$bundling_menu_ids[$i];
+            } else if ($type === 'category' && !empty($bundling_category_ids[$i])) {
+                $id_kategori = (int)$bundling_category_ids[$i];
+            }
+
+            if ($id_menu !== null || $id_kategori !== null) {
+                $stmt_item = $conn->prepare("INSERT INTO promo_bundling_items (id_promo, id_menu, id_kategori, jumlah) VALUES (?, ?, ?, ?)");
+                $stmt_item->bind_param("iiii", $id_promo, $id_menu, $id_kategori, $qty);
+                $stmt_item->execute();
+                $stmt_item->close();
+            }
+        }
+    }
+
+    echo json_encode(['status' => 'success', 'message' => 'Promo berhasil dibuat', 'id_promo' => $id_promo]);
 } else {
     echo json_encode(['status' => 'error', 'message' => 'Gagal membuat promo: ' . $conn->error]);
 }

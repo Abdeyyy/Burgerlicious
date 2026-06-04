@@ -199,7 +199,7 @@ $sql_promo = "CREATE TABLE IF NOT EXISTS `promo` (
   `id_promo` int(11) NOT NULL AUTO_INCREMENT,
   `nama_promo` varchar(100) NOT NULL,
   `deskripsi` text DEFAULT NULL,
-  `tipe_promo` enum('percentage','fixed','bogo') NOT NULL,
+  `tipe_promo` enum('percentage','fixed','bogo','bundling') NOT NULL,
   `nilai_diskon` decimal(10,2) NOT NULL DEFAULT 0,
   `kode_promo` varchar(50) DEFAULT NULL,
   `min_order` decimal(10,2) DEFAULT 0,
@@ -209,6 +209,7 @@ $sql_promo = "CREATE TABLE IF NOT EXISTS `promo` (
   `gambar_url` varchar(255) DEFAULT NULL,
   `tanggal_mulai` date NOT NULL,
   `tanggal_selesai` date NOT NULL,
+  `hari_aktif` varchar(100) DEFAULT NULL,
   `is_active` tinyint(1) DEFAULT 1,
   `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_promo`),
@@ -218,11 +219,21 @@ $sql_promo = "CREATE TABLE IF NOT EXISTS `promo` (
 if ($conn->query($sql_promo) === TRUE) {
     echo "Tabel promo siap!\n";
 
+    // Migrasi tipe_promo enum
+    $conn->query("ALTER TABLE `promo` MODIFY `tipe_promo` enum('percentage','fixed','bogo','bundling') NOT NULL");
+
     // Tambah FK ke kategori jika belum ada
     $check_fk = $conn->query("SELECT CONSTRAINT_NAME FROM information_schema.TABLE_CONSTRAINTS WHERE TABLE_SCHEMA = 'burgerlicious' AND TABLE_NAME = 'promo' AND CONSTRAINT_NAME = 'fk_promo_kategori'");
     if ($check_fk->num_rows == 0) {
         $conn->query("ALTER TABLE `promo` ADD KEY `fk_promo_kategori` (`id_kategori_target`)");
         $conn->query("ALTER TABLE `promo` ADD CONSTRAINT `fk_promo_kategori` FOREIGN KEY (`id_kategori_target`) REFERENCES `kategori_menu` (`id_kategori`) ON DELETE SET NULL");
+    }
+
+    // Tambah kolom hari_aktif jika belum ada
+    $check_hari_col = $conn->query("SHOW COLUMNS FROM `promo` LIKE 'hari_aktif'");
+    if ($check_hari_col->num_rows == 0) {
+        $conn->query("ALTER TABLE `promo` ADD `hari_aktif` varchar(100) DEFAULT NULL AFTER `tanggal_selesai`");
+        echo "Kolom 'hari_aktif' berhasil ditambahkan ke tabel promo.\n";
     }
 } else {
     die("Error creating table promo: " . $conn->error . "\n");
@@ -246,6 +257,28 @@ if ($conn->query($sql_promo_usage) === TRUE) {
     echo "Tabel promo_usage siap!\n";
 } else {
     die("Error creating table promo_usage: " . $conn->error . "\n");
+}
+
+// Tambah Tabel Promo Bundling Items (prasyarat menu/kategori untuk bundling)
+$sql_bundling_items = "CREATE TABLE IF NOT EXISTS `promo_bundling_items` (
+  `id_bundling_item` int(11) NOT NULL AUTO_INCREMENT,
+  `id_promo` int(11) NOT NULL,
+  `id_menu` int(11) DEFAULT NULL,
+  `id_kategori` int(11) DEFAULT NULL,
+  `jumlah` int(11) DEFAULT 1,
+  PRIMARY KEY (`id_bundling_item`),
+  KEY `fk_bundling_promo` (`id_promo`),
+  KEY `fk_bundling_menu` (`id_menu`),
+  KEY `fk_bundling_kategori` (`id_kategori`),
+  CONSTRAINT `fk_bundling_promo` FOREIGN KEY (`id_promo`) REFERENCES `promo` (`id_promo`) ON DELETE CASCADE,
+  CONSTRAINT `fk_bundling_menu` FOREIGN KEY (`id_menu`) REFERENCES `menu` (`id_menu`) ON DELETE SET NULL,
+  CONSTRAINT `fk_bundling_kategori` FOREIGN KEY (`id_kategori`) REFERENCES `kategori_menu` (`id_kategori`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
+
+if ($conn->query($sql_bundling_items) === TRUE) {
+    echo "Tabel promo_bundling_items siap!\n";
+} else {
+    die("Error creating table promo_bundling_items: " . $conn->error . "\n");
 }
 
 // Migrasi: tambah kolom id_promo dan nilai_diskon di transaksi jika belum ada

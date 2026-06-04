@@ -241,14 +241,15 @@
                                                 <label
                                                         class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Promo
                                                         Type</label>
-                                                <select id="promo-type" name="tipe_promo" required
-                                                        class="w-full bg-surface-container border-none rounded-lg focus:ring-2 focus:ring-primary/20 text-on-surface">
-                                                        <option value="percentage">Percentage Discount</option>
-                                                        <option value="fixed">Fixed Amount Potongan</option>
-                                                        <option value="bogo">BOGO (Buy 1 Get 1)</option>
-                                                </select>
-                                        </div>
-                                </div>
+                                                 <select id="promo-type" name="tipe_promo" required
+                                                         class="w-full bg-surface-container border-none rounded-lg focus:ring-2 focus:ring-primary/20 text-on-surface">
+                                                         <option value="percentage">Percentage Discount</option>
+                                                         <option value="fixed">Fixed Amount Potongan</option>
+                                                         <option value="bogo">BOGO (Buy 1 Get 1)</option>
+                                                         <option value="bundling">Bundling Package</option>
+                                                 </select>
+                                         </div>
+                                 </div>
                                 <div class="grid grid-cols-2 gap-4">
                                         <div class="space-y-1" id="discount-val-container">
                                                 <label id="discount-val-label"
@@ -292,15 +293,62 @@
                                                 <input id="promo-start-date" name="tanggal_mulai" type="date" required
                                                         class="w-full bg-surface-container border-none rounded-lg focus:ring-2 focus:ring-primary/20 text-on-surface">
                                         </div>
-                                        <div class="space-y-1">
-                                                <label
-                                                        class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">End
-                                                        Date</label>
-                                                <input id="promo-end-date" name="tanggal_selesai" type="date" required
-                                                        class="w-full bg-surface-container border-none rounded-lg focus:ring-2 focus:ring-primary/20 text-on-surface">
-                                        </div>
-                                </div>
-                                <div class="space-y-1">
+                                                                        <div class="space-y-1">
+                                                 <label
+                                                         class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">End
+                                                         Date</label>
+                                                 <input id="promo-end-date" name="tanggal_selesai" type="date" required
+                                                         class="w-full bg-surface-container border-none rounded-lg focus:ring-2 focus:ring-primary/20 text-on-surface">
+                                         </div>
+                                 </div>
+                                 <div id="bundling-container" class="space-y-2 hidden border border-outline-variant/20 p-4 rounded-xl bg-surface-container-low">
+                                         <div class="flex justify-between items-center">
+                                                 <label class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Prasyarat Item Bundling</label>
+                                                 <button type="button" id="add-bundling-row-btn" class="flex items-center gap-1 text-xs text-primary font-bold hover:underline">
+                                                         <span class="material-symbols-outlined text-xs">add_circle</span>
+                                                         <span>Tambah Syarat</span>
+                                                 </button>
+                                         </div>
+                                         <div id="bundling-rows" class="space-y-2">
+                                                 <!-- Row items will be inserted dynamically here -->
+                                         </div>
+                                 </div>
+                                 <div class="space-y-1">
+                                         <label
+                                                 class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Hari Aktif (Pilih Hari Tertentu)</label>
+                                         <div class="flex flex-wrap gap-2 pt-1" id="promo-days-container">
+                                                 <label class="inline-flex items-center gap-1.5 bg-surface-container hover:bg-surface-container-high px-3 py-1.5 rounded-lg text-xs font-bold cursor-pointer text-on-surface-variant select-none transition-all">
+                                                         <input type="checkbox" name="hari_aktif[]" value="Monday" class="rounded text-primary focus:ring-primary border-none bg-surface-container-highest w-4 h-4">
+                                                         <span>Senin</span>
+                                                 </label>
+                                                 <label class="inline-flex items-center gap-1.5 bg-surface-container hover:bg-surface-container-high px-3 py-1.5 rounded-lg text-xs font-bold cursor-pointer text-on-surface-variant select-none transition-all">
+                                                         <input type="checkbox" name="hari_aktif[]" value="Tuesday" class="rounded text-primary focus:ring-primary border-none bg-surface-container-highest w-4 h-4">
+                                                         <span>Selasa</span>
+                                                 </label>
+                                                 <label class="inline-flex items-center gap-1.5 bg-surface-container hover:bg-surface-container-high px-3 py-1.5 rounded-lg text-xs font-bold cursor-pointer text-on-surface-variant select-none transition-all">
+                                                         <input type="checkbox" name="hari_aktif[]" value="Wednesday" class="rounded text-primary focus:ring-primary border-none bg-surface-container-highest w-4 h-4">
+                                                         <span>Rabu</span>
+                                                 </label>
+                                                 <label class="inline-flex items-center gap-1.5 bg-surface-container hover:bg-surface-container-high px-3 py-1.5 rounded-lg text-xs font-bold cursor-pointer text-on-surface-variant select-none transition-all">
+                                                         <input type="checkbox" name="hari_aktif[]" value="Thursday" class="rounded text-primary focus:ring-primary border-none bg-surface-container-highest w-4 h-4">
+                                                         <span>Kamis</span>
+                                                 </label>
+                                                 <label class="inline-flex items-center gap-1.5 bg-surface-container hover:bg-surface-container-high px-3 py-1.5 rounded-lg text-xs font-bold cursor-pointer text-on-surface-variant select-none transition-all">
+                                                         <input type="checkbox" name="hari_aktif[]" value="Friday" class="rounded text-primary focus:ring-primary border-none bg-surface-container-highest w-4 h-4">
+                                                         <span>Jumat</span>
+                                                 </label>
+                                                 <label class="inline-flex items-center gap-1.5 bg-surface-container hover:bg-surface-container-high px-3 py-1.5 rounded-lg text-xs font-bold cursor-pointer text-on-surface-variant select-none transition-all">
+                                                         <input type="checkbox" name="hari_aktif[]" value="Saturday" class="rounded text-primary focus:ring-primary border-none bg-surface-container-highest w-4 h-4">
+                                                         <span>Sabtu</span>
+                                                 </label>
+                                                 <label class="inline-flex items-center gap-1.5 bg-surface-container hover:bg-surface-container-high px-3 py-1.5 rounded-lg text-xs font-bold cursor-pointer text-on-surface-variant select-none transition-all">
+                                                         <input type="checkbox" name="hari_aktif[]" value="Sunday" class="rounded text-primary focus:ring-primary border-none bg-surface-container-highest w-4 h-4">
+                                                         <span>Minggu</span>
+                                                 </label>
+                                         </div>
+                                         <p class="text-[10px] text-on-surface-variant">Kosongkan jika ingin aktif setiap hari.</p>
+                                 </div>
+                                 <div class="space-y-1">
                                         <label
                                                 class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Description</label>
                                         <textarea id="promo-description" name="deskripsi" rows="2"
