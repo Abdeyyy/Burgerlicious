@@ -115,16 +115,18 @@
         <!-- Rincian Pesanan -->
         <div class="card">
             <div class="card-header">🛒 Rincian Pesanan</div>
-            <div class="p-4 flex gap-4 items-start">
-                <img loading="lazy" id="menuGambar" src="" alt="" class="w-20 h-20 object-contain bg-gray-50 rounded-xl p-2 flex-shrink-0">
-                <div class="flex-1">
-                    <p id="menuNama" class="font-bold text-[#1a1a1a] text-base"></p>
-                    <p id="menuDeskripsi" class="text-gray-400 text-xs mt-0.5"></p>
-                    <p id="menuHarga" class="text-[#5D0303] font-bold mt-1"></p>
-                    <div class="flex items-center gap-3 mt-3">
-                        <button class="qty-btn bg-gray-100 text-gray-600 hover:bg-gray-200" onclick="ubahJumlah(-1)">−</button>
-                        <span id="jumlahDisplay" class="font-bold text-base w-6 text-center">1</span>
-                        <button class="qty-btn bg-[#5D0303] text-white hover:bg-[#8F0919]" onclick="ubahJumlah(1)">+</button>
+            <div id="rincianPesananList">
+                <div class="p-4 flex gap-4 items-start">
+                    <img loading="lazy" id="menuGambar" src="" alt="" class="w-20 h-20 object-contain bg-gray-50 rounded-xl p-2 flex-shrink-0">
+                    <div class="flex-1">
+                        <p id="menuNama" class="font-bold text-[#1a1a1a] text-base"></p>
+                        <p id="menuDeskripsi" class="text-gray-400 text-xs mt-0.5"></p>
+                        <p id="menuHarga" class="text-[#5D0303] font-bold mt-1"></p>
+                        <div class="flex items-center gap-3 mt-3">
+                            <button class="qty-btn bg-gray-100 text-gray-600 hover:bg-gray-200" onclick="ubahJumlah(-1)">−</button>
+                            <span id="jumlahDisplay" class="font-bold text-base w-6 text-center">1</span>
+                            <button class="qty-btn bg-[#5D0303] text-white hover:bg-[#8F0919]" onclick="ubahJumlah(1)">+</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -342,10 +344,16 @@
                 <p class="text-xs text-gray-400">Total Pembayaran</p>
                 <p id="totalBottom" class="font-bold text-[#5D0303] text-lg">-</p>
             </div>
-            <button id="btnPesan" onclick="submitPesanan()"
-                class="bg-[#5D0303] text-white px-8 py-3 rounded-2xl font-bold hover:bg-[#8F0919] transition duration-200 shadow-lg disabled:opacity-50 flex-shrink-0">
-                Pesan Sekarang
-            </button>
+            <div class="flex gap-2">
+                <button id="btnTambahKeranjang" onclick="tambahKeKeranjang()"
+                    class="border-2 border-[#5D0303] text-[#5D0303] bg-white px-5 py-3 rounded-2xl font-bold hover:bg-[#FFF8EE] transition duration-200 shadow-md disabled:opacity-50 flex-shrink-0 cursor-pointer">
+                    🛒 + Keranjang
+                </button>
+                <button id="btnPesan" onclick="submitPesanan()"
+                    class="bg-[#5D0303] text-white px-8 py-3 rounded-2xl font-bold hover:bg-[#8F0919] transition duration-200 shadow-lg disabled:opacity-50 flex-shrink-0 cursor-pointer">
+                    Pesan Sekarang
+                </button>
+            </div>
         </div>
     </div>
 

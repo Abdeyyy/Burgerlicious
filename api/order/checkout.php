@@ -22,19 +22,20 @@ $nama_pelanggan = $_SESSION['nama'];
 
 $id_menu = isset($data['id_menu']) ? (int)$data['id_menu'] : 0;
 $jumlah = isset($data['jumlah']) ? (int)$data['jumlah'] : 1;
+$items = isset($data['items']) ? $data['items'] : [];
 $alamat = isset($data['alamat']) ? trim($data['alamat']) : '';
 $catatan = isset($data['catatan']) ? trim($data['catatan']) : '';
 $pembayaran = isset($data['pembayaran']) ? trim($data['pembayaran']) : 'Transfer Bank';
 $pengiriman = isset($data['pengiriman']) ? trim($data['pengiriman']) : 'instant';
 $kode_promo = isset($data['kode_promo']) ? strtoupper(trim($data['kode_promo'])) : '';
 
-if ($id_menu <= 0) {
-    echo json_encode(['status' => 'error', 'message' => 'Menu tidak valid.']);
-    exit;
+// Convert single item to items array for unified processing if items is empty
+if (empty($items) && $id_menu > 0) {
+    $items = [['id_menu' => $id_menu, 'jumlah' => $jumlah]];
 }
 
-if ($jumlah <= 0) {
-    echo json_encode(['status' => 'error', 'message' => 'Jumlah pesanan minimal 1.']);
+if (empty($items)) {
+    echo json_encode(['status' => 'error', 'message' => 'Pesanan tidak boleh kosong.']);
     exit;
 }
 
@@ -47,19 +48,40 @@ if (empty($alamat)) {
 $conn->begin_transaction();
 
 try {
-    // 2. Verify menu availability
-    $stmt = $conn->prepare("SELECT id_menu, id_kategori, nama_menu, harga FROM menu WHERE id_menu = ? AND status_tersedia = 1");
-    $stmt->bind_param("i", $id_menu);
-    $stmt->execute();
-    $menu = $stmt->get_result()->fetch_assoc();
-    $stmt->close();
+    $subtotal = 0;
+    $verified_items = [];
 
-    if (!$menu) {
-        throw new Exception("Menu tidak tersedia.");
+    // 2. Verify all menu items availability
+    foreach ($items as $item) {
+        $item_id = isset($item['id_menu']) ? (int)$item['id_menu'] : 0;
+        $item_qty = isset($item['jumlah']) ? (int)$item['jumlah'] : 0;
+
+        if ($item_id <= 0 || $item_qty <= 0) {
+            throw new Exception("Ada item dalam pesanan yang tidak valid.");
+        }
+
+        $stmt = $conn->prepare("SELECT id_menu, id_kategori, nama_menu, harga FROM menu WHERE id_menu = ? AND status_tersedia = 1");
+        $stmt->bind_param("i", $item_id);
+        $stmt->execute();
+        $menu = $stmt->get_result()->fetch_assoc();
+        $stmt->close();
+
+        if (!$menu) {
+            throw new Exception("Salah satu menu pilihan Anda sedang tidak tersedia.");
+        }
+
+        $harga_satuan = (float)$menu['harga'];
+        $item_subtotal = $harga_satuan * $item_qty;
+        $subtotal += $item_subtotal;
+
+        $verified_items[] = [
+            'id_menu' => $item_id,
+            'id_kategori' => (int)$menu['id_kategori'],
+            'harga_satuan' => $harga_satuan,
+            'jumlah' => $item_qty,
+            'subtotal' => $item_subtotal
+        ];
     }
-
-    $harga_satuan = (float)$menu['harga'];
-    $subtotal = $harga_satuan * $jumlah;
 
     // 3. Determine shipping cost (ongkir)
     $ongkir = 12000; // default for instant
@@ -101,24 +123,53 @@ try {
         
         // Apply discount check
         if ($promo['tipe_promo'] === 'percentage') {
-            if ($id_kategori_target !== null && (int)$menu['id_kategori'] !== (int)$id_kategori_target) {
-                throw new Exception("Promo ini tidak berlaku untuk kategori menu pilihan Anda.");
+            if ($id_kategori_target !== null) {
+                $jumlah_kategori_target = 0;
+                foreach ($verified_items as $vi) {
+                    if ($vi['id_kategori'] === (int)$id_kategori_target) {
+                        $jumlah_kategori_target += $vi['subtotal'];
+                    }
+                }
+                if ($jumlah_kategori_target <= 0) {
+                    throw new Exception("Promo hanya berlaku untuk kategori tertentu yang tidak ada di keranjang Anda.");
+                }
+                $nilai_diskon = $jumlah_kategori_target * ($promo['nilai_diskon'] / 100);
+            } else {
+                $nilai_diskon = $subtotal * ($promo['nilai_diskon'] / 100);
             }
-            $nilai_diskon = $subtotal * ($promo['nilai_diskon'] / 100);
         } else if ($promo['tipe_promo'] === 'fixed') {
-            if ($id_kategori_target !== null && (int)$menu['id_kategori'] !== (int)$id_kategori_target) {
-                throw new Exception("Promo ini tidak berlaku untuk kategori menu pilihan Anda.");
+            if ($id_kategori_target !== null) {
+                $ada_kategori_target = false;
+                foreach ($verified_items as $vi) {
+                    if ($vi['id_kategori'] === (int)$id_kategori_target) {
+                        $ada_kategori_target = true;
+                        break;
+                    }
+                }
+                if (!$ada_kategori_target) {
+                    throw new Exception("Promo hanya berlaku untuk kategori tertentu yang tidak ada di keranjang Anda.");
+                }
             }
             $nilai_diskon = min((float)$promo['nilai_diskon'], $subtotal);
         } else if ($promo['tipe_promo'] === 'bogo') {
-            if ($id_kategori_target !== null && (int)$menu['id_kategori'] !== (int)$id_kategori_target) {
-                throw new Exception("Promo BOGO tidak berlaku untuk kategori menu pilihan Anda.");
+            $eligible_items = [];
+            foreach ($verified_items as $vi) {
+                if ($id_kategori_target === null || $vi['id_kategori'] === (int)$id_kategori_target) {
+                    for ($i = 0; $i < $vi['jumlah']; $i++) {
+                        $eligible_items[] = $vi['harga_satuan'];
+                    }
+                }
             }
-            if ($jumlah < 2) {
+
+            if (count($eligible_items) < 2) {
                 throw new Exception("Promo BOGO membutuhkan minimal pembelian 2 porsi.");
             }
-            $free_count = floor($jumlah / 2);
-            $nilai_diskon = $free_count * $harga_satuan;
+
+            sort($eligible_items);
+            $free_count = floor(count($eligible_items) / 2);
+            for ($i = 0; $i < $free_count; $i++) {
+                $nilai_diskon += $eligible_items[$i];
+            }
         }
 
         $id_promo = $promo['id_promo'];
@@ -127,7 +178,6 @@ try {
     $final_total = max(0.00, $subtotal + $ongkir - $nilai_diskon);
 
     // 5. Insert transaction into transaksi table
-    // tipe_pesanan mapped to takeaway for checkout orders (as we deliver or they pickup)
     $tipe_pesanan = 'takeaway'; 
     $status_pesanan = 'pending';
 
@@ -139,8 +189,10 @@ try {
 
     // 6. Insert detail transaction into detail_transaksi table
     $stmt_detail = $conn->prepare("INSERT INTO detail_transaksi (id_transaksi, id_menu, jumlah, harga_satuan, subtotal) VALUES (?, ?, ?, ?, ?)");
-    $stmt_detail->bind_param("iiidd", $id_transaksi, $id_menu, $jumlah, $harga_satuan, $subtotal);
-    $stmt_detail->execute();
+    foreach ($verified_items as $vi) {
+        $stmt_detail->bind_param("iiidd", $id_transaksi, $vi['id_menu'], $vi['jumlah'], $vi['harga_satuan'], $vi['subtotal']);
+        $stmt_detail->execute();
+    }
     $stmt_detail->close();
 
     // 7. Increment promo usage & log if used
