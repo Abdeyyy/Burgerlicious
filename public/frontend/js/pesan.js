@@ -65,13 +65,26 @@ function getCartKey() {
 
 // Custom Toast notification popup implementation
 function showToast(title, message, type = 'success') {
+    // Inject progress bar keyframe animation once
+    if (!document.getElementById('toast-style')) {
+        const style = document.createElement('style');
+        style.id = 'toast-style';
+        style.innerHTML = `
+            @keyframes toastProgress {
+                from { width: 100%; }
+                to { width: 0%; }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+
     let container = document.getElementById('toast-container');
     if (!container) {
         container = document.createElement('div');
         container.id = 'toast-container';
         container.style.cssText = [
             'position:fixed', 'top:24px', 'right:24px', 'z-index:999999',
-            'display:flex', 'flex-direction:column', 'gap:12px', 'pointer-events:none'
+            'display:flex', 'flex-direction:column', 'gap:16px', 'pointer-events:none'
         ].join(';');
         document.body.appendChild(container);
     }
@@ -83,22 +96,25 @@ function showToast(title, message, type = 'success') {
 
     const toast = document.createElement('div');
     toast.style.cssText = [
-        'display:flex', 'align-items:center', 'gap:14px', 'padding:14px 20px',
-        'background:#FFF8EE', `border-left:5px solid ${borderColor}`, 'border-radius:12px',
+        'display:flex', 'align-items:center', 'gap:14px', 'padding:16px 20px',
+        'background:#FFF8EE', 'border-radius:12px',
         'box-shadow:0 10px 30px rgba(0,0,0,0.12)', 'font-family:\'Baloo Bhaijaan 2\', sans-serif',
         'transform:translateX(120%)', 'transition:transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s',
-        'opacity:0', 'pointer-events:auto', 'min-width:280px', 'max-width:360px'
+        'opacity:0', 'pointer-events:auto', 'min-width:280px', 'max-width:90vw', 'width:380px',
+        'position:relative', 'overflow:hidden'
     ].join(';');
 
     toast.innerHTML = `
-        <div style="background:${iconBg};color:${iconColor};width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">
+        <div style="background:${iconBg};color:${iconColor};width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;box-shadow:0 2px 6px rgba(0,0,0,0.08);">
             ${icon}
         </div>
         <div style="flex:1;">
-            <p style="margin:0;font-size:14px;font-weight:700;color:#1c1e21;line-height:1.2;">${title}</p>
-            <p style="margin:2px 0 0 0;font-size:12px;color:#555;line-height:1.3;">${message}</p>
+            <p style="margin:0;font-size:15px;font-weight:800;color:#1c1e21;line-height:1.2;">${title}</p>
+            <p style="margin:4px 0 0 0;font-size:12px;color:#4a4a4a;line-height:1.3;font-weight:500;">${message}</p>
         </div>
-        <button style="border:none;background:none;font-size:18px;color:#888;cursor:pointer;padding:4px;line-height:1;margin-left:4px;" onclick="this.parentElement.remove()">&times;</button>
+        <button style="border:none;background:none;font-size:20px;color:#999;cursor:pointer;padding:4px;line-height:1;margin-left:4px;transition:color 0.2s;" onmouseover="this.style.color='#BA0000'" onmouseout="this.style.color='#999'" onclick="this.parentElement.remove()">&times;</button>
+        <!-- Dynamic Countdown Timer Progress Bar -->
+        <div style="position:absolute;bottom:0;left:0;height:4px;background:${borderColor};width:100%;animation:toastProgress 4000ms linear forwards;"></div>
     `;
 
     container.appendChild(toast);
@@ -117,7 +133,7 @@ function showToast(title, message, type = 'success') {
                 container.remove();
             }
         }, 300);
-    }, 3500);
+    }, 4000);
 }
 
 function getOngkir() {
@@ -611,6 +627,19 @@ async function submitPesanan() {
             hasil.classList.remove('hidden');
             hasil.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
+            // Toggle QR code container based on selected payment method
+            const qrCodeContainer = document.getElementById('qrCodeContainer');
+            if (qrCodeContainer) {
+                if (pembayaran_val === 'Transfer Bank' || pembayaran_val === 'QRIS' || pembayaran_val === 'E-Wallet') {
+                    qrCodeContainer.classList.remove('hidden');
+                } else {
+                    qrCodeContainer.classList.add('hidden');
+                }
+            }
+
+            // Show success toast on checkout
+            showToast('Checkout Berhasil!', 'Pesanan Anda telah berhasil dibuat. Silakan cek rincian pesanan di bawah.', 'success');
+
             btn.textContent = 'Pesanan Dikirim ✓';
             
             // Disable order button to prevent duplicate submissions
@@ -638,6 +667,13 @@ function resetForm() {
     document.getElementById('promoInfo').classList.add('hidden');
     document.getElementById('promoError').classList.add('hidden');
     document.getElementById('hasilPesanan').classList.add('hidden');
+    
+    // Hide QR Code container
+    const qrCodeContainer = document.getElementById('qrCodeContainer');
+    if (qrCodeContainer) {
+        qrCodeContainer.classList.add('hidden');
+    }
+
     document.querySelector('input[name="pengiriman"][value="instant"]').checked = true;
     document.querySelector('input[name="pembayaran"][value="Transfer Bank"]').checked = true;
     const btn = document.getElementById('btnPesan');

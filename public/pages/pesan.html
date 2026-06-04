@@ -324,7 +324,17 @@
                         <td id="r-total" style="padding:8px 0;font-size:15px;font-weight:800;color:#5D0303;"></td>
                     </tr>
                 </table>
-                <div class="mt-4 flex gap-2">
+
+                <!-- QR Code Pembayaran (QRIS, Transfer Bank, E-Wallet) -->
+                <div id="qrCodeContainer" class="hidden mt-5 p-5 bg-yellow-50/70 border border-yellow-200 rounded-2xl flex flex-col items-center text-center animate-in">
+                    <p class="font-bold text-[#5D0303] text-sm mb-3">Scan QR Code untuk Melakukan Pembayaran</p>
+                    <div class="bg-white p-3 rounded-xl border border-gray-100 shadow-md mb-3 flex items-center justify-center">
+                        <img id="qrCodeImg" src="../../assets/images/qrcode.png" alt="QR Code Pembayaran" class="w-48 h-48 object-contain">
+                    </div>
+                    <p class="text-xs text-gray-500 max-w-[280px]">Silakan scan kode di atas menggunakan aplikasi Bank (BCA, Mandiri, dll.) atau E-Wallet (GoPay, OVO, Dana) Anda untuk menyelesaikan pembayaran.</p>
+                </div>
+
+                <div class="mt-5 flex gap-2">
                     <button onclick="resetForm()" class="flex-1 border border-[#5D0303] text-[#5D0303] py-2.5 rounded-xl font-semibold text-sm hover:bg-[#5D0303] hover:text-white transition">
                         Pesan Lagi
                     </button>
@@ -347,7 +357,7 @@
             <div class="flex gap-2">
                 <button id="btnTambahKeranjang" onclick="tambahKeKeranjang()"
                     class="border-2 border-[#5D0303] text-[#5D0303] bg-white px-5 py-3 rounded-2xl font-bold hover:bg-[#FFF8EE] transition duration-200 shadow-md disabled:opacity-50 flex-shrink-0 cursor-pointer">
-                    🛒 + Keranjang
+                    Keranjang
                 </button>
                 <button id="btnPesan" onclick="submitPesanan()"
                     class="bg-[#5D0303] text-white px-8 py-3 rounded-2xl font-bold hover:bg-[#8F0919] transition duration-200 shadow-lg disabled:opacity-50 flex-shrink-0 cursor-pointer">
