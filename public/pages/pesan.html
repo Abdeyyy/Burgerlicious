@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Checkout - Burgerlicious</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="stylesheet" href="../frontend/css/loading.css">
     <link rel="preload" href="../../assets/icon/wired-lineal-1927-food-truck-hover-pinch.gif" as="image">
@@ -346,7 +349,30 @@
         </div>
     </div>
 
-    <script src="../frontend/js/loading.js"></script>
-    <script src="../frontend/js/pesan.js"></script>
+    <!-- State Belum Login -->
+    <div id="loginRequiredState" class="hidden max-w-lg mx-auto px-4 pt-16 pb-32 text-center animate-in">
+        <div class="card p-8 flex flex-col items-center">
+            <div class="w-20 h-20 bg-red-50 rounded-full flex items-center justify-center mb-6 text-4xl animate-bounce">
+                🍔
+            </div>
+            <h2 class="text-2xl font-bold text-[#5D0303] mb-3">Wah, Kamu Belum Login!</h2>
+            <p class="text-gray-500 text-sm mb-6 leading-relaxed max-w-sm">
+                Kamu perlu masuk ke akun Burgerlicious-mu terlebih dahulu untuk bisa memesan menu-menu lezat kami.
+            </p>
+            <div class="w-full space-y-3">
+                <a id="btnLoginRequired" href="login.html" 
+                    class="block w-full bg-[#5D0303] text-white py-3.5 rounded-2xl font-bold hover:bg-[#8F0919] transition duration-200 shadow-md">
+                    Login / Register
+                </a>
+                <a href="../../index.html" 
+                    class="block w-full border border-gray-200 text-gray-500 py-3 rounded-2xl font-semibold text-sm hover:bg-gray-50 transition">
+                    Kembali ke Beranda
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script src="../frontend/js/loading.js?v=15"></script>
+    <script src="../frontend/js/pesan.js?v=15"></script>
 </body>
 </html>

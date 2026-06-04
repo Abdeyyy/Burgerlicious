@@ -5,7 +5,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (!emailToVerify) {
         // Redirect to login if accessed directly without email
-        window.location.href = 'login.html';
+        const params = new URLSearchParams(window.location.search);
+        const redirectVal = params.get('redirect');
+        const redirectQuery = redirectVal ? `?redirect=${encodeURIComponent(redirectVal)}` : '';
+        window.location.href = `login.html${redirectQuery}`;
         return;
     }
 
@@ -73,8 +76,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 
                 if (result.status === 'success') {
                     showMessage(result.message, 'success');
+                    
+                    const params = new URLSearchParams(window.location.search);
+                    const redirectVal = params.get('redirect');
+                    const redirectQuery = redirectVal ? `?redirect=${encodeURIComponent(redirectVal)}` : '';
+                    
                     setTimeout(() => {
-                        window.location.href = 'login.html';
+                        window.location.href = `login.html${redirectQuery}`;
                     }, 1500);
                 } else {
                     showMessage(result.message || 'Verifikasi gagal. Coba lagi.', 'error');

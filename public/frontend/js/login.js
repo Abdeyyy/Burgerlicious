@@ -15,6 +15,21 @@ document.addEventListener('DOMContentLoaded', function () {
         );
     }
 
+    // Propagate redirect parameter to register links if present
+    const urlParams = new URLSearchParams(window.location.search);
+    const redirectUrl = urlParams.get('redirect');
+    if (redirectUrl) {
+        document.querySelectorAll('a[href*="register.html"]').forEach(link => {
+            try {
+                const url = new URL(link.href, window.location.href);
+                url.searchParams.set('redirect', redirectUrl);
+                link.href = url.pathname + url.search;
+            } catch (e) {
+                console.error('Failed to parse register URL:', e);
+            }
+        });
+    }
+
     function setupForm(emailInput, passwordInput, showPassCheck, rememberMeCheck, submitBtn, emailError, passwordError, formMessage) {
         if (!submitBtn || !emailInput || !passwordInput) return;
         
@@ -106,7 +121,13 @@ document.addEventListener('DOMContentLoaded', function () {
                         if (result.role === 'admin') {
                             window.location.href = basePath + 'public/pages/dashboard.html';
                         } else {
-                            window.location.href = basePath + 'index.html';
+                            const params = new URLSearchParams(window.location.search);
+                            const redirectVal = params.get('redirect');
+                            if (redirectVal) {
+                                window.location.href = decodeURIComponent(redirectVal);
+                            } else {
+                                window.location.href = basePath + 'index.html';
+                            }
                         }
                     }, 1500);
                 } else {

@@ -139,6 +139,24 @@ $sql_menu = "CREATE TABLE IF NOT EXISTS `menu` (
 
 if ($conn->query($sql_menu) === TRUE) {
     echo "Tabel menu siap!\n";
+
+    // Tambah Menu Default jika kosong
+    $check_menu = $conn->query("SELECT id_menu FROM menu LIMIT 1");
+    if ($check_menu->num_rows == 0) {
+        $conn->query("INSERT INTO menu (id_kategori, nama_menu, deskripsi, harga, gambar_url, status_tersedia) VALUES
+            (1, 'Original Flavour', 'Cita rasa asli Burgerlicious dengan daging sapi juicy dan saus rahasia yang autentik.', 45000, 'assets/images/BestSeller_1.png', 1),
+            (1, 'Chicken Original', 'Ayam krispi fillet tebal yang gurih dengan perpaduan selada segar dan roti lembut.', 38000, 'assets/images/BestSeller_2.png', 1),
+            (1, 'Spicy Chicken', 'Sensasi pedas yang membakar semangat di tiap gigitan. Tantang diri Anda!', 42000, 'assets/images/BestSeller_3.png', 1),
+            (1, 'Double Meat Burger', 'Double daging yang juicy dengan keju premium.', 37000, 'assets/images/menu_1.png', 1),
+            (1, 'Dart Vader Burger', 'Burger original edisi spesial kolaborasi dengan Star Wars.', 40000, 'assets/images/menu_2.png', 1),
+            (1, 'Egg Cheese Burger', 'Daging dan telur yang nikmat dalam satu gigitan.', 40000, 'assets/images/menu_3.png', 1),
+            (1, 'Red Bun Burger', 'Roti merah yang lezat dan pedas dengan daging sapi.', 39900, 'assets/images/menu_4.png', 1),
+            (2, 'Fried Fries', 'Kentang goreng renyah dengan saus cocol favorit.', 30000, 'assets/images/menu_5.png', 1),
+            (2, 'Chesses Hot Dogs', 'Roti panjang dengan sosis daging sapi dan keju yang lezat.', 30000, 'assets/images/menu_6.png', 1),
+            (2, 'Fried Wings', 'Sayap ayam goreng renyah dengan cita rasa yang lezat.', 40000, 'assets/images/menu_7.png', 1),
+            (2, 'Bucket Nugget', 'Nugget ayam renyah dengan saus cocol favorit.', 40000, 'assets/images/menu_8.png', 1)");
+        echo "Menu default ditambahkan.\n";
+    }
 } else {
     die("Error creating table menu: " . $conn->error . "\n");
 }
@@ -152,6 +170,10 @@ $sql_transaksi = "CREATE TABLE IF NOT EXISTS `transaksi` (
   `status_pesanan` enum('pending','preparing','ready','completed','cancelled') NOT NULL DEFAULT 'pending',
   `total_harga` decimal(10,2) NOT NULL,
   `tanggal_transaksi` datetime DEFAULT CURRENT_TIMESTAMP,
+  `alamat` text DEFAULT NULL,
+  `catatan` text DEFAULT NULL,
+  `metode_pembayaran` varchar(50) DEFAULT NULL,
+  `ongkir` decimal(10,2) DEFAULT 0.00,
   PRIMARY KEY (`id_transaksi`),
   KEY `fk_user_transaksi` (`id_user`),
   CONSTRAINT `fk_user_transaksi` FOREIGN KEY (`id_user`) REFERENCES `user` (`id_user`) ON DELETE SET NULL
