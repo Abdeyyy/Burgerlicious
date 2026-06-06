@@ -347,6 +347,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (promoLoading) promoLoading.classList.remove('hidden');
         if (promoTrack) promoTrack.innerHTML = '';
         if (promoEmpty) promoEmpty.classList.add('hidden');
+        if (promoContainer) promoContainer.classList.add('hidden');
 
         try {
             const res = await fetch(`${basePath}api/promo/read_public.php`);
@@ -357,6 +358,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (json.status !== 'success' || !json.data || json.data.length === 0) {
                 if (promoEmpty) promoEmpty.classList.remove('hidden');
                 if (promoCount) promoCount.textContent = '0';
+                if (promoContainer) promoContainer.classList.add('hidden');
                 return;
             }
 
@@ -373,12 +375,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 `).join('');
             }
 
+            if (promoContainer) promoContainer.classList.remove('hidden');
+
             // Initialize carousel actions
             initCarousel(promos.length);
 
         } catch (err) {
             if (promoLoading) promoLoading.classList.add('hidden');
             if (promoEmpty) promoEmpty.classList.remove('hidden');
+            if (promoContainer) promoContainer.classList.add('hidden');
             console.error('Gagal memuat promo:', err);
         }
     };
