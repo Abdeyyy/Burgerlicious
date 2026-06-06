@@ -2,6 +2,7 @@
 session_start();
 header('Content-Type: application/json');
 require_once '../config/db.php';
+require_once 'auth_helper.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     echo json_encode(['status' => 'error', 'message' => 'Method tidak diizinkan.']);
@@ -70,5 +71,6 @@ echo json_encode([
     'status'  => 'success',
     'message' => 'Login berhasil!',
     'nama'    => $user['nama'],
-    'role'    => $user['role'] ?? 'customer'
+    'role'    => $user['role'] ?? 'customer',
+    'id_user' => $user['id_user']
 ]);
