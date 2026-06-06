@@ -11,24 +11,36 @@ $host_local = 'localhost';
 $user_local = 'root';
 $pass_local = ''; 
 
+// InfinityFree
+$host_hosting = 'sql100.infinityfree.com'; 
+$user_hosting = 'if0_41496213'; 
+$pass_hosting = 'BgEwbUd9M7kd'; 
+$db_name = 'if0_41496213_burgerlicious'; 
+
+
 // Matikan exception otomatis untuk mysqli agar bisa ditangkap dengan gracefully
 mysqli_report(MYSQLI_REPORT_OFF);
 
 // Matikan display_errors agar warning/notice PHP tidak merusak output JSON
 ini_set('display_errors', 0);
 
-// Coba koneksi ke Docker
-$conn = @new mysqli($host_docker, $user_docker, $pass_docker, $db_name);
-
-if ($conn->connect_error) {
-    // Jika gagal ke Docker, coba koneksi ke Laragon/Lokal
-    $conn = @new mysqli($host_local, $user_local, $pass_local, $db_name);
+// Coba koneksi ke database
+if (isset($host_hosting)) {
+    $conn = @new mysqli($host_hosting, $user_hosting, $pass_hosting, $db_name);
+} else {
+    // Coba koneksi ke Docker
+    $conn = @new mysqli($host_docker, $user_docker, $pass_docker, $db_name);
     
     if ($conn->connect_error) {
-        http_response_code(500);
-        echo json_encode(['status' => 'error', 'message' => 'Koneksi database gagal (Docker & Lokal): ' . $conn->connect_error]);
-        exit;
+        // Jika gagal ke Docker, coba koneksi ke Laragon/Lokal
+        $conn = @new mysqli($host_local, $user_local, $pass_local, $db_name);
     }
+}
+
+if (!$conn || $conn->connect_error) {
+    http_response_code(500);
+    echo json_encode(['status' => 'error', 'message' => 'Koneksi database gagal: ' . ($conn ? $conn->connect_error : 'Koneksi tidak terinisialisasi')]);
+    exit;
 }
 
 $conn->set_charset('utf8mb4');

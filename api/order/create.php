@@ -310,14 +310,9 @@ try {
         $stmt->close();
     }
 
-    // 5. Update promo usage & record to promo_usage
+    // 5. Update promo usage
     if ($id_promo !== null) {
         $conn->query("UPDATE promo SET current_usage = current_usage + 1 WHERE id_promo = $id_promo");
-        
-        $stmt_usage = $conn->prepare("INSERT INTO promo_usage (id_promo, id_transaksi, nilai_potongan) VALUES (?, ?, ?)");
-        $stmt_usage->bind_param("iid", $id_promo, $id_transaksi, $nilai_diskon);
-        $stmt_usage->execute();
-        $stmt_usage->close();
     }
 
     $conn->commit();

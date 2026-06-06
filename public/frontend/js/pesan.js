@@ -50,6 +50,9 @@ let jumlah = 1;
 let diskonAktif = null;
 let isLoggedInGlobal = false;
 let currentUserId = null;
+let userDefaultAlamat = '';
+let lastEnteredAlamat = '';
+let userSelectedPromo = null;
 
 // Cart Mode variables
 let cartMode = false;
@@ -215,6 +218,7 @@ function hitungTotal() {
 }
 
 function updateSummary() {
+    autoApplyPromo();
     let subtotal = 0;
     if (cartMode) {
         cartItems.forEach(item => {
@@ -304,14 +308,6 @@ function ubahJumlah(delta) {
     jumlah = Math.max(1, jumlah + delta);
     document.getElementById('jumlahDisplay').textContent = jumlah;
     
-    // Validate promo requirements again on quantity change
-    if (diskonAktif) {
-        const subtotal = menuDipilih ? menuDipilih.harga * jumlah : 0;
-        if (subtotal < diskonAktif.min_order || (diskonAktif.bogo && jumlah < 2)) {
-            hapusPromo();
-            showToast('Promo Dilepas', 'Kuantiti/syarat minimal belanja tidak terpenuhi.', 'warning');
-        }
-    }
     updateSummary();
 }
 
@@ -378,31 +374,6 @@ function ubahJumlahCart(idx, delta) {
         
         // Re-render cart list in checkout page
         renderCartList();
-        
-        // Validate promo again on quantity change
-        if (diskonAktif) {
-            let subtotal = 0;
-            let targetKatCount = 0;
-            let eligibleBogoItems = 0;
-            cartItems.forEach(item => {
-                subtotal += item.harga * item.jumlah;
-                if (diskonAktif.id_kategori_target !== null && parseInt(item.id_kategori) === parseInt(diskonAktif.id_kategori_target)) {
-                    targetKatCount += item.harga * item.jumlah;
-                    eligibleBogoItems += item.jumlah;
-                } else if (diskonAktif.id_kategori_target === null) {
-                    eligibleBogoItems += item.jumlah;
-                }
-            });
-
-            const hasCategory = diskonAktif.id_kategori_target === null || targetKatCount > 0;
-            const validMinOrder = subtotal >= diskonAktif.min_order;
-            const validBogo = !diskonAktif.bogo || eligibleBogoItems >= 2;
-
-            if (!hasCategory || !validMinOrder || !validBogo) {
-                hapusPromo();
-                showToast('Promo Dilepas', 'Syarat minimal belanja tidak terpenuhi.', 'warning');
-            }
-        }
         updateSummary();
     }
 }
@@ -441,102 +412,280 @@ function renderCartList() {
     }).join('');
 }
 
-function pakaiPromo() {
+function checkPromoEligibility(promo, subtotal) {
+    // 1. Min order
+    if (subtotal < promo.min_order) {
+        return { eligible: false, reason: `Min. belanja ${formatRupiah(promo.min_order)}` };
+    }
+
+    // 2. Category target
+    if (promo.id_kategori_target !== null) {
+        let hasCategory = false;
+        if (cartMode) {
+            hasCategory = cartItems.some(item => parseInt(item.id_kategori) === parseInt(promo.id_kategori_target));
+        } else {
+            hasCategory = menuDipilih && parseInt(menuDipilih.id_kategori) === parseInt(promo.id_kategori_target);
+        }
+        if (!hasCategory) {
+            return { eligible: false, reason: `Khusus kategori target promo` };
+        }
+    }
+
+    // 3. BOGO quantity
+    if (promo.bogo) {
+        let totalQty = 0;
+        if (cartMode) {
+            cartItems.forEach(item => {
+                if (promo.id_kategori_target === null || parseInt(item.id_kategori) === parseInt(promo.id_kategori_target)) {
+                    totalQty += item.jumlah;
+                }
+            });
+        } else {
+            if (menuDipilih && (promo.id_kategori_target === null || parseInt(menuDipilih.id_kategori) === parseInt(promo.id_kategori_target))) {
+                totalQty = jumlah;
+            }
+        }
+        if (totalQty < 2) {
+            return { eligible: false, reason: `Minimal beli 2 porsi (BOGO)` };
+        }
+    }
+
+    return { eligible: true };
+}
+
+function calculateDiscountAmount(promo, subtotal) {
+    let discount = 0;
+    if (promo.persen !== null && promo.persen !== undefined) {
+        if (promo.id_kategori_target !== null) {
+            let totalTargetKat = 0;
+            if (cartMode) {
+                cartItems.forEach(item => {
+                    if (parseInt(item.id_kategori) === parseInt(promo.id_kategori_target)) {
+                        totalTargetKat += item.harga * item.jumlah;
+                    }
+                });
+            } else {
+                if (menuDipilih && parseInt(menuDipilih.id_kategori) === parseInt(promo.id_kategori_target)) {
+                    totalTargetKat = subtotal;
+                }
+            }
+            discount = Math.round(totalTargetKat * promo.persen / 100);
+        } else {
+            discount = Math.round(subtotal * promo.persen / 100);
+        }
+    } else if (promo.nominal !== null && promo.nominal !== undefined) {
+        discount = Math.min(promo.nominal, subtotal);
+    } else if (promo.bogo) {
+        let eligibleItems = [];
+        if (cartMode) {
+            cartItems.forEach(item => {
+                if (promo.id_kategori_target === null || parseInt(item.id_kategori) === parseInt(promo.id_kategori_target)) {
+                    for (let i = 0; i < item.jumlah; i++) {
+                        eligibleItems.push(item.harga);
+                    }
+                }
+            });
+        } else {
+            if (menuDipilih && (promo.id_kategori_target === null || parseInt(menuDipilih.id_kategori) === parseInt(promo.id_kategori_target))) {
+                for (let i = 0; i < jumlah; i++) {
+                    eligibleItems.push(menuDipilih.harga);
+                }
+            }
+        }
+
+        if (eligibleItems.length >= 2) {
+            eligibleItems.sort((a, b) => a - b);
+            const freeCount = Math.floor(eligibleItems.length / 2);
+            for (let i = 0; i < freeCount; i++) {
+                discount += eligibleItems[i];
+            }
+        }
+    }
+    return discount;
+}
+
+function updatePromoSelectionUI(promo) {
+    const titleEl = document.getElementById('promoSelectTitle');
+    const subtitleEl = document.getElementById('promoSelectSubtitle');
+    const badgeEl = document.getElementById('promoBadge');
+
+    if (!titleEl || !subtitleEl) return;
+
+    if (promo) {
+        titleEl.textContent = `Promo Terpasang: ${promo.nama}`;
+        subtitleEl.textContent = `${promo.nama_promo} (${promo.desc})`;
+        subtitleEl.classList.remove('text-gray-400');
+        subtitleEl.classList.add('text-green-600', 'font-semibold');
+        if (badgeEl) badgeEl.classList.remove('hidden');
+    } else {
+        titleEl.textContent = 'Pakai Promo / Voucher';
+        subtitleEl.textContent = 'Pilih voucher hemat untuk pesanan Anda';
+        subtitleEl.classList.remove('text-green-600', 'font-semibold');
+        subtitleEl.classList.add('text-gray-400');
+        if (badgeEl) badgeEl.classList.add('hidden');
+    }
+}
+
+function autoApplyPromo() {
+    let subtotal = 0;
+    if (cartMode) {
+        cartItems.forEach(item => {
+            subtotal += item.harga * item.jumlah;
+        });
+    } else {
+        if (!menuDipilih) return;
+        subtotal = menuDipilih.harga * jumlah;
+    }
+
+    // Check manual selection first
+    if (userSelectedPromo && promoList[userSelectedPromo]) {
+        const promo = promoList[userSelectedPromo];
+        const isVal = checkPromoEligibility(promo, subtotal);
+        if (isVal.eligible) {
+            diskonAktif = promo;
+            updatePromoSelectionUI(promo);
+        } else {
+            // Selected promo no longer eligible
+            userSelectedPromo = null;
+            diskonAktif = null;
+            updatePromoSelectionUI(null);
+            showToast('Promo Dilepas', 'Promo pilihan Anda tidak lagi memenuhi syarat belanja.', 'warning');
+        }
+    } else {
+        diskonAktif = null;
+        updatePromoSelectionUI(null);
+    }
+}
+
+function openPromoModal() {
     if (!isLoggedInGlobal) {
         openLoginModal();
         return;
     }
-    const kode = document.getElementById('kodePromo').value.trim().toUpperCase();
-    const promoError = document.getElementById('promoError');
-    const promoInfo = document.getElementById('promoInfo');
 
-    promoError.classList.add('hidden');
-    promoInfo.classList.add('hidden');
+    let subtotal = 0;
+    if (cartMode) {
+        cartItems.forEach(item => {
+            subtotal += item.harga * item.jumlah;
+        });
+    } else {
+        if (!menuDipilih) return;
+        subtotal = menuDipilih.harga * jumlah;
+    }
 
-    if (!kode) {
-        promoError.textContent = 'Masukkan kode promo terlebih dahulu.';
-        promoError.classList.remove('hidden');
+    const modalList = document.getElementById('promoModalList');
+    if (!modalList) return;
+
+    modalList.innerHTML = '';
+
+    const promos = Object.values(promoList);
+    if (promos.length === 0) {
+        modalList.innerHTML = `
+            <div class="text-center py-12 text-gray-400 text-sm">
+                <span class="text-4xl block mb-2">📭</span>
+                <p>Belum ada promo yang tersedia.</p>
+            </div>
+        `;
+        document.getElementById('promoModal').classList.remove('hidden');
         return;
     }
 
-    const promo = promoList[kode];
-    if (promo) {
-        // Validate min order
-        let subtotal = 0;
-        if (cartMode) {
-            cartItems.forEach(item => {
-                subtotal += item.harga * item.jumlah;
-            });
+    promos.forEach(promo => {
+        const check = checkPromoEligibility(promo, subtotal);
+        const discountAmount = check.eligible ? calculateDiscountAmount(promo, subtotal) : 0;
+        const isCurrent = diskonAktif && diskonAktif.nama === promo.nama;
+        const img = promo.gambar_url || '../../assets/images/BestSeller_1.png';
+
+        let promoCardHtml = '';
+        if (check.eligible) {
+            // Eligible style (colors, selectable)
+            promoCardHtml = `
+                <div onclick="selectPromoSelection('${promo.nama}')" 
+                     class="flex gap-4 p-4 rounded-2xl border-2 cursor-pointer transition duration-200 bg-orange-50/20 hover:bg-orange-50/50 ${isCurrent ? 'border-orange-500 shadow-md ring-2 ring-orange-100 bg-orange-50/50' : 'border-orange-100 hover:border-orange-200'}">
+                    <img src="${img}" alt="${promo.nama_promo}" class="w-14 h-14 object-contain rounded-xl bg-white p-1 flex-shrink-0 border border-orange-100/50">
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center justify-between">
+                            <span class="bg-orange-500 text-white font-bold text-[9px] px-2 py-0.5 rounded-full">${promo.tipe_promo.toUpperCase()}</span>
+                            ${isCurrent ? '<span class="bg-green-500 text-white font-bold text-[9px] px-2 py-0.5 rounded-full">Aktif</span>' : ''}
+                        </div>
+                        <h4 class="font-bold text-gray-800 text-xs mt-1.5 truncate">${promo.nama_promo}</h4>
+                        <p class="text-[10px] text-gray-500 mt-0.5 leading-relaxed">${promo.desc}</p>
+                        <p class="text-[11px] text-[#5D0303] font-bold mt-2">Estimasi Potongan: -${formatRupiah(discountAmount)}</p>
+                    </div>
+                </div>
+            `;
         } else {
-            subtotal = menuDipilih ? menuDipilih.harga * jumlah : 0;
+            // Ineligible style (grayed out)
+            promoCardHtml = `
+                <div class="flex gap-4 p-4 rounded-2xl border-2 border-gray-100 bg-gray-50 opacity-60 cursor-not-allowed">
+                    <img src="${img}" alt="${promo.nama_promo}" class="w-14 h-14 object-contain rounded-xl bg-white p-1 flex-shrink-0 filter grayscale border border-gray-100">
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center justify-between">
+                            <span class="bg-gray-400 text-white font-bold text-[9px] px-2 py-0.5 rounded-full">${promo.tipe_promo.toUpperCase()}</span>
+                            <span class="bg-red-50 text-red-600 font-bold text-[9px] px-2 py-0.5 rounded-full">Tidak memenuhi syarat</span>
+                        </div>
+                        <h4 class="font-bold text-gray-400 text-xs mt-1.5 truncate">${promo.nama_promo}</h4>
+                        <p class="text-[10px] text-gray-400 mt-0.5 leading-relaxed">${promo.desc}</p>
+                        <p class="text-[10px] text-red-500 font-semibold mt-2">⚠️ ${check.reason}</p>
+                    </div>
+                </div>
+            `;
         }
 
-        if (subtotal < promo.min_order) {
-            promoError.textContent = `Minimum pembelian Rp ${promo.min_order.toLocaleString('id-ID')} tidak terpenuhi.`;
-            promoError.classList.remove('hidden');
-            return;
-        }
+        modalList.insertAdjacentHTML('beforeend', promoCardHtml);
+    });
 
-        // Validate category target
-        if (promo.id_kategori_target !== null) {
-            let hasCategory = false;
-            if (cartMode) {
-                hasCategory = cartItems.some(item => parseInt(item.id_kategori) === parseInt(promo.id_kategori_target));
-            } else {
-                hasCategory = menuDipilih && parseInt(menuDipilih.id_kategori) === parseInt(promo.id_kategori_target);
-            }
+    document.getElementById('promoModal').classList.remove('hidden');
+}
 
-            if (!hasCategory) {
-                promoError.textContent = 'Promo hanya berlaku untuk kategori tertentu yang tidak ada di keranjang Anda.';
-                promoError.classList.remove('hidden');
-                return;
-            }
-        }
-        
-        // Validate BOGO quantity
-        if (promo.bogo) {
-            let totalQty = 0;
-            if (cartMode) {
-                cartItems.forEach(item => {
-                    if (promo.id_kategori_target === null || parseInt(item.id_kategori) === parseInt(promo.id_kategori_target)) {
-                        totalQty += item.jumlah;
-                    }
-                });
-            } else {
-                if (menuDipilih && (promo.id_kategori_target === null || parseInt(menuDipilih.id_kategori) === parseInt(promo.id_kategori_target))) {
-                    totalQty = jumlah;
-                }
-            }
+function closePromoModal() {
+    document.getElementById('promoModal').classList.add('hidden');
+}
 
-            if (totalQty < 2) {
-                promoError.textContent = 'Promo BOGO memerlukan minimal pembelian 2 porsi.';
-                promoError.classList.remove('hidden');
-                return;
-            }
-        }
+function selectPromoSelection(kode) {
+    userSelectedPromo = kode;
+    autoApplyPromo();
+    updateSummary();
+    closePromoModal();
+    showToast('Promo Terpasang', `Voucher promo ${kode} berhasil digunakan!`, 'success');
+}
 
-        diskonAktif = promo;
-        document.getElementById('promoNama').textContent = diskonAktif.nama;
-        document.getElementById('promoDesc').textContent = diskonAktif.desc;
-        promoInfo.classList.remove('hidden');
-        updateSummary();
+function hapusPromoSelection() {
+    userSelectedPromo = null;
+    diskonAktif = null;
+    autoApplyPromo();
+    updateSummary();
+    closePromoModal();
+    showToast('Promo Dilepas', 'Voucher promo dilepaskan.', 'success');
+}
+
+function updateAddressState() {
+    const pengiriman = document.querySelector('input[name="pengiriman"]:checked');
+    const alamatInput = document.getElementById('alamat');
+    const alamatError = document.getElementById('alamatError');
+    if (!alamatInput) return;
+
+    const val = pengiriman ? pengiriman.value : 'instant';
+    
+    if (val === 'pickup') {
+        alamatInput.disabled = true;
+        alamatInput.value = 'Ambil Sendiri di Outlet (Tidak memerlukan alamat pengiriman)';
+        alamatInput.classList.add('bg-gray-100', 'text-gray-500', 'cursor-not-allowed');
+        alamatError.classList.add('hidden');
     } else {
-        promoError.textContent = 'Kode promo tidak valid atau sudah kadaluarsa.';
-        promoError.classList.remove('hidden');
-        diskonAktif = null;
-        updateSummary();
+        alamatInput.disabled = false;
+        alamatInput.value = lastEnteredAlamat || userDefaultAlamat;
+        alamatInput.classList.remove('bg-gray-100', 'text-gray-500', 'cursor-not-allowed');
     }
 }
 
-function hapusPromo() {
-    diskonAktif = null;
-    document.getElementById('kodePromo').value = '';
-    document.getElementById('promoInfo').classList.add('hidden');
-    document.getElementById('promoError').classList.add('hidden');
-    updateSummary();
-}
-
 function validate() {
+    const pengiriman = document.querySelector('input[name="pengiriman"]:checked');
+    const val = pengiriman ? pengiriman.value : 'instant';
+    if (val === 'pickup') {
+        return true;
+    }
+    
     let valid = true;
     const alamat = document.getElementById('alamat').value.trim();
     const alamatError = document.getElementById('alamatError');
@@ -604,46 +753,21 @@ async function submitPesanan() {
         
         if (result.status === 'success') {
             if (cartMode) {
-                const names = cartItems.map(item => `${item.nama} (${item.jumlah})`).join(', ');
-                const totalQty = cartItems.reduce((acc, item) => acc + item.jumlah, 0);
-                document.getElementById('r-menu').textContent = names;
-                document.getElementById('r-jumlah').textContent = totalQty + ' porsi';
-                
                 // Clear cart from localStorage since order is placed
                 localStorage.removeItem(getCartKey());
                 window.dispatchEvent(new CustomEvent('burgerlicious_cart_updated'));
-            } else {
-                document.getElementById('r-menu').textContent       = menuDipilih ? menuDipilih.nama : '-';
-                document.getElementById('r-jumlah').textContent     = jumlah + ' porsi';
-            }
-
-            document.getElementById('r-alamat').textContent     = alamat_val;
-            document.getElementById('r-pengiriman').textContent = getPengirimanLabel();
-            document.getElementById('r-pembayaran').textContent = pembayaran_val;
-            document.getElementById('r-catatan').textContent    = catatan_val || '-';
-            document.getElementById('r-total').textContent      = formatRupiah(hitungTotal());
-
-            const hasil = document.getElementById('hasilPesanan');
-            hasil.classList.remove('hidden');
-            hasil.scrollIntoView({ behavior: 'smooth', block: 'start' });
-
-            // Toggle QR code container based on selected payment method
-            const qrCodeContainer = document.getElementById('qrCodeContainer');
-            if (qrCodeContainer) {
-                if (pembayaran_val === 'Transfer Bank' || pembayaran_val === 'QRIS' || pembayaran_val === 'E-Wallet') {
-                    qrCodeContainer.classList.remove('hidden');
-                } else {
-                    qrCodeContainer.classList.add('hidden');
-                }
             }
 
             // Show success toast on checkout
-            showToast('Checkout Berhasil!', 'Pesanan Anda telah berhasil dibuat. Silakan cek rincian pesanan di bawah.', 'success');
+            showToast('Checkout Berhasil!', 'Pesanan Anda telah berhasil dibuat. Mengalihkan...', 'success');
 
             btn.textContent = 'Pesanan Dikirim ✓';
-            
-            // Disable order button to prevent duplicate submissions
             btn.disabled = true;
+
+            // Redirect to receipt page after a short delay
+            setTimeout(() => {
+                window.location.href = `hasil_pesan.html?id_transaksi=${result.id_transaksi}`;
+            }, 1000);
         } else {
             showToast('Gagal!', 'Gagal membuat pesanan: ' + result.message, 'warning');
             btn.disabled = false;
@@ -700,12 +824,16 @@ async function loadPromos() {
                 promoList[promo.kode_promo.toUpperCase()] = {
                     id_promo: promo.id_promo,
                     nama: promo.kode_promo,
-                    desc: promo.nama_promo + ' - ' + (promo.deskripsi || 'Diskon menarik'),
+                    nama_promo: promo.nama_promo,
+                    desc: promo.deskripsi || 'Diskon menarik',
+                    tipe_promo: promo.tipe_promo,
+                    nilai_diskon: parseFloat(promo.nilai_diskon),
                     persen: promo.tipe_promo === 'percentage' ? parseFloat(promo.nilai_diskon) : null,
                     nominal: promo.tipe_promo === 'fixed' ? parseFloat(promo.nilai_diskon) : null,
                     bogo: promo.tipe_promo === 'bogo',
                     min_order: parseFloat(promo.min_order),
-                    id_kategori_target: promo.id_kategori_target
+                    id_kategori_target: promo.id_kategori_target,
+                    gambar_url: promo.gambar_url ? '../../' + promo.gambar_url : ''
                 };
             });
         }
@@ -827,9 +955,39 @@ document.addEventListener('DOMContentLoaded', async function () {
         }
     }
 
+    // Add input listener to address to save lastEnteredAlamat
+    const alamatInput = document.getElementById('alamat');
+    if (alamatInput) {
+        alamatInput.addEventListener('input', function (e) {
+            const pengiriman = document.querySelector('input[name="pengiriman"]:checked');
+            if (pengiriman && pengiriman.value !== 'pickup') {
+                lastEnteredAlamat = e.target.value;
+            }
+        });
+    }
+
+    // Load default profile address
+    try {
+        const profileRes = await fetch(basePath + 'api/user/profile.php');
+        const profileData = await profileRes.json();
+        if (profileData.status === 'success' && profileData.data.alamat) {
+            userDefaultAlamat = profileData.data.alamat;
+            if (alamatInput && !alamatInput.value) {
+                alamatInput.value = userDefaultAlamat;
+                lastEnteredAlamat = userDefaultAlamat;
+            }
+        }
+    } catch (e) {
+        console.error('Failed to load default profile address:', e);
+    }
+
     document.querySelectorAll('input[name="pengiriman"]').forEach(el => {
-        el.addEventListener('change', updateSummary);
+        el.addEventListener('change', function() {
+            updateAddressState();
+            updateSummary();
+        });
     });
 
+    updateAddressState();
     updateSummary();
 });

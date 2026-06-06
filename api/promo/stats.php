@@ -16,8 +16,8 @@ $q_active = $conn->query("SELECT COUNT(*) as total FROM promo WHERE is_active = 
 $r_active = $q_active->fetch_assoc();
 $total_active = $r_active['total'] ?? 0;
 
-// 2. Total Redemptions
-$q_redemptions = $conn->query("SELECT COUNT(*) as total, SUM(nilai_potongan) as total_potongan FROM promo_usage");
+// 2. Total Redemptions (from normalized transaksi table)
+$q_redemptions = $conn->query("SELECT COUNT(*) as total, SUM(nilai_diskon) as total_potongan FROM transaksi WHERE id_promo IS NOT NULL AND status_pesanan != 'cancelled'");
 $r_redemptions = $q_redemptions->fetch_assoc();
 $total_redemptions = $r_redemptions['total'] ?? 0;
 $total_discount_value = $r_redemptions['total_potongan'] ?? 0;
@@ -33,7 +33,7 @@ $current_month_redemptions = 0;
 $start_month = date('Y-m-01 00:00:00');
 $end_month = date('Y-m-t 23:59:59');
 
-$q_month_redemptions = $conn->query("SELECT COUNT(*) as total FROM promo_usage WHERE tanggal_digunakan BETWEEN '$start_month' AND '$end_month'");
+$q_month_redemptions = $conn->query("SELECT COUNT(*) as total FROM transaksi WHERE id_promo IS NOT NULL AND tanggal_transaksi BETWEEN '$start_month' AND '$end_month' AND status_pesanan != 'cancelled'");
 $r_month_redemptions = $q_month_redemptions->fetch_assoc();
 $current_month_redemptions = $r_month_redemptions['total'] ?? 0;
 $target_percentage = $monthly_target > 0 ? round(($current_month_redemptions / $monthly_target) * 100) : 0;

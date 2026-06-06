@@ -268,25 +268,9 @@ if ($conn->query($sql_promo) === TRUE) {
     die("Error creating table promo: " . $conn->error . "\n");
 }
 
-// Tambah Tabel Promo Usage (tracking penggunaan per transaksi)
-$sql_promo_usage = "CREATE TABLE IF NOT EXISTS `promo_usage` (
-  `id_usage` int(11) NOT NULL AUTO_INCREMENT,
-  `id_promo` int(11) NOT NULL,
-  `id_transaksi` int(11) NOT NULL,
-  `nilai_potongan` decimal(10,2) NOT NULL,
-  `tanggal_digunakan` datetime DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id_usage`),
-  KEY `fk_usage_promo` (`id_promo`),
-  KEY `fk_usage_transaksi` (`id_transaksi`),
-  CONSTRAINT `fk_usage_promo` FOREIGN KEY (`id_promo`) REFERENCES `promo` (`id_promo`) ON DELETE CASCADE,
-  CONSTRAINT `fk_usage_transaksi` FOREIGN KEY (`id_transaksi`) REFERENCES `transaksi` (`id_transaksi`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
-
-if ($conn->query($sql_promo_usage) === TRUE) {
-    echo "Tabel promo_usage siap!\n";
-} else {
-    die("Error creating table promo_usage: " . $conn->error . "\n");
-}
+// Hapus Tabel Promo Usage (proses normalisasi)
+$conn->query("DROP TABLE IF EXISTS `promo_usage`");
+echo "Tabel promo_usage dibersihkan untuk normalisasi!\n";
 
 // Tambah Tabel Promo Bundling Items (prasyarat menu/kategori untuk bundling)
 $sql_bundling_items = "CREATE TABLE IF NOT EXISTS `promo_bundling_items` (
