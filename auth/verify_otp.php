@@ -4,6 +4,7 @@ session_start();
 date_default_timezone_set('Asia/Jakarta');
 header('Content-Type: application/json');
 require_once '../config/db.php';
+require_once 'auth_helper.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     echo json_encode(['status' => 'error', 'message' => 'Method tidak diizinkan.']);

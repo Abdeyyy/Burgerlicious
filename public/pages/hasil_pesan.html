@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Struk Pembelian - Burgerlicious</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="../frontend/css/loading.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        body { font-family: 'Baloo Bhaijaan 2', sans-serif; background: #f5f5f5; }
+        .card { background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); overflow: hidden; }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-in { animation: fadeInUp 0.4s ease forwards; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <!-- Navbar -->
+    <header class="w-full sticky top-0 z-50 bg-white shadow-sm">
+        <div class="mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <a href="menu.html" class="text-[#5D0303] hover:scale-105 transition-transform">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                    </svg>
+                </a>
+                <h1 class="font-bold text-lg text-[#1a1a1a]">Detail Transaksi</h1>
+            </div>
+            <a href="../../index.html" class="text-sm font-bold text-[#5D0303] hover:underline">Beranda</a>
+        </div>
+    </header>
+
+    <!-- Content Area -->
+    <div class="max-w-lg w-full mx-auto px-4 py-6 flex-1 flex flex-col justify-start">
+        
+        <!-- Loading State -->
+        <div id="loader" class="flex flex-col items-center justify-center py-20 animate-pulse">
+            <div class="w-12 h-12 border-4 border-[#5D0303] border-t-transparent rounded-full animate-spin"></div>
+            <p class="text-sm text-gray-500 mt-4 font-semibold">Memuat rincian pesanan...</p>
+        </div>
+
+        <!-- Error State -->
+        <div id="errorState" class="hidden card p-8 text-center animate-in">
+            <span class="text-5xl">⚠️</span>
+            <h2 class="text-xl font-bold text-red-600 mt-4">Pesanan Tidak Ditemukan</h2>
+            <p class="text-sm text-gray-500 mt-2">Maaf, pesanan yang Anda cari tidak ditemukan atau Anda tidak memiliki akses.</p>
+            <a href="menu.html" class="inline-block mt-6 bg-[#5D0303] text-white px-6 py-2.5 rounded-xl font-bold text-sm hover:bg-[#8F0919] transition">
+                Kembali ke Menu
+            </a>
+        </div>
+
+        <!-- Invoice / Struk -->
+        <div id="receiptContainer" class="hidden space-y-4 pb-20 animate-in">
+
+            <!-- Success Status Header & QR Code Info -->
+            <div class="card p-6 flex flex-col items-center text-center bg-gradient-to-br from-[#FFF8EE] to-[#FFF] border border-orange-100">
+                <div id="statusIcon" class="w-16 h-16 rounded-full flex items-center justify-center text-3xl mb-3">
+                    <!-- Dynamic status icon -->
+                </div>
+                <h2 class="text-xl font-bold text-[#1a1a1a]" id="statusTitle">Pesanan Berhasil Dibuat</h2>
+                <p class="text-xs text-gray-400 mt-1" id="orderIdText">ID Transaksi: #123</p>
+                <div class="mt-3 px-4 py-1 rounded-full text-xs font-bold" id="statusBadge">
+                    Pending
+                </div>
+
+                <!-- Countdown Timer & Pay Button Container -->
+                <div id="pendingControls" class="hidden flex flex-col items-center mt-4 space-y-3 w-full border-t border-dashed border-orange-200/50 pt-4">
+                    <p class="text-xs text-red-600 font-bold flex items-center gap-1.5" id="countdownText">
+                        <span>⏱️</span> Sisa waktu pembayaran: --:--
+                    </p>
+                    <a id="btnBayar" href="#" class="bg-[#5D0303] text-white px-6 py-2 rounded-xl font-bold text-xs hover:bg-[#8F0919] transition shadow-md w-full sm:w-auto">
+                        Konfirmasi Pembayaran
+                    </a>
+                </div>
+
+                <!-- QR Code Pembayaran (nested here) -->
+                <div id="qrCodeContainer" class="hidden mt-6 p-4 w-full bg-white rounded-2xl border border-orange-100/50 flex flex-col items-center text-center animate-in shadow-sm">
+                    <p class="font-bold text-[#5D0303] text-sm mb-3">Scan QR Code untuk Pembayaran</p>
+                    <div class="bg-white p-3 rounded-xl border border-gray-100 shadow-sm mb-3 flex items-center justify-center">
+                        <img src="../../assets/images/qrcode.png" alt="QR Code Pembayaran" class="w-44 h-44 object-contain">
+                    </div>
+                    <p class="text-[10px] text-gray-400 max-w-[280px]">Silakan scan kode di atas menggunakan aplikasi Bank (BCA, Mandiri, dll.) atau E-Wallet (GoPay, OVO, Dana) Anda.</p>
+                </div>
+            </div>
+
+            <!-- Rincian Item Pesanan -->
+            <div class="card">
+                <div class="p-4 border-b border-gray-100 font-bold text-sm text-gray-800 flex items-center gap-2">
+                    <span>🍔</span> Rincian Menu
+                </div>
+                <div id="itemsList" class="divide-y divide-gray-50">
+                    <!-- Dynamic menu items list -->
+                </div>
+            </div>
+
+            <!-- Informasi Pengiriman & Pembayaran -->
+            <div class="card p-5 space-y-4">
+                <div class="border-b border-gray-100 pb-2 font-bold text-sm text-gray-800 flex items-center gap-2">
+                    <span>📝</span> Detail Pengiriman & Pembayaran
+                </div>
+                
+                <div class="grid grid-cols-2 gap-y-3 gap-x-2 text-xs">
+                    <div>
+                        <p class="text-gray-400">Nama Pelanggan</p>
+                        <p class="font-semibold text-gray-800 mt-0.5" id="customerName">-</p>
+                    </div>
+                    <div>
+                        <p class="text-gray-400">Waktu Transaksi</p>
+                        <p class="font-semibold text-gray-800 mt-0.5" id="transactionTime">-</p>
+                    </div>
+                    
+                    <div class="col-span-2 border-t border-gray-50 pt-2">
+                        <p class="text-gray-400">Metode Pengiriman</p>
+                        <p class="font-semibold text-gray-800 mt-0.5" id="shippingType">-</p>
+                    </div>
+
+                    <div class="col-span-2 border-t border-gray-50 pt-2" id="addressRow">
+                        <p class="text-gray-400">Alamat Pengiriman</p>
+                        <p class="font-semibold text-gray-800 mt-0.5 leading-relaxed" id="shippingAddress">-</p>
+                    </div>
+
+                    <div class="col-span-2 border-t border-gray-50 pt-2">
+                        <p class="text-gray-400">Metode Pembayaran</p>
+                        <p class="font-semibold text-gray-800 mt-0.5" id="paymentMethod">-</p>
+                    </div>
+
+                    <div class="col-span-2 border-t border-gray-50 pt-2">
+                        <p class="text-gray-400">Catatan Pesanan</p>
+                        <p class="font-semibold text-gray-800 mt-0.5 italic" id="orderNotes">-</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payment Summary -->
+            <div class="card p-5 space-y-3">
+                <div class="border-b border-gray-100 pb-2 font-bold text-sm text-gray-800 flex items-center gap-2">
+                    <span>💵</span> Ringkasan Biaya
+                </div>
+                <div class="space-y-2.5 text-sm">
+                    <div class="flex justify-between text-gray-500">
+                        <span>Harga Menu</span>
+                        <span id="summarySubtotal">-</span>
+                    </div>
+                    <div class="flex justify-between text-gray-500">
+                        <span>Ongkos Kirim</span>
+                        <span id="summaryShipping">-</span>
+                    </div>
+                    <div id="summaryPromoRow" class="hidden flex justify-between text-green-600">
+                        <span id="summaryPromoName">Diskon Promo</span>
+                        <span id="summaryDiscount">-</span>
+                    </div>
+                    <div class="border-t border-dashed border-gray-200 pt-3 flex justify-between items-center">
+                        <span class="font-bold text-base text-gray-800">Total Bayar</span>
+                        <span id="summaryTotal" class="font-bold text-lg text-[#5D0303]">-</span>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <!-- Action Buttons -->
+            <div class="flex gap-3 pt-4">
+                <a href="menu.html" class="flex-1 bg-white border border-[#5D0303] text-[#5D0303] py-3.5 rounded-2xl font-bold text-sm text-center hover:bg-[#FFF8EE] transition shadow-sm">
+                    Pesan Lagi
+                </a>
+                <a href="../../index.html" class="flex-1 bg-[#5D0303] text-white py-3.5 rounded-2xl font-bold text-sm text-center hover:bg-[#8F0919] transition shadow-md">
+                    Kembali ke Beranda
+                </a>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- JS Logic -->
+    <script>
+        function formatRupiah(angka) {
+            return 'Rp ' + Number(angka).toLocaleString('id-ID');
+        }
+
+        function getPengirimanLabel(tipe, ongkir) {
+            if (tipe === 'pickup' || parseFloat(ongkir) === 0) {
+                return 'Ambil Sendiri (Pickup)';
+            } else if (tipe === 'hemat' || parseFloat(ongkir) === 7000) {
+                return 'Kurir Hemat (30–45 menit)';
+            } else {
+                return 'Kurir Instant (15–25 menit)';
+            }
+        }
+
+        function renderStatus(status, paymentMethod) {
+            const statusIcon = document.getElementById('statusIcon');
+            const statusTitle = document.getElementById('statusTitle');
+            const statusBadge = document.getElementById('statusBadge');
+            
+            const states = {
+                pending: {
+                    icon: '⏳',
+                    title: paymentMethod === 'COD' ? 'Menunggu Konfirmasi' : 'Menunggu Pembayaran',
+                    badgeClass: 'bg-amber-100 text-amber-700 border border-amber-200',
+                    label: 'Pending'
+                },
+                preparing: {
+                    icon: '🍳',
+                    title: 'Pesanan Sedang Disiapkan',
+                    badgeClass: 'bg-blue-100 text-blue-700 border border-blue-200',
+                    label: 'Sedang Disiapkan'
+                },
+                ready: {
+                    icon: '📦',
+                    title: 'Pesanan Siap Diambil / Dikirim',
+                    badgeClass: 'bg-emerald-100 text-emerald-700 border border-emerald-200',
+                    label: 'Siap Diambil/Kirim'
+                },
+                completed: {
+                    icon: '✅',
+                    title: 'Pesanan Selesai',
+                    badgeClass: 'bg-green-100 text-green-700 border border-green-200',
+                    label: 'Selesai'
+                },
+                cancelled: {
+                    icon: '❌',
+                    title: 'Pesanan Dibatalkan',
+                    badgeClass: 'bg-red-100 text-red-700 border border-red-200',
+                    label: 'Dibatalkan'
+                }
+            };
+
+            const activeState = states[status] || states['pending'];
+            
+            statusIcon.textContent = activeState.icon;
+            statusIcon.className = `w-16 h-16 rounded-full flex items-center justify-center text-3xl mb-3 ${activeState.badgeClass}`;
+            statusTitle.textContent = activeState.title;
+            statusBadge.textContent = activeState.label;
+            statusBadge.className = `mt-3 px-4 py-1 rounded-full text-xs font-bold ${activeState.badgeClass}`;
+        }
+
+        document.addEventListener('DOMContentLoaded', async function () {
+            const params = new URLSearchParams(window.location.search);
+            const id_transaksi = params.get('id_transaksi');
+
+            const loader = document.getElementById('loader');
+            const errorState = document.getElementById('errorState');
+            const receiptContainer = document.getElementById('receiptContainer');
+
+            if (!id_transaksi) {
+                loader.classList.add('hidden');
+                errorState.classList.remove('hidden');
+                return;
+            }
+
+            try {
+                const response = await fetch(`../../api/order/detail.php?id_transaksi=${id_transaksi}`);
+                const res = await response.json();
+
+                loader.classList.add('hidden');
+
+                if (res.status === 'success' && res.data) {
+                    const order = res.data;
+                    receiptContainer.classList.remove('hidden');
+
+                    // Set header info
+                    document.getElementById('orderIdText').textContent = `ID Transaksi: #TR-${order.id_transaksi}`;
+                    renderStatus(order.status_pesanan, order.metode_pembayaran);
+
+                    // Set up payment countdown
+                    if (order.status_pesanan === 'pending') {
+                        const pendingControls = document.getElementById('pendingControls');
+                        const btnBayar = document.getElementById('btnBayar');
+                        const countdownText = document.getElementById('countdownText');
+                        
+                        if (pendingControls && btnBayar && countdownText) {
+                            pendingControls.classList.remove('hidden');
+                            btnBayar.href = `bayar.html?id_transaksi=${order.id_transaksi}`;
+                            
+                            // Calculate expiration (10 mins after tanggal_transaksi)
+                            if (order.tanggal_transaksi) {
+                                const transTimeStr = order.tanggal_transaksi.replace(' ', 'T');
+                                const transactionTime = new Date(transTimeStr).getTime();
+                                const expirationTime = transactionTime + 10 * 60 * 1000;
+                                
+                                function updateCountdown() {
+                                    const now = new Date().getTime();
+                                    const distance = expirationTime - now;
+                                    
+                                    if (distance <= 0) {
+                                        clearInterval(countdownInterval);
+                                        countdownText.textContent = 'Batas waktu pembayaran habis!';
+                                        // Refresh page to trigger auto-cancellation via detail.php
+                                        window.location.reload();
+                                    } else {
+                                        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                                        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                                        const formattedMin = minutes < 10 ? '0' + minutes : minutes;
+                                        const formattedSec = seconds < 10 ? '0' + seconds : seconds;
+                                        countdownText.textContent = `Sisa waktu pembayaran: ${formattedMin}:${formattedSec}`;
+                                    }
+                                }
+                                
+                                updateCountdown();
+                                const countdownInterval = setInterval(updateCountdown, 1000);
+                            }
+                        }
+                    } else {
+                        const pendingControls = document.getElementById('pendingControls');
+                        if (pendingControls) pendingControls.classList.add('hidden');
+                    }
+
+                    // Render items list
+                    const itemsList = document.getElementById('itemsList');
+                    let itemsSubtotal = 0;
+                    
+                    itemsList.innerHTML = order.items.map(item => {
+                        itemsSubtotal += parseFloat(item.subtotal);
+                        const img = item.gambar_url || '../../assets/images/menu_placeholder.png';
+                        return `
+                            <div class="p-4 flex gap-4 items-center">
+                                <img src="${img}" alt="${item.nama_menu}" class="w-12 h-12 object-contain bg-gray-50 rounded-xl p-1.5 flex-shrink-0">
+                                <div class="flex-1 min-w-0">
+                                    <p class="font-bold text-gray-800 text-sm truncate">${item.nama_menu}</p>
+                                    <p class="text-gray-400 text-xs mt-0.5">${item.jumlah} porsi x ${formatRupiah(item.harga_satuan)}</p>
+                                </div>
+                                <p class="font-bold text-gray-800 text-sm">${formatRupiah(item.subtotal)}</p>
+                            </div>
+                        `;
+                    }).join('');
+
+                    // Set customer & order details
+                    document.getElementById('customerName').textContent = order.nama_pelanggan;
+                    document.getElementById('transactionTime').textContent = order.tanggal_transaksi ? new Date(order.tanggal_transaksi).toLocaleString('id-ID', {
+                        day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit'
+                    }) : '-';
+                    document.getElementById('shippingType').textContent = getPengirimanLabel(order.tipe_pesanan, order.ongkir);
+                    document.getElementById('paymentMethod').textContent = order.metode_pembayaran;
+                    document.getElementById('orderNotes').textContent = order.catatan || '-';
+
+                    // Address handling
+                    const addressRow = document.getElementById('addressRow');
+                    const hasAddress = order.alamat && order.alamat.trim() !== '';
+                    const isPickup = order.tipe_pesanan === 'pickup' || (hasAddress && order.alamat.includes('Ambil Sendiri'));
+                    
+                    if (isPickup || !hasAddress) {
+                        addressRow.classList.add('hidden');
+                    } else {
+                        addressRow.classList.remove('hidden');
+                        document.getElementById('shippingAddress').textContent = order.alamat;
+                    }
+
+                    // Set summary pricing
+                    document.getElementById('summarySubtotal').textContent = formatRupiah(itemsSubtotal);
+                    document.getElementById('summaryShipping').textContent = formatRupiah(order.ongkir);
+                    
+                    const discount = parseFloat(order.nilai_diskon || 0);
+                    const summaryPromoRow = document.getElementById('summaryPromoRow');
+                    if (discount > 0) {
+                        summaryPromoRow.classList.remove('hidden');
+                        document.getElementById('summaryPromoName').textContent = `Diskon Promo (${order.kode_promo || 'Aktif'})`;
+                        document.getElementById('summaryDiscount').textContent = `- ${formatRupiah(discount)}`;
+                    } else {
+                        summaryPromoRow.classList.add('hidden');
+                    }
+                    
+                    document.getElementById('summaryTotal').textContent = formatRupiah(order.total_harga);
+
+                    // Show QR Code Pembayaran if needed
+                    const paymentMethod = order.metode_pembayaran;
+                    const status = order.status_pesanan;
+                    const qrCodeContainer = document.getElementById('qrCodeContainer');
+                    
+                    if (status === 'pending' && (paymentMethod === 'Transfer Bank' || paymentMethod === 'QRIS' || paymentMethod === 'E-Wallet')) {
+                        qrCodeContainer.classList.remove('hidden');
+                    } else {
+                        qrCodeContainer.classList.add('hidden');
+                    }
+
+                } else {
+                    receiptContainer.classList.add('hidden');
+                    errorState.classList.remove('hidden');
+                }
+            } catch (err) {
+                console.error('Failed to load transaction details:', err);
+                loader.classList.add('hidden');
+                receiptContainer.classList.add('hidden');
+                errorState.classList.remove('hidden');
+            }
+        });
+    </script>
+</body>
+</html>

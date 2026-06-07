@@ -100,11 +100,47 @@ document.addEventListener('DOMContentLoaded', function () {
             // Muat data khusus tab saat dipindahkan (Lazy loading agar hemat request)
             if (targetTabId === 'history') {
                 loadOrderHistory();
+                clearNotifications();
             } else if (targetTabId === 'promo') {
                 loadVouchers();
             }
         }
     }
+
+    function clearNotifications() {
+        const userId = window.currentUserId;
+        if (userId) {
+            const storageKey = `burgerlicious_notifications_${userId}`;
+            let state = JSON.parse(localStorage.getItem(storageKey)) || { orderStatuses: {}, notifications: {} };
+            state.notifications = {};
+            localStorage.setItem(storageKey, JSON.stringify(state));
+            
+            // Sembunyikan badge di tab riwayat
+            const historyBadge = document.getElementById('history-tab-badge');
+            if (historyBadge) historyBadge.style.display = 'none';
+
+            // Sembunyikan badge di logo profil navigasi atas
+            const profileBadgeEl = document.getElementById('profile-nav-badge');
+            if (profileBadgeEl) profileBadgeEl.style.display = 'none';
+        }
+    }
+
+    // Dengarkan event notifikasi selesai dimuat dari session.js
+    window.addEventListener('burgerlicious_notifications_ready', function (e) {
+        const userId = e.detail.userId;
+        const badgeCount = e.detail.badgeCount;
+        
+        const currentTab = new URLSearchParams(window.location.search).get('tab') || 'dashboard';
+        if (currentTab !== 'history' && badgeCount > 0) {
+            const historyBadge = document.getElementById('history-tab-badge');
+            if (historyBadge) {
+                historyBadge.textContent = badgeCount;
+                historyBadge.style.display = 'inline-block';
+            }
+        } else if (currentTab === 'history') {
+            clearNotifications();
+        }
+    });
 
     tabButtons.forEach(btn => {
         btn.addEventListener('click', function () {

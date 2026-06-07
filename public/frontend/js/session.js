@@ -66,6 +66,50 @@ document.addEventListener('DOMContentLoaded', async function () {
 
         window.currentUserId = data.user_id;
 
+        // Fetch order history to compute status update notifications
+        let badgeCount = 0;
+        try {
+            const histRes = await fetch(basePath + 'api/user/order_history.php');
+            const histData = await histRes.json();
+            if (histData.status === 'success' && histData.data) {
+                const orders = histData.data;
+                const storageKey = `burgerlicious_notifications_${data.user_id}`;
+                let state = JSON.parse(localStorage.getItem(storageKey)) || { orderStatuses: {}, notifications: {} };
+                
+                let stateUpdated = false;
+                orders.forEach(order => {
+                    const id = order.id_transaksi.toString();
+                    const currentStatus = order.status_pesanan;
+                    const savedStatus = state.orderStatuses[id];
+                    
+                    if (savedStatus !== undefined) {
+                        if (savedStatus !== currentStatus) {
+                            state.notifications[id] = true;
+                            state.orderStatuses[id] = currentStatus;
+                            stateUpdated = true;
+                        }
+                    } else {
+                        // Initialize new order without notification flag
+                        state.orderStatuses[id] = currentStatus;
+                        stateUpdated = true;
+                    }
+                });
+                
+                if (stateUpdated) {
+                    localStorage.setItem(storageKey, JSON.stringify(state));
+                }
+                
+                badgeCount = Object.values(state.notifications).filter(val => val === true).length;
+            }
+        } catch (e) {
+            console.error('Failed to process notifications:', e);
+        }
+        window.profileBadgeCount = badgeCount;
+        window.dispatchEvent(new CustomEvent('burgerlicious_notifications_ready', {
+            detail: { badgeCount: badgeCount, userId: data.user_id }
+        }));
+
+
         const dropdown = document.createElement('div');
         dropdown.id = 'profile-dropdown';
         dropdown.style.cssText = [
@@ -86,10 +130,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         const menuItems = [
             { icon: 'far fa-calendar-alt', label: 'Aktivitas', link: basePath + 'public/pages/profile.html?tab=history' },
             { icon: 'fas fa-coins', label: 'Promo dan Voucher', link: basePath + 'public/pages/profile.html?tab=promo' },
-            { icon: 'fas fa-globe', label: 'Bahasa', link: '#' },
             { icon: 'fas fa-shield-alt', label: 'Keamanan Akun', link: basePath + 'public/pages/profile.html?tab=security' },
-            { icon: 'far fa-file-alt', label: 'Ketentuan Layanan', link: '#' },
-            { icon: 'fas fa-wallet', label: 'Metode Pembayaran', link: '#' },
         ];
 
         dropdown.innerHTML = `
@@ -373,10 +414,15 @@ document.addEventListener('DOMContentLoaded', async function () {
                 'border:none', 'cursor:pointer',
                 'background:transparent', 'padding:0',
                 'display:flex', 'align-items:center', 'justify-content:center',
-                'transition:opacity 0.2s,transform 0.2s', 'flex-shrink:0'
+                'transition:opacity 0.2s,transform 0.2s', 'flex-shrink:0',
+                'position:relative'
             ].join(';');
 
-            profileBtn.innerHTML = `<img src="${basePath}assets/icon/profile.png" alt="Profile" style="width:90px;height:90px;object-fit:contain;display:block;">`;
+            const showNavBadge = window.profileBadgeCount > 0 ? 'flex' : 'none';
+            profileBtn.innerHTML = `
+                <img src="${basePath}assets/icon/profile.png" alt="Profile" style="width:90px;height:90px;object-fit:contain;display:block;">
+                <span id="profile-nav-badge" style="position:absolute;top:14px;right:14px;background:#BA0000;color:white;font-size:11px;font-weight:900;border-radius:50%;width:22px;height:22px;display:${showNavBadge};align-items:center;justify-content:center;border:2px solid white;box-shadow:0 2px 8px rgba(0,0,0,0.2);z-index:10;">${window.profileBadgeCount}</span>
+            `;
 
             profileBtn.addEventListener('mouseenter', () => {
                 profileBtn.style.opacity = '0.8';

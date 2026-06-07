@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Konfirmasi Pembayaran - Burgerlicious</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        body { font-family: 'Baloo Bhaijaan 2', sans-serif; background: #f5f5f5; }
+        .card { background: white; border-radius: 24px; box-shadow: 0 15px 35px rgba(0,0,0,0.06); }
+        @keyframes scaleIn {
+            from { transform: scale(0.95); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        .animate-scale-in { animation: scaleIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-center items-center p-4">
+
+    <!-- Loading State -->
+    <div id="loader" class="flex flex-col items-center justify-center py-20 animate-pulse">
+        <div class="w-12 h-12 border-4 border-[#5D0303] border-t-transparent rounded-full animate-spin"></div>
+        <p class="text-sm text-gray-500 mt-4 font-semibold">Menghubungkan ke Gateway Pembayaran...</p>
+    </div>
+
+    <!-- Error State -->
+    <div id="errorState" class="hidden card max-w-md w-full p-8 text-center animate-scale-in">
+        <span class="text-5xl">⚠️</span>
+        <h2 class="text-xl font-bold text-red-600 mt-4">Transaksi Tidak Valid</h2>
+        <p class="text-sm text-gray-500 mt-2">ID transaksi tidak ditemukan atau sudah tidak berlaku.</p>
+        <a href="menu.html" class="inline-block mt-6 bg-[#5D0303] text-white px-6 py-2.5 rounded-xl font-bold text-sm hover:bg-[#8F0919] transition">
+            Kembali ke Menu
+        </a>
+    </div>
+
+    <!-- Main Payment Mock Card -->
+    <div id="paymentCard" class="hidden card max-w-md w-full overflow-hidden animate-scale-in">
+        
+        <!-- Header Banner -->
+        <div class="bg-[#5D0303] p-6 text-center text-white relative">
+            <span class="text-4xl block mb-2">💳</span>
+            <h1 class="font-bold text-lg">Burgerlicious Payment Gateway</h1>
+            <p class="text-xs text-orange-200 mt-0.5">Simulasi Autentikasi Pembayaran</p>
+        </div>
+
+        <!-- Details Area -->
+        <div class="p-6 space-y-5">
+            <div class="text-center">
+                <p class="text-xs text-gray-400 font-semibold uppercase tracking-wider">Total Tagihan</p>
+                <p class="text-3xl font-extrabold text-[#5D0303] mt-1" id="totalBayarText">Rp -</p>
+            </div>
+
+            <div class="bg-gray-50 rounded-2xl p-4 space-y-3 text-xs border border-gray-100">
+                <div class="flex justify-between">
+                    <span class="text-gray-400">ID Transaksi</span>
+                    <span class="font-bold text-gray-700" id="orderIdText">#TR-0</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-400">Nama Pelanggan</span>
+                    <span class="font-bold text-gray-700" id="customerNameText">-</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-400">Metode Pembayaran</span>
+                    <span class="font-bold text-gray-700" id="paymentMethodText">-</span>
+                </div>
+            </div>
+
+            <div class="text-center space-y-2">
+                <h3 class="font-bold text-gray-800 text-sm">Apakah Anda sudah melakukan transfer/pembayaran?</h3>
+                <p class="text-xs text-gray-500 leading-relaxed">Pilih <strong>YES</strong> untuk menyelesaikan proses pembayaran pesanan Anda, atau <strong>NO</strong> jika ingin menunda.</p>
+            </div>
+            
+            <div class="bg-red-50 border border-red-100 rounded-xl p-3 text-[11px] text-red-600 flex items-start gap-2">
+                <span class="text-sm">⚠️</span>
+                <p class="leading-relaxed font-semibold">PENTING: Pesanan Anda akan otomatis dibatalkan (hangus) oleh sistem jika pembayaran tidak diselesaikan dalam waktu 10 menit sejak pesanan dibuat.</p>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="p-6 border-t border-gray-100 bg-gray-50 flex gap-3">
+            <button onclick="confirmPayment(false)" class="flex-1 bg-white border border-[#5D0303] text-[#5D0303] py-3.5 rounded-2xl font-bold text-sm text-center hover:bg-[#FFF8EE] transition shadow-xs cursor-pointer">
+                ❌ No (Belum)
+            </button>
+            <button onclick="confirmPayment(true)" class="flex-1 bg-[#5D0303] text-white py-3.5 rounded-2xl font-bold text-sm text-center hover:bg-[#8F0919] transition shadow-md cursor-pointer">
+                ✅ Yes (Sudah)
+            </button>
+        </div>
+
+    </div>
+
+    <!-- JS Logic -->
+    <script>
+        let transactionId = null;
+
+        function formatRupiah(angka) {
+            return 'Rp ' + Number(angka).toLocaleString('id-ID');
+        }
+
+        document.addEventListener('DOMContentLoaded', async function () {
+            const params = new URLSearchParams(window.location.search);
+            transactionId = params.get('id_transaksi');
+
+            const loader = document.getElementById('loader');
+            const errorState = document.getElementById('errorState');
+            const paymentCard = document.getElementById('paymentCard');
+
+            if (!transactionId) {
+                loader.classList.add('hidden');
+                errorState.classList.remove('hidden');
+                return;
+            }
+
+            try {
+                // Fetch transaction info to show details and verify status
+                const res = await fetch(`../../api/order/detail.php?id_transaksi=${transactionId}`);
+                const data = await res.json();
+
+                loader.classList.add('hidden');
+
+                if (data.status === 'success' && data.data) {
+                    const order = data.data;
+
+                    if (order.status_pesanan !== 'pending') {
+                        // Order is already paid/cancelled, direct back
+                        alert('Pesanan ini sudah diproses atau dibatalkan.');
+                        window.location.href = `hasil_pesan.html?id_transaksi=${transactionId}`;
+                        return;
+                    }
+
+                    paymentCard.classList.remove('hidden');
+                    document.getElementById('totalBayarText').textContent = formatRupiah(order.total_harga);
+                    document.getElementById('orderIdText').textContent = `#TR-${order.id_transaksi}`;
+                    document.getElementById('customerNameText').textContent = order.nama_pelanggan;
+                    document.getElementById('paymentMethodText').textContent = order.metode_pembayaran;
+                } else {
+                    errorState.classList.remove('hidden');
+                }
+            } catch (err) {
+                console.error(err);
+                loader.classList.add('hidden');
+                errorState.classList.remove('hidden');
+            }
+        });
+
+        async function confirmPayment(hasPaid) {
+            if (!transactionId) return;
+
+            if (hasPaid) {
+                try {
+                    // Call confirmation API
+                    const res = await fetch('../../api/order/pay.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ id_transaksi: parseInt(transactionId) })
+                    });
+                    
+                    const result = await res.json();
+
+                    if (result.status === 'success') {
+                        alert('Pembayaran berhasil dikonfirmasi! Pesanan Anda sedang disiapkan.');
+                        window.location.href = `hasil_pesan.html?id_transaksi=${transactionId}`;
+                    } else {
+                        alert('Gagal mengonfirmasi pembayaran: ' + result.message);
+                    }
+                } catch (err) {
+                    console.error(err);
+                    alert('Terjadi kesalahan koneksi saat mengonfirmasi pembayaran.');
+                }
+            } else {
+                alert('Konfirmasi ditunda. Silakan selesaikan pembayaran sebelum batas waktu 10 menit habis agar pesanan tidak hangus.');
+                window.location.href = `hasil_pesan.html?id_transaksi=${transactionId}`;
+            }
+        }
+    </script>
+</body>
+</html>

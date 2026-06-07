@@ -76,26 +76,19 @@
 <body class="bg-gray-50 min-h-screen text-gray-800">
 
     <!-- Navbar Header -->
-    <header class="w-full sticky top-0 bg-white shadow-sm md:fixed md:bg-transparent md:shadow-none z-50">
-        <div class="mx-auto px-4 sm:px-6 lg:px-8 py-3 flex justify-between items-center">
-            <a href="../../index.html" class="flex items-center gap-2">
-                <img loading="lazy" class="h-12 w-12 rounded-full border border-gray-100" src="../../assets/icon/Logo_Burgerlicious_square.png" alt="Logo Burgerlicious">
-                <span class="hidden sm:inline font-bold text-xl tracking-wide text-[#5D0303]">Burgerlicious</span>
+    <header class="w-full sticky top-0 z-50 bg-white shadow-sm">
+        <div class="mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center gap-4">
+            <a href="../../index.html" class="text-[#5D0303] hover:scale-105 transition-transform flex items-center">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                </svg>
             </a>
-            
-            <nav class="hidden border border-yellow-400/50 md:flex bg-white/90 backdrop-blur-md rounded-full shadow-md">
-                <a class="text-black hover:text-white hover:bg-[#8F0919] px-9 py-2.5 rounded-full transition-colors font-medium" href="../../index.html">Home</a>
-                <a class="text-black hover:text-white hover:bg-[#8F0919] px-9 py-2.5 rounded-full transition-colors font-medium" href="promo.html">Promo</a>
-                <a class="text-black hover:text-white hover:bg-[#8F0919] px-9 py-2.5 rounded-full transition-colors font-medium" href="menu.html">Menu</a>
-                <a class="text-black hover:text-white hover:bg-[#8F0919] px-9 py-2.5 rounded-full transition-colors font-medium" href="about.html">About</a>
-            </nav>
-
-            <a class="bg-white border text-black hover:bg-[#8F0919] hover:text-white hover:shadow-lg py-2.5 px-6 rounded-full transition-all duration-300 text-sm font-semibold border-[#BA0000]" href="login.html">Login</a>
+            <h1 class="font-bold text-lg text-[#1a1a1a]">Kembali ke Beranda</h1>
         </div>
     </header>
 
     <!-- MAIN WRAPPER -->
-    <main class="pt-6 md:pt-32 pb-16 px-4 max-w-7xl mx-auto">
+    <main class="pt-6 pb-16 px-4 max-w-7xl mx-auto">
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
             
             <!-- LEFT COLUMN: SIDEBAR & USER CARD -->
@@ -134,9 +127,12 @@
                         <span class="w-8 h-8 rounded-xl flex items-center justify-center bg-yellow-100/60 text-[#5D0303] group-hover:scale-105 transition-transform"><i class="fas fa-columns text-sm"></i></span>
                         <span class="text-sm">Dashboard</span>
                     </button>
-                    <button data-tab="history" class="tab-btn w-full py-3 px-4 rounded-2xl flex items-center gap-3.5 text-left text-gray-600 font-semibold transition-all duration-200 hover:bg-gray-50 cursor-pointer">
-                        <span class="w-8 h-8 rounded-xl flex items-center justify-center bg-yellow-100/60 text-[#5D0303]"><i class="fas fa-history text-sm"></i></span>
-                        <span class="text-sm">Riwayat Pesanan</span>
+                    <button data-tab="history" class="tab-btn w-full py-3 px-4 rounded-2xl flex items-center justify-between text-left text-gray-600 font-semibold transition-all duration-200 hover:bg-gray-50 cursor-pointer">
+                        <div class="flex items-center gap-3.5">
+                            <span class="w-8 h-8 rounded-xl flex items-center justify-center bg-yellow-100/60 text-[#5D0303]"><i class="fas fa-history text-sm"></i></span>
+                            <span class="text-sm">Riwayat Pesanan</span>
+                        </div>
+                        <span id="history-tab-badge" class="hidden bg-red-600 text-white text-[10px] font-extrabold px-2.5 py-1 rounded-full leading-none">0</span>
                     </button>
                     <button data-tab="promo" class="tab-btn w-full py-3 px-4 rounded-2xl flex items-center gap-3.5 text-left text-gray-600 font-semibold transition-all duration-200 hover:bg-gray-50 cursor-pointer">
                         <span class="w-8 h-8 rounded-xl flex items-center justify-center bg-yellow-100/60 text-[#5D0303]"><i class="fas fa-ticket-alt text-sm"></i></span>
@@ -307,7 +303,7 @@
     </main>
 
     <script src="../frontend/js/loading.js"></script>
-    <script src="../frontend/js/session.js?v=15"></script>
+    <script src="../frontend/js/session.js?v=16"></script>
     <script src="../frontend/js/profile.js"></script>
 </body>
 </html>

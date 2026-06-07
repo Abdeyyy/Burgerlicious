@@ -1,0 +1,11 @@
+.git/
+.github/
+node_modules/
+Dockerfile
+docker-compose.yml
+package.json
+package-lock.json
+tailwind.config.js
+setup_db.php
+temp_promo.php
+README.md
