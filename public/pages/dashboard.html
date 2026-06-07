@@ -84,7 +84,6 @@
                     <div class="p-3 bg-primary/10 rounded-xl text-primary">
                         <span class="material-symbols-outlined" data-icon="payments">payments</span>
                     </div>
-                    <span class="text-xs font-bold text-green-600 bg-green-50 px-2 py-1 rounded-full">+12.5%</span>
                 </div>
                 <p class="text-on-surface-variant text-sm font-medium">Daily Revenue</p>
                 <h3 class="text-2xl font-black mt-1" id="daily-revenue">Rp.0.00</h3>
@@ -95,7 +94,6 @@
                     <div class="p-3 bg-secondary-container/30 rounded-xl text-secondary">
                         <span class="material-symbols-outlined" data-icon="shopping_bag">shopping_bag</span>
                     </div>
-                    <span class="text-xs font-bold text-green-600 bg-green-50 px-2 py-1 rounded-full">+8%</span>
                 </div>
                 <p class="text-on-surface-variant text-sm font-medium">Orders Today</p>
                 <h3 class="text-2xl font-black mt-1" id="orders-today">0</h3>
@@ -145,6 +143,7 @@
                                 class="material-symbols-outlined absolute left-3 top-2.5 text-on-surface-variant text-sm"
                                 data-icon="search">search</span>
                             <input
+                                id="search-stock"
                                 class="w-full pl-9 pr-4 py-2 bg-surface-container-low border-none rounded-full text-xs focus:ring-1 focus:ring-primary"
                                 placeholder="Search menu..." type="text" />
                         </div>
@@ -152,10 +151,10 @@
                     <div class="divide-y divide-surface-container" id="stock-monitor-container">
                         <!-- Stock items will be loaded here dynamically -->
                     </div>
-                    <button
-                        class="w-full py-3 bg-surface-container-low text-xs font-bold text-primary hover:bg-surface-container-high transition-colors">
+                    <a href="menu_management.html"
+                        class="block w-full text-center py-3 bg-surface-container-low text-xs font-bold text-primary hover:bg-surface-container-high transition-colors">
                         View Full Inventory Management
-                    </button>
+                    </a>
                 </div>
             </section>
         </div>

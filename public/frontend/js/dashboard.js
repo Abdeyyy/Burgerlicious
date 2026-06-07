@@ -11,6 +11,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Notification elements
     const notificationContainer = document.getElementById('notification-container');
     const notificationBadge = document.querySelector('header .relative.group button span.absolute');
+    
+    let allMenus = [];
 
     const fetchDashboardData = async () => {
         try {
@@ -43,7 +45,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const menuRes = await fetch('../../api/menu/read.php');
             const menuData = await menuRes.json();
             if (menuData.status === 'success') {
-                renderStock(menuData.data);
+                allMenus = menuData.data;
+                filterAndRenderStock();
             }
 
             // Fetch Notifications
@@ -125,6 +128,21 @@ document.addEventListener('DOMContentLoaded', () => {
         return date.toLocaleDateString();
     };
 
+    const filterAndRenderStock = () => {
+        const searchInput = document.getElementById('search-stock');
+        const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
+        
+        let filtered = allMenus;
+        if (query) {
+            filtered = allMenus.filter(m => 
+                m.nama_menu.toLowerCase().includes(query) || 
+                (m.nama_kategori && m.nama_kategori.toLowerCase().includes(query))
+            );
+        }
+        
+        renderStock(filtered);
+    };
+
     const renderStock = (menus) => {
         const container = document.getElementById('stock-monitor-container');
         if (!container) return;
@@ -193,6 +211,11 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
         }).join('');
     };
+
+    const searchStockInput = document.getElementById('search-stock');
+    if (searchStockInput) {
+        searchStockInput.addEventListener('input', filterAndRenderStock);
+    }
 
     fetchDashboardData();
     setInterval(fetchDashboardData, 20000); // Refresh every 20s
