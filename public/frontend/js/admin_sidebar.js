@@ -10,7 +10,8 @@ function initializeSidebar() {
         { id: 'menu_management.html', icon: 'restaurant_menu', label: 'Menu Management' },
         { id: 'order_queue.html', icon: 'pending_actions', label: 'Order Queue' },
         { id: 'analytics.html', icon: 'analytics', label: 'Analytics' },
-        { id: 'promo_management.html', icon: 'campaign', label: 'Promos' }
+        { id: 'promo_management.html', icon: 'campaign', label: 'Promos' },
+        { id: 'flash_sale_management.html', icon: 'flash_on', label: 'Flash Sale' }
     ];
 
     const sidebarHTML = `

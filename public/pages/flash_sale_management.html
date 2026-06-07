@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Sizzle &amp; Sauce | Flash Sale Management</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=400;600;700;800&amp;family=Be+Vietnam+Pro:wght=300;400;500;600&amp;display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet" />
+    <script src="../frontend/js/tailwind-admin-config.js"></script>
+    <style>
+        body {
+            font-family: 'Be Vietnam Pro', sans-serif;
+        }
+
+        h1,
+        h2,
+        h3,
+        .font-headline {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+    </style>
+</head>
+
+<body class="bg-background text-on-surface selection:bg-primary-container selection:text-on-primary-container">
+    <!-- Sidebar Container -->
+    <div id="sidebar-container"></div>
+    
+    <!-- Main Content -->
+    <main class="ml-64 p-8 min-h-screen">
+        <!-- Header -->
+        <header class="flex justify-between items-center mb-10">
+            <div>
+                <h2 class="text-3xl font-extrabold tracking-tight text-on-surface">Flash Sale Management</h2>
+                <p class="text-on-surface-variant font-medium">Create, schedule and monitor flash sale campaigns exclusive for mobile app users.</p>
+            </div>
+            <div class="flex gap-4 items-center">
+                <div class="relative w-64 group">
+                    <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant group-focus-within:text-primary transition-colors text-sm" data-icon="search">search</span>
+                    <input id="search-flash-sale" class="w-full bg-surface-container-low border-none rounded-full py-2.5 pl-12 pr-4 focus:ring-2 focus:ring-primary/20 focus:bg-surface-container-highest transition-all text-sm" placeholder="Search sessions..." type="text" />
+                </div>
+            </div>
+        </header>
+
+        <div class="space-y-10">
+            <!-- Stats Bento Grid -->
+            <section class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div class="col-span-1 md:col-span-2 bg-surface-container-lowest p-8 rounded-lg flex flex-col justify-between overflow-hidden relative group">
+                    <div class="relative z-10">
+                        <p class="text-sm font-bold text-on-surface-variant uppercase tracking-widest mb-2">Active Sessions</p>
+                        <h3 class="text-6xl font-black text-on-surface tracking-tighter" id="total-active-sessions">0</h3>
+                        <p class="mt-4 text-sm text-primary font-bold flex items-center gap-1">
+                            <span class="material-symbols-outlined text-sm" data-icon="bolt">bolt</span>
+                            Live Mobile Exclusive Promos
+                        </p>
+                    </div>
+                    <div class="absolute -right-12 -bottom-12 opacity-10 group-hover:scale-110 transition-transform duration-700 pointer-events-none">
+                        <span class="material-symbols-outlined text-[180px]" data-icon="flash_on">flash_on</span>
+                    </div>
+                </div>
+                <div class="bg-primary text-on-primary p-8 rounded-lg flex flex-col justify-between shadow-2xl shadow-primary/20">
+                    <div>
+                        <p class="text-sm font-bold opacity-80 uppercase tracking-widest mb-2">Total Promo Items Sold</p>
+                        <h3 class="text-4xl font-black tracking-tighter" id="total-items-sold">0</h3>
+                    </div>
+                    <div class="h-1 bg-white/20 rounded-full mt-6">
+                        <div class="h-full bg-white rounded-full transition-all duration-500" id="sales-progress" style="width: 0%;"></div>
+                    </div>
+                    <p class="text-xs font-medium mt-2 opacity-80" id="sales-text">0% of total allocated stock claimed</p>
+                </div>
+                <div class="flex flex-col gap-6">
+                    <div class="bg-surface-container-low p-6 rounded-lg flex-1">
+                        <p class="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-1">Total Flash Sale Items</p>
+                        <h3 class="text-2xl font-black text-on-surface" id="total-promo-items">0</h3>
+                    </div>
+                    <div class="bg-tertiary-container p-6 rounded-lg flex-1">
+                        <p class="text-xs font-bold text-on-tertiary-container uppercase tracking-widest mb-1">Upcoming Campaigns</p>
+                        <h3 class="text-2xl font-black text-on-tertiary-container" id="total-upcoming-sessions">0</h3>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Table Section -->
+            <section class="space-y-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h2 class="text-2xl font-black text-on-surface font-headline">Flash Sale Sessions</h2>
+                        <p class="text-on-surface-variant text-sm mt-1">Manage schedules, pricing and stock for your mobile app flash sales.</p>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <select id="status-filter" class="px-6 py-2.5 rounded-full bg-surface-container-highest text-on-surface font-bold hover:bg-surface-container-high border-none transition-colors text-sm focus:ring-2 focus:ring-primary/20 cursor-pointer">
+                            <option value="all">All Sessions</option>
+                            <option value="active">Active Now</option>
+                            <option value="scheduled">Scheduled</option>
+                            <option value="expired">Expired</option>
+                            <option value="inactive">Inactive</option>
+                        </select>
+                        <button id="add-session-btn" class="flex items-center gap-2 px-8 py-2.5 rounded-full bg-primary text-on-primary font-bold hover:scale-105 transition-all shadow-lg shadow-primary/20">
+                            <span class="material-symbols-outlined" data-icon="add_circle">add_circle</span>
+                            <span>Create New Session</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Sessions Table -->
+                <div class="bg-surface-container-lowest rounded-lg overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-surface-container-low/50">
+                                    <th class="px-8 py-5 text-xs font-black text-on-surface-variant uppercase tracking-widest">Session Details</th>
+                                    <th class="px-6 py-5 text-xs font-black text-on-surface-variant uppercase tracking-widest">Start Time</th>
+                                    <th class="px-6 py-5 text-xs font-black text-on-surface-variant uppercase tracking-widest">End Time</th>
+                                    <th class="px-6 py-5 text-xs font-black text-on-surface-variant uppercase tracking-widest">Items</th>
+                                    <th class="px-6 py-5 text-xs font-black text-on-surface-variant uppercase tracking-widest">Status</th>
+                                    <th class="px-6 py-5 text-xs font-black text-on-surface-variant uppercase tracking-widest">Stock Progress</th>
+                                    <th class="px-8 py-5 text-xs font-black text-on-surface-variant uppercase tracking-widest text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-surface-container-low" id="session-table-body">
+                                <tr>
+                                    <td colspan="7" class="px-8 py-10 text-center text-on-surface-variant font-medium">Loading session list...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Modal Form -->
+    <div id="session-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] hidden items-center justify-center p-4">
+        <div class="bg-surface-container-lowest w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
+            <div class="px-6 py-4 border-b border-outline-variant/20 flex justify-between items-center text-on-surface">
+                <h3 id="modal-title" class="text-xl font-bold">Create New Flash Sale</h3>
+                <button id="close-modal" class="p-2 hover:bg-surface-container rounded-full transition-colors flex items-center justify-center">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+            
+            <form id="session-form" class="p-6 space-y-6 max-h-[85vh] overflow-y-auto">
+                <div class="space-y-1">
+                    <label class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Session Name</label>
+                    <input id="session-name" name="nama_flash_sale" type="text" placeholder="e.g. Flash Sale Spesial Ramadhan" required class="w-full bg-surface-container border-none rounded-lg focus:ring-2 focus:ring-primary/20 text-on-surface">
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-1">
+                        <label class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Start Time</label>
+                        <input id="session-start" name="waktu_mulai" type="datetime-local" required class="w-full bg-surface-container border-none rounded-lg focus:ring-2 focus:ring-primary/20 text-on-surface">
+                    </div>
+                    <div class="space-y-1">
+                        <label class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">End Time</label>
+                        <input id="session-end" name="waktu_selesai" type="datetime-local" required class="w-full bg-surface-container border-none rounded-lg focus:ring-2 focus:ring-primary/20 text-on-surface">
+                    </div>
+                </div>
+
+                <!-- Items list -->
+                <div class="border border-outline-variant/20 p-5 rounded-xl bg-surface-container-low space-y-4">
+                    <div class="flex justify-between items-center">
+                        <label class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Flash Sale Menu Items</label>
+                        <button type="button" id="add-menu-item-row" class="flex items-center gap-1 text-xs text-primary font-bold hover:underline">
+                            <span class="material-symbols-outlined text-sm">add_circle</span>
+                            <span>Add Menu Item</span>
+                        </button>
+                    </div>
+                    
+                    <div id="menu-items-rows" class="space-y-3">
+                        <!-- Dynamic rows will be inserted here -->
+                    </div>
+                </div>
+
+                <div class="pt-4 border-t border-outline-variant/10">
+                    <button type="submit" class="w-full py-3 bg-primary text-on-primary rounded-full font-bold shadow-lg shadow-primary/20 hover:scale-[1.01] active:scale-95 transition-all">
+                        Save Flash Sale Session
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../frontend/js/session.js"></script>
+    <script src="../frontend/js/admin_sidebar.js"></script>
+    <script src="../frontend/js/flash_sale_management.js"></script>
+</body>
+
+</html>

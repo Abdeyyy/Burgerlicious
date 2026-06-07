@@ -71,6 +71,39 @@ try {
         }
 
         $harga_satuan = (float)$menu['harga'];
+        $id_flash_sale_item = null;
+        $is_flash_applied = false;
+
+        // Check if request is from mobile and flash sale is active
+        $is_mobile = (isset($_SERVER['HTTP_X_PLATFORM']) && $_SERVER['HTTP_X_PLATFORM'] === 'mobile');
+        if ($is_mobile) {
+            $stmt_fs = $conn->prepare("
+                SELECT fsi.id_flash_sale_item, fsi.harga_promo, fsi.stok_promo, fsi.stok_terjual 
+                FROM flash_sale_items fsi
+                JOIN flash_sale fs ON fsi.id_flash_sale = fs.id_flash_sale
+                WHERE fsi.id_menu = ? 
+                  AND fs.is_active = 1 
+                  AND NOW() BETWEEN fs.waktu_mulai AND fs.waktu_selesai
+                LIMIT 1
+            ");
+            $stmt_fs->bind_param("i", $item_id);
+            $stmt_fs->execute();
+            $fs_res = $stmt_fs->get_result()->fetch_assoc();
+            $stmt_fs->close();
+
+            if ($fs_res) {
+                $sisa_stok = $fs_res['stok_promo'] - $fs_res['stok_terjual'];
+                if ($sisa_stok > 0) {
+                    if ($item_qty > $sisa_stok) {
+                        throw new Exception("Stok flash sale untuk " . $menu['nama_menu'] . " tidak mencukupi (Sisa stok: " . $sisa_stok . ").");
+                    }
+                    $harga_satuan = (float)$fs_res['harga_promo'];
+                    $is_flash_applied = true;
+                    $id_flash_sale_item = $fs_res['id_flash_sale_item'];
+                }
+            }
+        }
+
         $item_subtotal = $harga_satuan * $item_qty;
         $subtotal += $item_subtotal;
 
@@ -79,7 +112,9 @@ try {
             'id_kategori' => (int)$menu['id_kategori'],
             'harga_satuan' => $harga_satuan,
             'jumlah' => $item_qty,
-            'subtotal' => $item_subtotal
+            'subtotal' => $item_subtotal,
+            'id_flash_sale_item' => $id_flash_sale_item,
+            'is_flash_applied' => $is_flash_applied
         ];
     }
 
@@ -192,6 +227,13 @@ try {
     foreach ($verified_items as $vi) {
         $stmt_detail->bind_param("iiidd", $id_transaksi, $vi['id_menu'], $vi['jumlah'], $vi['harga_satuan'], $vi['subtotal']);
         $stmt_detail->execute();
+
+        // Increment stok_terjual if flash sale item was applied
+        if ($vi['is_flash_applied'] && $vi['id_flash_sale_item'] !== null) {
+            $fs_item_id = $vi['id_flash_sale_item'];
+            $fs_qty = $vi['jumlah'];
+            $conn->query("UPDATE flash_sale_items SET stok_terjual = stok_terjual + $fs_qty WHERE id_flash_sale_item = $fs_item_id");
+        }
     }
     $stmt_detail->close();
 

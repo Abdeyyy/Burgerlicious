@@ -33,6 +33,10 @@ if ($conn->connect_error) {
 
 $conn->set_charset('utf8mb4');
 
+// Set timezone to Asia/Jakarta (WIB)
+date_default_timezone_set('Asia/Jakarta');
+$conn->query("SET time_zone = '+07:00'");
+
 // Pastikan tabel remember_tokens tersedia secara dinamis
 $conn->query("CREATE TABLE IF NOT EXISTS `remember_tokens` (
   `id` int(11) NOT NULL AUTO_INCREMENT,

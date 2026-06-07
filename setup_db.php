@@ -310,8 +310,47 @@ if ($conn->query($sql_bundling_items) === TRUE) {
     die("Error creating table promo_bundling_items: " . $conn->error . "\n");
 }
 
+// Tambah Tabel Flash Sale
+$sql_flash_sale = "CREATE TABLE IF NOT EXISTS `flash_sale` (
+  `id_flash_sale` int(11) NOT NULL AUTO_INCREMENT,
+  `nama_flash_sale` varchar(100) NOT NULL,
+  `waktu_mulai` datetime NOT NULL,
+  `waktu_selesai` datetime NOT NULL,
+  `is_active` tinyint(1) DEFAULT 1,
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id_flash_sale`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
+
+if ($conn->query($sql_flash_sale) === TRUE) {
+    echo "Tabel flash_sale siap!\n";
+} else {
+    die("Error creating table flash_sale: " . $conn->error . "\n");
+}
+
+// Tambah Tabel Flash Sale Items
+$sql_flash_sale_items = "CREATE TABLE IF NOT EXISTS `flash_sale_items` (
+  `id_flash_sale_item` int(11) NOT NULL AUTO_INCREMENT,
+  `id_flash_sale` int(11) NOT NULL,
+  `id_menu` int(11) NOT NULL,
+  `harga_promo` decimal(10,2) NOT NULL,
+  `stok_promo` int(11) NOT NULL DEFAULT 10,
+  `stok_terjual` int(11) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id_flash_sale_item`),
+  KEY `fk_fs_event` (`id_flash_sale`),
+  KEY `fk_fs_menu` (`id_menu`),
+  CONSTRAINT `fk_fs_event` FOREIGN KEY (`id_flash_sale`) REFERENCES `flash_sale` (`id_flash_sale`) ON DELETE CASCADE,
+  CONSTRAINT `fk_fs_menu` FOREIGN KEY (`id_menu`) REFERENCES `menu` (`id_menu`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
+
+if ($conn->query($sql_flash_sale_items) === TRUE) {
+    echo "Tabel flash_sale_items siap!\n";
+} else {
+    die("Error creating table flash_sale_items: " . $conn->error . "\n");
+}
+
 // Migrasi: tambah kolom id_promo dan nilai_diskon di transaksi jika belum ada
 $check_promo_col = $conn->query("SHOW COLUMNS FROM `transaksi` LIKE 'id_promo'");
+
 if ($check_promo_col->num_rows == 0) {
     $conn->query("ALTER TABLE `transaksi` ADD `id_promo` int(11) DEFAULT NULL AFTER `total_harga`");
     $conn->query("ALTER TABLE `transaksi` ADD `nilai_diskon` decimal(10,2) DEFAULT 0 AFTER `id_promo`");
