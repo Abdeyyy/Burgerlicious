@@ -1,4 +1,15 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Helper function for HTML escaping to prevent XSS
+    function escapeHTML(str) {
+        if (str === null || str === undefined) return '';
+        return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+
     // State Management
     let sessionsList = [];
     let menuList = [];
@@ -48,9 +59,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const menuSelect = document.createElement('select');
         menuSelect.required = true;
         menuSelect.className = 'flex-1 bg-surface-container-high border-none rounded-lg text-xs font-medium text-on-surface focus:ring-1 focus:ring-primary py-2 px-3';
-        menuSelect.innerHTML = menuList.map(m => `
-            <option value="${m.id_menu}">[${m.nama_kategori}] ${m.nama_menu} (Rp ${parseFloat(m.harga).toLocaleString('id-ID')})</option>
-        `).join('');
+        menuSelect.innerHTML = '';
+        menuList.forEach(m => {
+            const opt = document.createElement('option');
+            opt.value = m.id_menu;
+            opt.textContent = `[${m.nama_kategori}] ${m.nama_menu} (Rp ${parseFloat(m.harga).toLocaleString('id-ID')})`;
+            menuSelect.appendChild(opt);
+        });
         if (data) {
             menuSelect.value = data.id_menu;
         }
@@ -198,39 +213,39 @@ document.addEventListener('DOMContentLoaded', () => {
             tr.innerHTML = `
                 <td class="px-8 py-6">
                     <div>
-                        <p class="font-bold text-on-surface leading-tight">${session.nama_flash_sale}</p>
-                        <p class="text-xs text-on-surface-variant font-medium mt-1">ID: FS-${session.id_flash_sale}</p>
+                        <p class="font-bold text-on-surface leading-tight">${escapeHTML(session.nama_flash_sale)}</p>
+                        <p class="text-xs text-on-surface-variant font-medium mt-1">ID: FS-${escapeHTML(session.id_flash_sale)}</p>
                     </div>
                 </td>
-                <td class="px-6 py-6 text-sm font-medium text-on-surface">${startFmt}</td>
-                <td class="px-6 py-6 text-sm font-medium text-on-surface">${endFmt}</td>
-                <td class="px-6 py-6 text-sm font-bold text-primary">${session.item_count} items</td>
+                <td class="px-6 py-6 text-sm font-medium text-on-surface">${escapeHTML(startFmt)}</td>
+                <td class="px-6 py-6 text-sm font-medium text-on-surface">${escapeHTML(endFmt)}</td>
+                <td class="px-6 py-6 text-sm font-bold text-primary">${escapeHTML(session.item_count)} items</td>
                 <td class="px-6 py-6">
-                    <div class="flex items-center gap-1.5 px-3 py-1 rounded-full w-fit ${statusPillClass}">
+                    <div class="flex items-center gap-1.5 px-3 py-1 rounded-full w-fit ${escapeHTML(statusPillClass)}">
                         <span class="w-1.5 h-1.5 rounded-full bg-current"></span>
-                        <span class="text-xs font-bold">${statusLabel}</span>
+                        <span class="text-xs font-bold">${escapeHTML(statusLabel)}</span>
                     </div>
                 </td>
                 <td class="px-6 py-6">
                     <div class="w-32">
                         <div class="flex justify-between items-center text-[10px] font-bold text-on-surface-variant mb-1">
-                            <span>${percent}%</span>
-                            <span>${session.total_terjual} / ${session.total_stok} sold</span>
+                            <span>${escapeHTML(percent)}%</span>
+                            <span>${escapeHTML(session.total_terjual)} / ${escapeHTML(session.total_stok)} sold</span>
                         </div>
                         <div class="h-1.5 bg-surface-container rounded-full overflow-hidden">
-                            <div class="h-full bg-primary rounded-full transition-all duration-300" style="width: ${percent}%;"></div>
+                            <div class="h-full bg-primary rounded-full transition-all duration-300" style="width: ${escapeHTML(percent)}%;"></div>
                         </div>
                     </div>
                 </td>
                 <td class="px-8 py-6 text-right">
                     <div class="flex items-center justify-end gap-2">
-                        <button class="p-2 hover:bg-primary/10 hover:text-primary text-on-surface-variant rounded-full transition-all toggle-status-btn" data-id="${session.id_flash_sale}" title="${session.is_active == 1 ? 'Disable' : 'Enable'}">
+                        <button class="p-2 hover:bg-primary/10 hover:text-primary text-on-surface-variant rounded-full transition-all toggle-status-btn" data-id="${escapeHTML(session.id_flash_sale)}" title="${session.is_active == 1 ? 'Disable' : 'Enable'}">
                             <span class="material-symbols-outlined text-[20px]">${session.is_active == 1 ? 'visibility_off' : 'visibility'}</span>
                         </button>
-                        <button class="p-2 hover:bg-primary/10 hover:text-primary text-on-surface-variant rounded-full transition-all edit-btn" data-id="${session.id_flash_sale}" title="Edit">
+                        <button class="p-2 hover:bg-primary/10 hover:text-primary text-on-surface-variant rounded-full transition-all edit-btn" data-id="${escapeHTML(session.id_flash_sale)}" title="Edit">
                             <span class="material-symbols-outlined text-[20px]">edit</span>
                         </button>
-                        <button class="p-2 hover:bg-error-container/20 hover:text-error text-on-surface-variant rounded-full transition-all delete-btn" data-id="${session.id_flash_sale}" title="Delete">
+                        <button class="p-2 hover:bg-error-container/20 hover:text-error text-on-surface-variant rounded-full transition-all delete-btn" data-id="${escapeHTML(session.id_flash_sale)}" title="Delete">
                             <span class="material-symbols-outlined text-[20px]">delete</span>
                         </button>
                     </div>
@@ -483,14 +498,21 @@ document.addEventListener('DOMContentLoaded', () => {
             'bg-on-surface text-surface'
         }`;
         
-        let icon = 'check_circle';
-        if (type === 'error') icon = 'error';
-        else if (type === 'warning') icon = 'warning';
+        let iconName = 'check_circle';
+        if (type === 'error') iconName = 'error';
+        else if (type === 'warning') iconName = 'warning';
 
-        toast.innerHTML = `
-            <span class="material-symbols-outlined text-lg">${icon}</span>
-            <span>${message}</span>
-        `;
+        toast.innerHTML = '';
+        
+        const iconSpan = document.createElement('span');
+        iconSpan.className = 'material-symbols-outlined text-lg';
+        iconSpan.textContent = iconName;
+        
+        const textSpan = document.createElement('span');
+        textSpan.textContent = message;
+        
+        toast.appendChild(iconSpan);
+        toast.appendChild(textSpan);
         document.body.appendChild(toast);
 
         setTimeout(() => {
