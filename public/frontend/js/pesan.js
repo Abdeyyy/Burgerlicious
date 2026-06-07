@@ -876,6 +876,13 @@ document.addEventListener('DOMContentLoaded', async function () {
         }
 
         currentUserId = data.user_id;
+        
+        if (data.role === 'admin') {
+            const btnTambahKeranjang = document.getElementById('btnTambahKeranjang');
+            if (btnTambahKeranjang) {
+                btnTambahKeranjang.style.display = 'none';
+            }
+        }
     } catch (err) {
         console.error('Failed to verify session:', err);
     }
