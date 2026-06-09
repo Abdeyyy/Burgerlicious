@@ -11,6 +11,11 @@ $host_local = 'localhost';
 $user_local = 'root';
 $pass_local = ''; 
 
+// InfinityFree
+$host_hosting ='sql100.infinityfree.com';
+$user_hosting = 'if0_41496213';
+$pass_hosting = 'BgEwbUd9M7kd';
+$db_name = 'if0_41496213_burgerlicious';
 
 // Matikan exception otomatis untuk mysqli agar bisa ditangkap dengan gracefully
 mysqli_report(MYSQLI_REPORT_OFF);
