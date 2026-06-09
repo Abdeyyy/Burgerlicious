@@ -98,6 +98,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
         submitBtn.addEventListener('click', async function () {
             if (!validate()) return;
+
+            // Memeriksa Google reCAPTCHA
+            const recaptchaResponse = typeof grecaptcha !== 'undefined' ? grecaptcha.getResponse() : '';
+            if (!recaptchaResponse) {
+                showFormMessage('Silakan centang reCAPTCHA terlebih dahulu.');
+                return;
+            }
+
             submitBtn.disabled = true;
             submitBtn.textContent = 'Loading...';
 
@@ -105,6 +113,7 @@ document.addEventListener('DOMContentLoaded', function () {
             formData.append('email', emailInput.value.trim());
             formData.append('password', passwordInput.value);
             formData.append('remember', rememberMeCheck && rememberMeCheck.checked ? '1' : '0');
+            formData.append('g-recaptcha-response', recaptchaResponse);
 
             try {
                 const basePath = window.location.pathname.includes('/public/pages/') ? '../../' : './';
@@ -134,11 +143,13 @@ document.addEventListener('DOMContentLoaded', function () {
                     showFormMessage(result.message || 'Login gagal.');
                     submitBtn.disabled = false;
                     submitBtn.textContent = 'SIGN IN';
+                    if (typeof grecaptcha !== 'undefined') grecaptcha.reset();
                 }
             } catch (error) {
                 showFormMessage('Terjadi kesalahan pada server saat login.');
                 submitBtn.disabled = false;
                 submitBtn.textContent = 'SIGN IN';
+                if (typeof grecaptcha !== 'undefined') grecaptcha.reset();
             }
         });
     }
