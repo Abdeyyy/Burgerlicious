@@ -37,6 +37,16 @@ document.addEventListener('DOMContentLoaded', function () {
             passwordInput.type = this.checked ? 'text' : 'password';
         });
 
+        // Submit form when pressing Enter key on email or password inputs
+        const handleEnter = function (event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                submitBtn.click();
+            }
+        };
+        emailInput.addEventListener('keydown', handleEnter);
+        passwordInput.addEventListener('keydown', handleEnter);
+
         function showError(element, message) {
             element.textContent = message;
             element.classList.remove('hidden');

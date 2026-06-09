@@ -45,6 +45,14 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
 
+        // Submit form when pressing Enter key
+        otpInput.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                btnVerify.click();
+            }
+        });
+
         btnVerify.addEventListener('click', async () => {
             if (isRequesting) return;
 

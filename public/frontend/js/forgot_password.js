@@ -78,6 +78,25 @@ document.addEventListener('DOMContentLoaded', function () {
         newPasswordInput.addEventListener('input', () => clearError(newPasswordError));
         confirmPasswordInput.addEventListener('input', () => clearError(confirmPasswordError));
 
+        // Submit form when pressing Enter key on Step 1 input
+        emailInput.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                sendOtpRequest();
+            }
+        });
+
+        // Submit form when pressing Enter key on Step 2 inputs
+        const handleStep2Enter = function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                if (btnResetPassword) btnResetPassword.click();
+            }
+        };
+        if (otpInput) otpInput.addEventListener('keydown', handleStep2Enter);
+        if (newPasswordInput) newPasswordInput.addEventListener('keydown', handleStep2Enter);
+        if (confirmPasswordInput) confirmPasswordInput.addEventListener('keydown', handleStep2Enter);
+
         // PENGIRIMAN OTP (STEP 1)
         async function sendOtpRequest() {
             if (isRequesting) return;

@@ -47,6 +47,18 @@ document.addEventListener('DOMContentLoaded', function () {
             confirmPassInput.type = type;
         });
 
+        // Submit form when pressing Enter key
+        const handleEnter = function (event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                submitBtn.click();
+            }
+        };
+        namaInput.addEventListener('keydown', handleEnter);
+        emailInput.addEventListener('keydown', handleEnter);
+        passwordInput.addEventListener('keydown', handleEnter);
+        confirmPassInput.addEventListener('keydown', handleEnter);
+
         function showError(element, message) {
             element.textContent = message;
             element.classList.remove('hidden');

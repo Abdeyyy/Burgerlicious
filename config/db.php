@@ -3,49 +3,65 @@
 define('RECAPTCHA_SITE_KEY', '6LeZkxUtAAAAAGPGICX00PiyIBusxyoHuxELLRPI');
 define('RECAPTCHA_SECRET_KEY', '6LeZkxUtAAAAAAEfs-bax8khl9EXITMyHf5iOEc6');
 
-$db_name = 'burgerlicious';
-
-// Konfigurasi untuk Docker
-$host_docker = 'db';
-$user_docker = 'root';
-$pass_docker = 'rootpassword';
-
-// Konfigurasi untuk Laragon/XAMPP (Lokal)
-$host_local = 'localhost';
-$user_local = 'root';
-$pass_local = ''; 
-
-
-// Matikan exception otomatis untuk mysqli agar bisa ditangkap dengan gracefully
+// Matikan exception otomatis untuk mysqli agar bisa ditangkap secara gracefully
 mysqli_report(MYSQLI_REPORT_OFF);
 
 // Matikan display_errors agar warning/notice PHP tidak merusak output JSON
 ini_set('display_errors', 0);
 
-// Coba koneksi ke database
-if (isset($host_hosting)) {
-    $conn = @new mysqli($host_hosting, $user_hosting, $pass_hosting, $db_name);
+// Deteksi lingkungan: apakah lokal (XAMPP/Laragon/Docker) atau hosting
+$is_local = false;
+$http_host = $_SERVER['HTTP_HOST'] ?? '';
+
+if (empty($http_host) || in_array($http_host, ['localhost', '127.0.0.1']) || strpos($http_host, 'localhost:') === 0 || strpos($http_host, '127.0.0.1:') === 0) {
+    $is_local = true;
+}
+
+if (!$is_local) {
+    // -------------------------------------------------------------
+    // KONEKSI LIVE SERVER (INFINITYFREE)
+    // -------------------------------------------------------------
+    // PENTING: Di InfinityFree, jangan gunakan 'localhost' sebagai host database!
+    // Gunakan MySQL Hostname yang tertera di Control Panel InfinityFree Anda.
+    $db_host = 'sql100.infinityfree.com'; // Sesuaikan jika host akun Anda berbeda
+    $db_user = 'if0_41496213';
+    $db_pass = 'BgEwbUd9M7kd';
+    $db_name = 'if0_41496213_burgerlicious';
 } else {
-    // Coba koneksi ke Docker
-    $conn = @new mysqli($host_docker, $user_docker, $pass_docker, $db_name);
-    
-    if ($conn->connect_error) {
-        // Jika gagal ke Docker, coba koneksi ke Laragon/Lokal
-        $conn = @new mysqli($host_local, $user_local, $pass_local, $db_name);
+    // -------------------------------------------------------------
+    // KONEKSI LOKAL (XAMPP / LARAGON / DOCKER)
+    // -------------------------------------------------------------
+    // Coba koneksi ke Docker db first
+    $db_host = 'db';
+    $db_user = 'root';
+    $db_pass = 'rootpassword';
+    $db_name = 'burgerlicious';
+
+    $conn_test = @new mysqli($db_host, $db_user, $db_pass, $db_name);
+    if ($conn_test->connect_error) {
+        // Fallback ke Laragon/XAMPP Lokal jika Docker tidak aktif
+        $db_host = '127.0.0.1'; // Menggunakan 127.0.0.1 mencegah error socket
+        $db_user = 'root';
+        $db_pass = '';
+        $db_name = 'burgerlicious';
+    } else {
+        $conn_test->close();
     }
 }
 
+// Lakukan koneksi final
+$conn = @new mysqli($db_host, $db_user, $db_pass, $db_name);
+
 if (!$conn || $conn->connect_error) {
     http_response_code(500);
-    echo json_encode(['status' => 'error', 'message' => 'Koneksi database gagal: ' . ($conn ? $conn->connect_error : 'Koneksi tidak terinisialisasi')]);
+    echo json_encode([
+        'status' => 'error', 
+        'message' => 'Koneksi database gagal (' . $db_host . '): ' . ($conn ? $conn->connect_error : 'Koneksi tidak terinisialisasi')
+    ]);
     exit;
 }
 
 $conn->set_charset('utf8mb4');
-
-// Set timezone to Asia/Jakarta (WIB)
-date_default_timezone_set('Asia/Jakarta');
-$conn->query("SET time_zone = '+07:00'");
 
 // Pastikan tabel remember_tokens tersedia secara dinamis
 $conn->query("CREATE TABLE IF NOT EXISTS `remember_tokens` (
