@@ -11,9 +11,49 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 $email    = trim($_POST['email'] ?? '');
 $password = $_POST['password'] ?? '';
+$recaptchaResponse = $_POST['g-recaptcha-response'] ?? '';
 
 if (!$email || !$password) {
     echo json_encode(['status' => 'error', 'message' => 'Email dan password harus diisi.']);
+    exit;
+}
+
+if (!$recaptchaResponse) {
+    echo json_encode(['status' => 'error', 'message' => 'Silakan centang reCAPTCHA terlebih dahulu.']);
+    exit;
+}
+
+// Verifikasi Google reCAPTCHA v2
+$secretKey = RECAPTCHA_SECRET_KEY;
+$verifyUrl = 'https://www.google.com/recaptcha/api/siteverify';
+
+$data = [
+    'secret'   => $secretKey,
+    'response' => $recaptchaResponse,
+    'remoteip' => $_SERVER['REMOTE_ADDR'] ?? ''
+];
+
+$options = [
+    'http' => [
+        'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
+        'method'  => 'POST',
+        'content' => http_build_query($data),
+        'timeout' => 10
+    ]
+];
+
+$context  = stream_context_create($options);
+$response = @file_get_contents($verifyUrl, false, $context);
+
+if ($response === false) {
+    echo json_encode(['status' => 'error', 'message' => 'Gagal terhubung dengan server verifikasi CAPTCHA.']);
+    exit;
+}
+
+$responseData = json_decode($response, true);
+
+if (!$responseData || !isset($responseData['success']) || !$responseData['success']) {
+    echo json_encode(['status' => 'error', 'message' => 'Verifikasi CAPTCHA gagal. Silakan coba lagi.']);
     exit;
 }
 

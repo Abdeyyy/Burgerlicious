@@ -11,6 +11,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan&family=Baloo+Bhaijaan+2:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
 </head>
 
@@ -78,6 +79,11 @@
                     </div>
                 </div>
 
+                <!-- reCAPTCHA -->
+                <div class="flex justify-center mt-2">
+                    <div class="g-recaptcha" data-sitekey="6LeZkxUtAAAAAGPGICX00PiyIBusxyoHuxELLRPI"></div>
+                </div>
+
                 <!-- Submit -->
                 <button id="btnLogin" type="button" class="mx-auto w-[120px] mt-2 bg-[#5D0303] text-white py-2.5 rounded-xl shadow-md hover:bg-[#8F0919] transition duration-200 font-semibold tracking-wide disabled:opacity-60">SIGN IN</button>
 
@@ -101,7 +107,7 @@
 
         <!-- Login -->
         <div class="flex-1 flex items-center justify-center mt-15">
-            <div class="relative bg-white w-[440px] h-[540px] rounded-xl shadow-md">
+            <div class="relative bg-white w-[440px] rounded-xl shadow-md pb-8">
                 <p class="text-2xl text-center mt-25" style="font-family: 'Baloo Bhaijaan', sans-serif;">Login</p>
                 <div class="absolute -top-9 left-1/2 -translate-x-1/2">
                     <div class="w-20 h-20 bg-yellow-500 rounded-full border-10 border-white drop-shadow-[0_-6px_6px_rgba(0,0,0,0.2)] flex items-center justify-center overflow-hidden">
@@ -138,6 +144,11 @@
                             </label>
                         </div>
                     </div>
+                    <!-- reCAPTCHA -->
+                    <div class="flex justify-center mt-2">
+                        <div class="g-recaptcha" data-sitekey="6LeZkxUtAAAAAGPGICX00PiyIBusxyoHuxELLRPI"></div>
+                    </div>
+
                     <!-- Submit -->
                     <button id="btnLogin" type="button"
                         class="mx-auto w-[100px] mt-2 bg-[#5D0303] text-white py-2 rounded-lg shadow-md hover:bg-[#8F0919] transition duration-200 disabled:opacity-60">

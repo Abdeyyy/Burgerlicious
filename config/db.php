@@ -1,4 +1,8 @@
 <?php
+// Google reCAPTCHA v2 Keys
+define('RECAPTCHA_SITE_KEY', '6LeZkxUtAAAAAGPGICX00PiyIBusxyoHuxELLRPI');
+define('RECAPTCHA_SECRET_KEY', '6LeZkxUtAAAAAAEfs-bax8khl9EXITMyHf5iOEc6');
+
 $db_name = 'burgerlicious';
 
 // Konfigurasi untuk Docker
