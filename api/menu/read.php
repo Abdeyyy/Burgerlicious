@@ -19,6 +19,12 @@ $sql = "SELECT m.*, k.nama_kategori,
         ORDER BY m.id_menu DESC";
 $result = $conn->query($sql);
 
+if (!$result) {
+    echo json_encode(['status' => 'error', 'message' => 'Query error: ' . $conn->error]);
+    $conn->close();
+    exit;
+}
+
 $menu = [];
 if ($result) {
     while ($row = $result->fetch_assoc()) {
