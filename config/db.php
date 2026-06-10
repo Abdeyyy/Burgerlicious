@@ -1,7 +1,7 @@
 <?php
 // Google reCAPTCHA v2 Keys
-define('RECAPTCHA_SITE_KEY', '6LeZkxUtAAAAAGPGICX00PiyIBusxyoHuxELLRPI');
-define('RECAPTCHA_SECRET_KEY', '6LeZkxUtAAAAAAEfs-bax8khl9EXITMyHf5iOEc6');
+define('RECAPTCHA_SITE_KEY', '6LcJuhYtAAAAAN-dq6VctLa_gdt7LS-1NYNvaGZW');
+define('RECAPTCHA_SECRET_KEY', '6LcJuhYtAAAAANxMIZe3P__gmChpNV3Q8MrCYAXh');
 
 // Matikan exception otomatis untuk mysqli agar bisa ditangkap secara gracefully
 mysqli_report(MYSQLI_REPORT_OFF);
