@@ -7,7 +7,8 @@ if (isLoggedIn()) {
         'loggedIn' => true,
         'user_id' => $_SESSION['user_id'],
         'nama' => $_SESSION['nama'],
-        'role' => $_SESSION['role'] ?? 'customer'
+        'role' => $_SESSION['role'] ?? 'customer',
+        'foto_profil' => $_SESSION['foto_profil'] ?? ''
     ]);
 } else {
     echo json_encode(['loggedIn' => false]);

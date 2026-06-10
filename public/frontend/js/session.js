@@ -171,6 +171,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         }
 
         window.currentUserId = data.user_id;
+        const profileImgUrl = data.foto_profil ? (basePath + data.foto_profil) : (basePath + 'assets/icon/profile.png');
 
         // Fetch order history to compute status update notifications
         let badgeCount = 0;
@@ -247,8 +248,8 @@ document.addEventListener('DOMContentLoaded', async function () {
         dropdown.innerHTML = `
             <!-- Header Profil -->
             <div style="display:flex;align-items:center;padding:14px 16px;border-bottom:1px solid #e5e7eb;gap:12px;">
-                <img src="${basePath}assets/icon/profile.png" alt="Profile"
-                    style="width:56px;height:56px;object-fit:contain;flex-shrink:0;">
+                <img src="${profileImgUrl}" alt="Profile"
+                    style="width:56px;height:56px;object-fit:cover;border-radius:50%;flex-shrink:0;">
                 <div style="flex:1;min-width:0;">
                     <div style="font-size:17px;font-weight:700;color:#1c1e21;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${data.nama}</div>
                     <div style="font-size:13px;color:#65676b;margin-top:2px;">${data.role === 'admin' ? 'Admin' : 'Customer'}</div>
@@ -539,7 +540,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
             const showNavBadge = window.profileBadgeCount > 0 ? 'flex' : 'none';
             profileBtn.innerHTML = `
-                <img src="${basePath}assets/icon/profile.png" alt="Profile" style="width:${size};height:${size};object-fit:contain;display:block;">
+                <img src="${profileImgUrl}" alt="Profile" style="width:${size};height:${size};object-fit:cover;display:block;border-radius:50%;">
                 <span id="profile-nav-badge" style="position:absolute;top:${badgeTop};right:${badgeRight};background:#BA0000;color:white;font-size:11px;font-weight:900;border-radius:50%;width:22px;height:22px;display:${showNavBadge};align-items:center;justify-content:center;border:2px solid white;box-shadow:0 2px 8px rgba(0,0,0,0.2);z-index:10;">${window.profileBadgeCount}</span>
             `;
 
