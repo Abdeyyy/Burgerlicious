@@ -22,7 +22,7 @@ if ($id_transaksi <= 0) {
 
 try {
     // 2. Check ownership and current status
-    $stmt = $conn->prepare("SELECT id_transaksi, status_pesanan, tanggal_transaksi FROM transaksi WHERE id_transaksi = ? AND id_user = ?");
+    $stmt = $conn->prepare("SELECT id_transaksi, status_pesanan, TIMESTAMPDIFF(SECOND, tanggal_transaksi, NOW()) as elapsed_seconds FROM transaksi WHERE id_transaksi = ? AND id_user = ?");
     $stmt->bind_param("ii", $id_transaksi, $id_user);
     $stmt->execute();
     $order = $stmt->get_result()->fetch_assoc();
@@ -40,8 +40,7 @@ try {
     }
 
     // 3. Check if it's already expired (older than 10 minutes = 600 seconds)
-    $created_time = strtotime($order['tanggal_transaksi']);
-    $elapsed = time() - $created_time;
+    $elapsed = isset($order['elapsed_seconds']) ? (int)$order['elapsed_seconds'] : 0;
     if ($elapsed > 600) {
         $upd = $conn->prepare("UPDATE transaksi SET status_pesanan = 'cancelled' WHERE id_transaksi = ?");
         $upd->bind_param("i", $id_transaksi);

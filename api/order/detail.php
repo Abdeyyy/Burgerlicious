@@ -21,7 +21,8 @@ if ($id_transaksi <= 0) {
 
 try {
     // 2. Fetch transaction details and check ownership (unless user is admin)
-    $query = "SELECT t.*, p.kode_promo, p.nama_promo, p.deskripsi as deskripsi_promo 
+    $query = "SELECT t.*, p.kode_promo, p.nama_promo, p.deskripsi as deskripsi_promo,
+                     TIMESTAMPDIFF(SECOND, t.tanggal_transaksi, NOW()) as elapsed_seconds
               FROM transaksi t 
               LEFT JOIN promo p ON t.id_promo = p.id_promo
               WHERE t.id_transaksi = ?";
@@ -49,9 +50,7 @@ try {
 
     // Auto-cancellation check for pending order (older than 10 minutes = 600 seconds)
     if ($order['status_pesanan'] === 'pending') {
-        $created_time = strtotime($order['tanggal_transaksi']);
-        $current_time = time();
-        $elapsed_seconds = $current_time - $created_time;
+        $elapsed_seconds = isset($order['elapsed_seconds']) ? (int)$order['elapsed_seconds'] : 0;
         
         if ($elapsed_seconds > 600) {
             $update_stmt = $conn->prepare("UPDATE transaksi SET status_pesanan = 'cancelled' WHERE id_transaksi = ?");
