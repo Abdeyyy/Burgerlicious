@@ -22,13 +22,18 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 $email    = trim($_POST['email'] ?? '');
 $password = $_POST['password'] ?? '';
 $recaptchaResponse = $_POST['g-recaptcha-response'] ?? '';
+$apiKey = $_POST['api_key'] ?? '';
 
 if (!$email || !$password) {
     echo json_encode(['status' => 'error', 'message' => 'Email dan password harus diisi.']);
     exit;
 }
 
-if (!$recaptchaResponse) {
+// Bypass reCAPTCHA for API requests with valid API key
+$validApiKey = 'burgerlicious_mobile_api_key_2026';
+if ($apiKey === $validApiKey) {
+    // Skip reCAPTCHA verification for mobile app
+} else if (!$recaptchaResponse) {
     echo json_encode(['status' => 'error', 'message' => 'Silakan centang reCAPTCHA terlebih dahulu.']);
     exit;
 }
