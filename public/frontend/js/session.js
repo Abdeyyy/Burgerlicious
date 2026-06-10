@@ -303,8 +303,8 @@ document.addEventListener('DOMContentLoaded', async function () {
         function openDropdown() {
             dropdown.style.display = 'block';
             const btnRect = profileBtn.getBoundingClientRect();
-            // Kurangi padding transparan di bawah gambar profile.png
-            const offset = window.innerWidth < 768 ? 5 : 14;
+            // Jarak dropdown dari tombol profil (tanpa offset padding transparan)
+            const offset = window.innerWidth < 768 ? -4 : -8;
             dropdown.style.top = (btnRect.bottom - offset) + 'px';
             dropdown.style.right = (window.innerWidth - btnRect.right) + 'px';
         }
@@ -524,10 +524,9 @@ document.addEventListener('DOMContentLoaded', async function () {
             // Profile Button
             profileBtn = document.createElement('button');
             profileBtn.title = 'Profil Saya';
-            const isMobile = window.innerWidth < 768;
-            const size = isMobile ? '50px' : '90px';
-            const badgeTop = isMobile ? '4px' : '14px';
-            const badgeRight = isMobile ? '4px' : '14px';
+            const size = '40px';
+            const badgeTop = '-6px';
+            const badgeRight = '-6px';
             
             profileBtn.style.cssText = [
                 `width:${size}`, `height:${size}`,
@@ -540,7 +539,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
             const showNavBadge = window.profileBadgeCount > 0 ? 'flex' : 'none';
             profileBtn.innerHTML = `
-                <img src="${profileImgUrl}" alt="Profile" style="width:${size};height:${size};object-fit:cover;display:block;border-radius:50%;">
+                <img src="${profileImgUrl}" alt="Profile" style="width:${size};height:${size};object-fit:cover;display:block;border-radius:50%;border:2px solid white;box-shadow:0 4px 12px rgba(0,0,0,0.15);">
                 <span id="profile-nav-badge" style="position:absolute;top:${badgeTop};right:${badgeRight};background:#BA0000;color:white;font-size:11px;font-weight:900;border-radius:50%;width:22px;height:22px;display:${showNavBadge};align-items:center;justify-content:center;border:2px solid white;box-shadow:0 2px 8px rgba(0,0,0,0.2);z-index:10;">${window.profileBadgeCount}</span>
             `;
 
