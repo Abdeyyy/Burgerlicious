@@ -735,10 +735,8 @@ function togglePromoSelection(kode) {
     const upperKode = kode.toUpperCase();
     if (userSelectedPromo && userSelectedPromo.toUpperCase() === upperKode) {
         userSelectedPromo = null;
-        showToast('Promo Dilepas', 'Voucher promo dilepaskan.', 'success');
     } else {
         userSelectedPromo = upperKode;
-        showToast('Promo Terpasang', `Voucher promo ${upperKode} berhasil digunakan!`, 'success');
     }
     autoApplyPromo();
     updateSummary();
@@ -751,7 +749,6 @@ function hapusPromoSelection() {
     autoApplyPromo();
     updateSummary();
     closePromoModal();
-    showToast('Promo Dilepas', 'Voucher promo dilepaskan.', 'success');
 }
 
 function updateAddressState() {
