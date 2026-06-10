@@ -38,10 +38,11 @@ if (!isset($_SESSION['user_id']) && isset($_COOKIE['remember_me'])) {
 
                         if ($user && ($user['is_verified'] == 1)) {
                             // Set Session login
-                            $_SESSION['user_id'] = $user['id_user'];
-                            $_SESSION['nama']    = $user['nama'];
-                            $_SESSION['email']   = $user['email'];
-                            $_SESSION['role']    = $user['role'] ?? 'customer';
+                            $_SESSION['user_id']     = $user['id_user'];
+                            $_SESSION['nama']        = $user['nama'];
+                            $_SESSION['email']       = $user['email'];
+                            $_SESSION['role']        = $user['role'] ?? 'customer';
+                            $_SESSION['foto_profil'] = $user['foto_profil'] ?? '';
 
                             // ROTASI TOKEN (Hapus token lama, buat token baru)
                             $new_selector = bin2hex(random_bytes(8));
