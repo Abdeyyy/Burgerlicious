@@ -70,8 +70,8 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             const rotateClass = index % 2 === 0 ? 'rotate-3' : '-rotate-3';
-            const imgSrc = promo.gambar_url ? promo.gambar_url : 'assets/images/promo_default.png';
-
+            const imgSrc = promo.gambar_url ? promo.gambar_url : 'assets/images/Promo_mantap_kamis.png';
+ 
             return `
                 <div onclick="window.location.href='public/pages/promo.html'" class="group relative bg-white rounded-3xl p-3 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 cursor-pointer w-[320px] md:w-[460px] shrink-0 h-[200px] md:h-[290px] flex flex-col">
                     <div class="absolute top-6 left-6 z-20 ${badgeBg} text-xs font-extrabold px-4 py-1.5 rounded-full uppercase tracking-wider shadow-md transform ${rotateClass}">
@@ -81,7 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <img loading="lazy" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-in-out" 
                              src="${imgSrc}" 
                              alt="${promo.nama_promo}"
-                             onerror="this.src='assets/images/promo_default.png'">
+                             onerror="this.src='assets/images/Promo_mantap_kamis.png'">
                     </div>
                 </div>
             `;

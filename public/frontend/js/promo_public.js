@@ -101,7 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // Determine image source
-        let imgSrc = `${basePath}assets/images/promo_default.png`;
+        let imgSrc = `${basePath}assets/images/Promo_mantap_kamis.png`;
         if (promo.gambar_url) {
             imgSrc = `${basePath}${promo.gambar_url}`;
         }
@@ -124,7 +124,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <img loading="lazy"
                      class="w-full h-full object-cover transition-transform duration-700 ease-in-out"
                      src="${imgSrc}" alt="${promo.nama_promo}"
-                     onerror="this.src='${basePath}assets/images/promo_default.png'">
+                     onerror="this.src='${basePath}assets/images/Promo_mantap_kamis.png'">
                 
                 <!-- Bottom Dark Overlay to enhance text readability -->
                 <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent"></div>
