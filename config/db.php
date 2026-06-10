@@ -3,29 +3,7 @@
 define('RECAPTCHA_SITE_KEY', '6LeZkxUtAAAAAGPGICX00PiyIBusxyoHuxELLRPI');
 define('RECAPTCHA_SECRET_KEY', '6LeZkxUtAAAAAAEfs-bax8khl9EXITMyHf5iOEc6');
 
-<<<<<<< HEAD
 // Matikan exception otomatis untuk mysqli agar bisa ditangkap secara gracefully
-=======
-$db_name = 'burgerlicious';
-
-// Konfigurasi untuk Docker
-$host_docker = 'db';
-$user_docker = 'root';
-$pass_docker = 'rootpassword';
-
-// Konfigurasi untuk Laragon/XAMPP (Lokal)
-$host_local = 'localhost';
-$user_local = 'root';
-$pass_local = ''; 
-
-// InfinityFree
-$host_hosting ='sql100.infinityfree.com';
-$user_hosting = 'if0_41496213';
-$pass_hosting = 'BgEwbUd9M7kd';
-$db_name = 'if0_41496213_burgerlicious';
-
-// Matikan exception otomatis untuk mysqli agar bisa ditangkap dengan gracefully
->>>>>>> d3d29cfb621517906a0a800d237c0fa20854ffa6
 mysqli_report(MYSQLI_REPORT_OFF);
 
 // Matikan display_errors agar warning/notice PHP tidak merusak output JSON

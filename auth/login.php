@@ -39,6 +39,10 @@ $options = [
         'method'  => 'POST',
         'content' => http_build_query($data),
         'timeout' => 10
+    ],
+    'ssl' => [
+        'verify_peer' => false,
+        'verify_peer_name' => false
     ]
 ];
 
