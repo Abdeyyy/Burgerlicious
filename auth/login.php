@@ -72,7 +72,12 @@ if ($apiKey !== $validApiKey) {
 
     if (!$responseData || !isset($responseData['success']) || !$responseData['success']) {
         $error_codes = isset($responseData['error-codes']) ? implode(', ', $responseData['error-codes']) : 'no-codes';
-        echo json_encode(['status' => 'error', 'message' => 'Verifikasi CAPTCHA gagal (' . $error_codes . '). Silakan coba lagi.']);
+        $sent_secret_len = strlen($secretKey);
+        $sent_response_len = strlen($recaptchaResponse);
+        echo json_encode([
+            'status' => 'error', 
+            'message' => "Verifikasi CAPTCHA gagal ($error_codes). Secret len: $sent_secret_len, Response len: $sent_response_len"
+        ]);
         exit;
     }
 }
