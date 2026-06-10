@@ -232,9 +232,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 const stats = result.data;
                 totalActivePromosEl.textContent = stats.total_active_promos;
                 totalRedemptionsEl.textContent = stats.total_redemptions.toLocaleString('id-ID');
-                targetProgressEl.style.width = `${stats.target_percentage}%`;
-                targetTextEl.textContent = `${stats.target_percentage}% of monthly target achieved (${stats.monthly_redemptions}/1000)`;
-                promoDiscountValueEl.textContent = formatRupiah(stats.total_discount_given);
+                if (targetProgressEl) targetProgressEl.style.width = `${stats.target_percentage}%`;
+                if (targetTextEl) {
+                    targetTextEl.textContent = `${stats.target_percentage}% of monthly target achieved (${stats.monthly_redemptions}/1000)`;
+                }
+                if (promoDiscountValueEl) promoDiscountValueEl.textContent = formatRupiah(stats.total_discount_given);
                 activePromoUsersEl.textContent = stats.active_promo_users.toLocaleString('id-ID');
             }
         } catch (error) {
