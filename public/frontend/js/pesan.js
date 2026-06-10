@@ -557,6 +557,15 @@ function autoApplyPromo() {
     }
 }
 
+function formatK(num) {
+    if (num === null || num === undefined) return '';
+    if (num === 0) return 'Rp0';
+    if (num % 1000 === 0) {
+        return 'Rp' + (num / 1000) + 'k';
+    }
+    return 'Rp' + (num / 1000).toFixed(1).replace('.0', '') + 'k';
+}
+
 function openPromoModal() {
     if (!isLoggedInGlobal) {
         openLoginModal();
@@ -594,39 +603,95 @@ function openPromoModal() {
         const check = checkPromoEligibility(promo, subtotal);
         const discountAmount = check.eligible ? calculateDiscountAmount(promo, subtotal) : 0;
         const isCurrent = diskonAktif && diskonAktif.nama === promo.nama;
-        const img = promo.gambar_url || '../../assets/images/BestSeller_1.png';
 
         let promoCardHtml = '';
         if (check.eligible) {
-            // Eligible style (colors, selectable)
+            // Shopee-style Eligible Voucher Ticket
+            const leftGradient = promo.tipe_promo === 'bogo' 
+                ? 'from-[#FEBB19] to-[#D99A04]' 
+                : 'from-[#BA0000] to-[#8F0919]';
+            
+            const leftBadgeText = promo.tipe_promo === 'bogo' ? 'BOGO' : 'DISKON';
+            
+            let valueText = '';
+            if (promo.tipe_promo === 'percentage') {
+                valueText = `${promo.nilai_diskon}%`;
+            } else if (promo.tipe_promo === 'fixed') {
+                valueText = formatK(promo.nilai_diskon);
+            } else if (promo.tipe_promo === 'bogo') {
+                valueText = 'Get 1';
+            }
+
             promoCardHtml = `
-                <div onclick="selectPromoSelection('${promo.nama}')" 
-                     class="flex gap-4 p-4 rounded-2xl border-2 cursor-pointer transition duration-200 bg-orange-50/20 hover:bg-orange-50/50 ${isCurrent ? 'border-orange-500 shadow-md ring-2 ring-orange-100 bg-orange-50/50' : 'border-orange-100 hover:border-orange-200'}">
-                    <img src="${img}" alt="${promo.nama_promo}" class="w-14 h-14 object-contain rounded-xl bg-white p-1 flex-shrink-0 border border-orange-100/50">
-                    <div class="flex-1 min-w-0">
-                        <div class="flex items-center justify-between">
-                            <span class="bg-orange-500 text-white font-bold text-[9px] px-2 py-0.5 rounded-full">${promo.tipe_promo.toUpperCase()}</span>
-                            ${isCurrent ? '<span class="bg-green-500 text-white font-bold text-[9px] px-2 py-0.5 rounded-full">Aktif</span>' : ''}
+                <div onclick="togglePromoSelection('${promo.nama}')" 
+                     class="voucher-ticket cursor-pointer ${isCurrent ? 'border-[#5D0303] ring-2 ring-[#5D0303]/10 shadow-md' : 'hover:border-gray-300'}">
+                    <!-- Left Section: Gradient Ticket Stub -->
+                    <div class="w-24 flex-shrink-0 bg-gradient-to-br ${leftGradient} text-white flex flex-col justify-center items-center p-2 rounded-l-xl relative border-r-2 border-dashed border-white/30">
+                        <div class="text-[9px] uppercase font-extrabold tracking-wider opacity-90">${leftBadgeText}</div>
+                        <div class="text-lg font-black mt-0.5 tracking-tight">${valueText}</div>
+                        <div class="text-[9px] opacity-75 mt-1 truncate max-w-full">Min. Blj ${formatK(promo.min_order)}</div>
+                    </div>
+                    
+                    <!-- Right Section: Promo Details & Radio Selector -->
+                    <div class="flex-1 bg-white p-3 pl-4 rounded-r-xl flex items-center justify-between min-w-0 border-y border-r border-gray-100">
+                        <div class="flex-1 min-w-0 pr-2">
+                            <div class="flex items-center gap-1.5 flex-wrap">
+                                <span class="bg-[#5D0303]/5 text-[#5D0303] font-bold text-[8px] px-1.5 py-0.5 rounded-md border border-[#5D0303]/10">${promo.nama}</span>
+                            </div>
+                            <h4 class="font-bold text-gray-800 text-xs mt-1 truncate">${promo.nama_promo}</h4>
+                            <p class="text-[9px] text-gray-400 mt-0.5 leading-relaxed">${promo.desc}</p>
+                            <div class="mt-2 flex items-center">
+                                <span class="bg-green-50 text-green-700 text-[9px] px-1.5 py-0.5 rounded-md font-semibold border border-green-200/50">Potongan: ${formatRupiah(discountAmount)}</span>
+                            </div>
                         </div>
-                        <h4 class="font-bold text-gray-800 text-xs mt-1.5 truncate">${promo.nama_promo}</h4>
-                        <p class="text-[10px] text-gray-500 mt-0.5 leading-relaxed">${promo.desc}</p>
-                        <p class="text-[11px] text-[#5D0303] font-bold mt-2">Estimasi Potongan: -${formatRupiah(discountAmount)}</p>
+                        
+                        <!-- Radio checkmark icon -->
+                        <div class="flex-shrink-0 flex items-center justify-center pr-1">
+                            <div class="w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all duration-200 ${isCurrent ? 'border-[#5D0303] bg-[#5D0303]' : 'border-gray-300 bg-white'}">
+                                ${isCurrent ? '<svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>' : ''}
+                            </div>
+                        </div>
                     </div>
                 </div>
             `;
         } else {
-            // Ineligible style (grayed out)
+            // Shopee-style Ineligible Voucher Ticket (grayed out)
+            let valueText = '';
+            if (promo.tipe_promo === 'percentage') {
+                valueText = `${promo.nilai_diskon}%`;
+            } else if (promo.tipe_promo === 'fixed') {
+                valueText = formatK(promo.nilai_diskon);
+            } else if (promo.tipe_promo === 'bogo') {
+                valueText = 'Get 1';
+            }
+
             promoCardHtml = `
-                <div class="flex gap-4 p-4 rounded-2xl border-2 border-gray-100 bg-gray-50 opacity-60 cursor-not-allowed">
-                    <img src="${img}" alt="${promo.nama_promo}" class="w-14 h-14 object-contain rounded-xl bg-white p-1 flex-shrink-0 filter grayscale border border-gray-100">
-                    <div class="flex-1 min-w-0">
-                        <div class="flex items-center justify-between">
-                            <span class="bg-gray-400 text-white font-bold text-[9px] px-2 py-0.5 rounded-full">${promo.tipe_promo.toUpperCase()}</span>
-                            <span class="bg-red-50 text-red-600 font-bold text-[9px] px-2 py-0.5 rounded-full">Tidak memenuhi syarat</span>
+                <div class="voucher-ticket opacity-65 cursor-not-allowed">
+                    <!-- Left Section: Gray Ticket Stub -->
+                    <div class="w-24 flex-shrink-0 bg-gradient-to-br from-gray-400 to-gray-500 text-white flex flex-col justify-center items-center p-2 rounded-l-xl relative border-r-2 border-dashed border-white/20">
+                        <div class="text-[9px] uppercase font-extrabold tracking-wider opacity-95">PROMO</div>
+                        <div class="text-lg font-black mt-0.5 tracking-tight">${valueText}</div>
+                        <div class="text-[9px] opacity-80 mt-1 truncate max-w-full">Min. Blj ${formatK(promo.min_order)}</div>
+                    </div>
+                    
+                    <!-- Right Section: Promo Details & Reason -->
+                    <div class="flex-1 bg-white p-3 pl-4 rounded-r-xl flex items-center justify-between min-w-0 border-y border-r border-gray-100">
+                        <div class="flex-1 min-w-0 pr-2">
+                            <div class="flex items-center gap-1.5 flex-wrap">
+                                <span class="bg-gray-100 text-gray-400 font-bold text-[8px] px-1.5 py-0.5 rounded-md border border-gray-200">${promo.nama}</span>
+                            </div>
+                            <h4 class="font-bold text-gray-400 text-xs mt-1 truncate">${promo.nama_promo}</h4>
+                            <p class="text-[9px] text-gray-400 mt-0.5 leading-relaxed">${promo.desc}</p>
+                            <div class="mt-2 flex items-center">
+                                <span class="bg-red-50 text-red-600 text-[9px] px-1.5 py-0.5 rounded-md font-semibold border border-red-100/50">⚠️ ${check.reason}</span>
+                            </div>
                         </div>
-                        <h4 class="font-bold text-gray-400 text-xs mt-1.5 truncate">${promo.nama_promo}</h4>
-                        <p class="text-[10px] text-gray-400 mt-0.5 leading-relaxed">${promo.desc}</p>
-                        <p class="text-[10px] text-red-500 font-semibold mt-2">⚠️ ${check.reason}</p>
+                        
+                        <!-- Disabled Radio -->
+                        <div class="flex-shrink-0 flex items-center justify-center pr-1">
+                            <div class="w-5 h-5 rounded-full border-2 border-gray-200 bg-gray-50 flex items-center justify-center">
+                            </div>
+                        </div>
                     </div>
                 </div>
             `;
@@ -642,12 +707,17 @@ function closePromoModal() {
     document.getElementById('promoModal').classList.add('hidden');
 }
 
-function selectPromoSelection(kode) {
-    userSelectedPromo = kode;
+function togglePromoSelection(kode) {
+    if (userSelectedPromo === kode) {
+        userSelectedPromo = null;
+        showToast('Promo Dilepas', 'Voucher promo dilepaskan.', 'success');
+    } else {
+        userSelectedPromo = kode;
+        showToast('Promo Terpasang', `Voucher promo ${kode} berhasil digunakan!`, 'success');
+    }
     autoApplyPromo();
     updateSummary();
-    closePromoModal();
-    showToast('Promo Terpasang', `Voucher promo ${kode} berhasil digunakan!`, 'success');
+    openPromoModal();
 }
 
 function hapusPromoSelection() {

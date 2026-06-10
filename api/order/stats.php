@@ -33,15 +33,34 @@ $stmt = $conn->prepare("SELECT COUNT(*) as total FROM transaksi WHERE status_pes
 $stmt->execute();
 $preparing = $stmt->get_result()->fetch_assoc()['total'] ?? 0;
 
+// Trending Item (Top Sold Menu Item, excluding cancelled transactions)
+$trending_query = "
+    SELECT m.nama_menu, SUM(dt.jumlah) as total_sold
+    FROM detail_transaksi dt
+    JOIN menu m ON dt.id_menu = m.id_menu
+    JOIN transaksi t ON dt.id_transaksi = t.id_transaksi
+    WHERE t.status_pesanan != 'cancelled'
+    GROUP BY dt.id_menu
+    ORDER BY total_sold DESC
+    LIMIT 1
+";
+$trending_res = $conn->query($trending_query);
+$trending = $trending_res ? $trending_res->fetch_assoc() : null;
+$trending_name = $trending ? $trending['nama_menu'] : '-';
+$trending_sales = $trending ? (int)$trending['total_sold'] : 0;
+
 echo json_encode([
     'status' => 'success',
     'data' => [
         'total_orders' => $total_today,
         'revenue' => (float)($revenue_today ?? 0),
         'pending' => $pending,
-        'preparing' => $preparing
+        'preparing' => $preparing,
+        'trending_item' => $trending_name,
+        'trending_sales' => $trending_sales
     ]
 ]);
 
 $conn->close();
 ?>
+

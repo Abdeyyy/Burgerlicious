@@ -32,6 +32,12 @@ document.addEventListener('DOMContentLoaded', () => {
                         revenueEl.textContent = `Rp ${rev}`;
                     }
                 }
+                if (trendingItemEl) {
+                    trendingItemEl.textContent = s.trending_item || '-';
+                }
+                if (trendingSalesEl) {
+                    trendingSalesEl.textContent = s.trending_sales ? `${s.trending_sales} units sold` : '0 units sold';
+                }
             }
 
             // Fetch live queue (recent 5)

@@ -93,6 +93,39 @@
             font-size: 11px; padding: 2px 8px; border-radius: 99px;
             font-weight: 700; display: inline-block;
         }
+
+        /* Shopee-style Voucher Ticket */
+        .voucher-ticket {
+            position: relative;
+            display: flex;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            border: 1px solid #f3f4f6;
+            min-height: 96px;
+            overflow: visible;
+            transition: all 0.2s ease;
+        }
+        
+        .voucher-ticket::before, .voucher-ticket::after {
+            content: '';
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            background: #f9fafb;
+            border-radius: 50%;
+            left: 88px;
+            z-index: 10;
+            border: 1px solid #e5e7eb;
+        }
+        .voucher-ticket::before {
+            top: -8px;
+            clip-path: inset(8px 0 0 0);
+        }
+        .voucher-ticket::after {
+            bottom: -8px;
+            clip-path: inset(0 0 8px 0);
+        }
     </style>
 </head>
 
@@ -335,7 +368,7 @@
             </div>
             
             <!-- Modal Body (Promo List) -->
-            <div id="promoModalList" class="p-4 overflow-y-auto space-y-3 flex-1 min-h-[200px]">
+            <div id="promoModalList" class="p-4 overflow-y-auto space-y-3 flex-1 min-h-[200px] bg-gray-50">
                 <!-- Promo items populated dynamically -->
             </div>
             
