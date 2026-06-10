@@ -33,13 +33,14 @@ $stmt = $conn->prepare("SELECT COUNT(*) as total FROM transaksi WHERE status_pes
 $stmt->execute();
 $preparing = $stmt->get_result()->fetch_assoc()['total'] ?? 0;
 
-// Trending Item (Top Sold Menu Item, excluding cancelled transactions)
+// Trending Item (Top Sold Menu Item in the last 7 days, completed transactions only)
 $trending_query = "
     SELECT m.nama_menu, SUM(dt.jumlah) as total_sold
     FROM detail_transaksi dt
     JOIN menu m ON dt.id_menu = m.id_menu
     JOIN transaksi t ON dt.id_transaksi = t.id_transaksi
-    WHERE t.status_pesanan != 'cancelled'
+    WHERE t.status_pesanan = 'completed'
+      AND t.tanggal_transaksi >= DATE_SUB(NOW(), INTERVAL 7 DAY)
     GROUP BY dt.id_menu
     ORDER BY total_sold DESC
     LIMIT 1
