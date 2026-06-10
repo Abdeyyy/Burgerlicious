@@ -567,37 +567,45 @@ function formatK(num) {
 }
 
 function openPromoModal() {
-    if (!isLoggedInGlobal) {
-        openLoginModal();
-        return;
-    }
+    try {
+        if (!isLoggedInGlobal) {
+            openLoginModal();
+            return;
+        }
 
-    let subtotal = 0;
-    if (cartMode) {
-        cartItems.forEach(item => {
-            subtotal += item.harga * item.jumlah;
-        });
-    } else {
-        if (!menuDipilih) return;
-        subtotal = menuDipilih.harga * jumlah;
-    }
+        let subtotal = 0;
+        if (cartMode) {
+            cartItems.forEach(item => {
+                subtotal += item.harga * item.jumlah;
+            });
+        } else {
+            if (!menuDipilih) {
+                console.warn("openPromoModal: menuDipilih is null or undefined.");
+                return;
+            }
+            subtotal = menuDipilih.harga * jumlah;
+        }
 
-    const modalList = document.getElementById('promoModalList');
-    if (!modalList) return;
+        const modalList = document.getElementById('promoModalList');
+        if (!modalList) {
+            console.error("openPromoModal: promoModalList element not found.");
+            return;
+        }
 
-    modalList.innerHTML = '';
+        modalList.innerHTML = '';
 
-    const promos = Object.values(promoList);
-    if (promos.length === 0) {
-        modalList.innerHTML = `
-            <div class="text-center py-12 text-gray-400 text-sm">
-                <span class="text-4xl block mb-2">📭</span>
-                <p>Belum ada promo yang tersedia.</p>
-            </div>
-        `;
-        document.getElementById('promoModal').classList.remove('hidden');
-        return;
-    }
+        const promos = Object.values(promoList);
+        if (promos.length === 0) {
+            modalList.innerHTML = `
+                <div class="text-center py-12 text-gray-400 text-sm">
+                    <span class="text-4xl block mb-2">📭</span>
+                    <p>Belum ada promo yang tersedia.</p>
+                </div>
+            `;
+            const modal = document.getElementById('promoModal');
+            if (modal) modal.classList.remove('hidden');
+            return;
+        }
 
     promos.forEach(promo => {
         const check = checkPromoEligibility(promo, subtotal);
@@ -700,7 +708,16 @@ function openPromoModal() {
         modalList.insertAdjacentHTML('beforeend', promoCardHtml);
     });
 
-    document.getElementById('promoModal').classList.remove('hidden');
+    const modal = document.getElementById('promoModal');
+    if (modal) {
+        modal.classList.remove('hidden');
+    } else {
+        console.error("openPromoModal: promoModal element not found.");
+    }
+  } catch (e) {
+    console.error("Error in openPromoModal:", e);
+    alert("Gagal membuka daftar promo: " + e.message);
+  }
 }
 
 function closePromoModal() {
