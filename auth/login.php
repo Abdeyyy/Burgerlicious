@@ -31,49 +31,49 @@ if (!$email || !$password) {
 
 // Bypass reCAPTCHA for API requests with valid API key
 $validApiKey = 'burgerlicious_mobile_api_key_2026';
-if ($apiKey === $validApiKey) {
-    // Skip reCAPTCHA verification for mobile app
-} else if (!$recaptchaResponse) {
-    echo json_encode(['status' => 'error', 'message' => 'Silakan centang reCAPTCHA terlebih dahulu.']);
-    exit;
-}
+if ($apiKey !== $validApiKey) {
+    if (!$recaptchaResponse) {
+        echo json_encode(['status' => 'error', 'message' => 'Silakan centang reCAPTCHA terlebih dahulu.']);
+        exit;
+    }
 
-// Verifikasi Google reCAPTCHA v2
-$secretKey = RECAPTCHA_SECRET_KEY;
-$verifyUrl = 'https://www.google.com/recaptcha/api/siteverify';
+    // Verifikasi Google reCAPTCHA v2
+    $secretKey = RECAPTCHA_SECRET_KEY;
+    $verifyUrl = 'https://www.google.com/recaptcha/api/siteverify';
 
-$data = [
-    'secret'   => $secretKey,
-    'response' => $recaptchaResponse,
-    'remoteip' => $_SERVER['REMOTE_ADDR'] ?? ''
-];
+    $data = [
+        'secret'   => $secretKey,
+        'response' => $recaptchaResponse,
+        'remoteip' => $_SERVER['REMOTE_ADDR'] ?? ''
+    ];
 
-$options = [
-    'http' => [
-        'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
-        'method'  => 'POST',
-        'content' => http_build_query($data),
-        'timeout' => 10
-    ],
-    'ssl' => [
-        'verify_peer' => false,
-        'verify_peer_name' => false
-    ]
-];
+    $options = [
+        'http' => [
+            'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
+            'method'  => 'POST',
+            'content' => http_build_query($data),
+            'timeout' => 10
+        ],
+        'ssl' => [
+            'verify_peer' => false,
+            'verify_peer_name' => false
+        ]
+    ];
 
-$context  = stream_context_create($options);
-$response = @file_get_contents($verifyUrl, false, $context);
+    $context  = stream_context_create($options);
+    $response = @file_get_contents($verifyUrl, false, $context);
 
-if ($response === false) {
-    echo json_encode(['status' => 'error', 'message' => 'Gagal terhubung dengan server verifikasi CAPTCHA.']);
-    exit;
-}
+    if ($response === false) {
+        echo json_encode(['status' => 'error', 'message' => 'Gagal terhubung dengan server verifikasi CAPTCHA.']);
+        exit;
+    }
 
-$responseData = json_decode($response, true);
+    $responseData = json_decode($response, true);
 
-if (!$responseData || !isset($responseData['success']) || !$responseData['success']) {
-    echo json_encode(['status' => 'error', 'message' => 'Verifikasi CAPTCHA gagal. Silakan coba lagi.']);
-    exit;
+    if (!$responseData || !isset($responseData['success']) || !$responseData['success']) {
+        echo json_encode(['status' => 'error', 'message' => 'Verifikasi CAPTCHA gagal. Silakan coba lagi.']);
+        exit;
+    }
 }
 
 // Mencari data user berdasarkan email
