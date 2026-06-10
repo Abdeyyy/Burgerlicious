@@ -18,20 +18,11 @@ if (empty($http_host) || in_array($http_host, ['localhost', '127.0.0.1']) || str
 }
 
 if (!$is_local) {
-    // -------------------------------------------------------------
-    // KONEKSI LIVE SERVER (INFINITYFREE)
-    // -------------------------------------------------------------
-    // PENTING: Di InfinityFree, jangan gunakan 'localhost' sebagai host database!
-    // Gunakan MySQL Hostname yang tertera di Control Panel InfinityFree Anda.
-    $db_host = 'sql100.infinityfree.com'; // Sesuaikan jika host akun Anda berbeda
+    $db_host = 'sql100.infinityfree.com'; 
     $db_user = 'if0_41496213';
     $db_pass = 'BgEwbUd9M7kd';
     $db_name = 'if0_41496213_burgerlicious';
 } else {
-    // -------------------------------------------------------------
-    // KONEKSI LOKAL (XAMPP / LARAGON / DOCKER)
-    // -------------------------------------------------------------
-    // Coba koneksi ke Docker db first
     $db_host = 'db';
     $db_user = 'root';
     $db_pass = 'rootpassword';
@@ -39,8 +30,7 @@ if (!$is_local) {
 
     $conn_test = @new mysqli($db_host, $db_user, $db_pass, $db_name);
     if ($conn_test->connect_error) {
-        // Fallback ke Laragon/XAMPP Lokal jika Docker tidak aktif
-        $db_host = '127.0.0.1'; // Menggunakan 127.0.0.1 mencegah error socket
+        $db_host = '127.0.0.1'; 
         $db_user = 'root';
         $db_pass = '';
         $db_name = 'burgerlicious';
