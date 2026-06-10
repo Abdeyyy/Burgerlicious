@@ -1,22 +1,27 @@
-name: Deploy to InfinityFree
+name: Deploy Website to Freehostia
 
 on:
   push:
     branches:
-      - main
+      - main  # Ganti ke 'master' jika branch utama Anda di GitHub adalah master
 
 jobs:
-  deploy:
+  web-deploy:
+    name: Deploy Files via FTP
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout kode
-        uses: actions/checkout@v3
+    - name: Get latest code
+      uses: actions/checkout@v3
 
-      - name: Upload via FTP
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
-        with:
-          server: ${{ secrets.FTP_HOST }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          server-dir: /htdocs/
+    - name: Sync files to Freehostia
+      uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+      with:
+        server: ftps4.us.freehostia.com
+        username: ${{ secrets.FTP_USERNAME }}
+        password: ${{ secrets.FTP_PASSWORD }}
+        # TODO: Ubah 'NAMA_FOLDER_SUBDOMAIN_ANDA' sesuai dengan nama folder subdomain Anda di Freehostia
+        server-dir: /burgerlicious.com/ 
+        exclude: |
+          **/.git*
+          **/.git*/**
+          **/node_modules/**

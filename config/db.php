@@ -18,10 +18,10 @@ if (empty($http_host) || in_array($http_host, ['localhost', '127.0.0.1']) || str
 }
 
 if (!$is_local) {
-    $db_host = 'sql100.infinityfree.com'; 
-    $db_user = 'if0_41496213';
-    $db_pass = 'BgEwbUd9M7kd';
-    $db_name = 'if0_41496213_burgerlicious';
+    $db_host = 'localhost'; 
+    $db_user = 'abdazi60_burgerlicious';
+    $db_pass = 'Abdiaziz14';
+    $db_name = 'abdazi60_burgerlicious';
 } else {
     $db_host = 'db';
     $db_user = 'root';
