@@ -524,9 +524,10 @@ document.addEventListener('DOMContentLoaded', async function () {
             // Profile Button
             profileBtn = document.createElement('button');
             profileBtn.title = 'Profil Saya';
-            const size = '40px';
-            const badgeTop = '-6px';
-            const badgeRight = '-6px';
+            const isMobile = window.innerWidth < 768;
+            const size = isMobile ? '45px' : '52px';
+            const badgeTop = isMobile ? '-5px' : '-4px';
+            const badgeRight = isMobile ? '-5px' : '-4px';
             
             profileBtn.style.cssText = [
                 `width:${size}`, `height:${size}`,
