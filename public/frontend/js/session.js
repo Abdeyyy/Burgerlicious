@@ -31,8 +31,114 @@ function formatRupiah(angka) {
     return 'Rp ' + (angka ? Number(angka).toLocaleString('id-ID') : '0');
 }
 
+function initializePublicMobileMenu() {
+    const header = document.querySelector('header');
+    if (!header) return;
+
+    const nav = header.querySelector('nav');
+    if (!nav) return; // Only run on public pages with navigation menu
+
+    const container = header.querySelector('div');
+    if (!container) return;
+
+    // Get links from desktop nav
+    const links = Array.from(nav.querySelectorAll('a')).map(a => {
+        return {
+            href: a.getAttribute('href'),
+            text: a.textContent.trim(),
+            isActive: a.classList.contains('text-white') || a.classList.contains('bg-[#8F0919]')
+        };
+    });
+
+    // Find action element (usually Login or will be Profile)
+    const allLinks = Array.from(header.querySelectorAll('a'));
+    let actionEl = allLinks.find(a => a.textContent.trim().toLowerCase() === 'login' && a.href.includes('login.html')) || container.lastElementChild;
+
+    // Create actions wrapper
+    let actionsWrapper = document.getElementById('public-actions-wrapper');
+    if (!actionsWrapper && actionEl) {
+        actionsWrapper = document.createElement('div');
+        actionsWrapper.id = 'public-actions-wrapper';
+        actionsWrapper.className = 'flex items-center gap-3 z-50';
+        actionEl.parentNode.insertBefore(actionsWrapper, actionEl);
+        actionsWrapper.appendChild(actionEl);
+    }
+
+    // Create hamburger button
+    let hamburger = document.getElementById('public-hamburger');
+    if (!hamburger) {
+        hamburger = document.createElement('button');
+        hamburger.id = 'public-hamburger';
+        hamburger.className = 'md:hidden flex flex-col justify-center items-center gap-1.5 w-10 h-10 border border-[#FEBB19] rounded-full bg-white text-black hover:text-white hover:bg-[#8F0919] transition-colors focus:outline-none cursor-pointer';
+        hamburger.innerHTML = `
+            <span class="w-5 h-0.5 bg-current transition-transform duration-300" id="pub-ham-line-1"></span>
+            <span class="w-5 h-0.5 bg-current transition-opacity duration-300" id="pub-ham-line-2"></span>
+            <span class="w-5 h-0.5 bg-current transition-transform duration-300" id="pub-ham-line-3"></span>
+        `;
+        if (actionsWrapper) {
+            actionsWrapper.appendChild(hamburger);
+        } else {
+            container.appendChild(hamburger);
+        }
+    }
+
+    // Create backdrop if not exists
+    let backdrop = document.getElementById('pub-menu-backdrop');
+    if (!backdrop) {
+        backdrop = document.createElement('div');
+        backdrop.id = 'pub-menu-backdrop';
+        backdrop.className = 'fixed inset-0 bg-black/40 backdrop-blur-sm z-30 opacity-0 pointer-events-none transition-opacity duration-300';
+        document.body.appendChild(backdrop);
+    }
+
+    // Create mobile menu drawer if not exists
+    let mobileMenu = document.getElementById('pub-menu-drawer');
+    if (!mobileMenu) {
+        mobileMenu = document.createElement('div');
+        mobileMenu.id = 'pub-menu-drawer';
+        mobileMenu.className = 'fixed inset-y-0 right-0 w-64 bg-[#8F0919] shadow-2xl z-40 transform translate-x-full transition-transform duration-300 ease-in-out flex flex-col pt-24 px-6 gap-6 font-semibold';
+        
+        // Populate links
+        mobileMenu.innerHTML = links.map(l => {
+            const activeClass = l.isActive ? 'text-yellow-400 font-extrabold border-b-2 border-yellow-400 pb-1' : 'text-white hover:text-yellow-300';
+            return `
+                <a href="${l.href}" class="text-xl uppercase tracking-wider transition-colors ${activeClass}">${l.text}</a>
+            `;
+        }).join('');
+        
+        document.body.appendChild(mobileMenu);
+    }
+
+    let isOpen = false;
+    function toggleMenu() {
+        isOpen = !isOpen;
+        if (isOpen) {
+            mobileMenu.classList.remove('translate-x-full');
+            backdrop.classList.add('opacity-100');
+            backdrop.classList.remove('pointer-events-none');
+            document.getElementById('pub-ham-line-1').style.transform = 'translateY(8px) rotate(45deg)';
+            document.getElementById('pub-ham-line-2').style.opacity = '0';
+            document.getElementById('pub-ham-line-3').style.transform = 'translateY(-8px) rotate(-45deg)';
+        } else {
+            mobileMenu.classList.add('translate-x-full');
+            backdrop.classList.remove('opacity-100');
+            backdrop.classList.add('pointer-events-none');
+            document.getElementById('pub-ham-line-1').style.transform = '';
+            document.getElementById('pub-ham-line-2').style.opacity = '1';
+            document.getElementById('pub-ham-line-3').style.transform = '';
+        }
+    }
+
+    hamburger.addEventListener('click', (e) => {
+        e.preventDefault();
+        toggleMenu();
+    });
+    backdrop.addEventListener('click', toggleMenu);
+}
+
 document.addEventListener('DOMContentLoaded', async function () {
     const basePath = window.location.pathname.includes('/public/pages/') ? '../../' : './';
+    initializePublicMobileMenu();
 
     const currentPage = window.location.pathname.split('/').pop();
     const adminPages = ['dashboard.html', 'menu_management.html', 'order_queue.html', 'analytics.html', 'promo_management.html', 'pos.html'];
@@ -196,8 +302,9 @@ document.addEventListener('DOMContentLoaded', async function () {
         function openDropdown() {
             dropdown.style.display = 'block';
             const btnRect = profileBtn.getBoundingClientRect();
-            // Kurangi ~14px padding transparan di bawah gambar profile.png
-            dropdown.style.top = (btnRect.bottom - 14) + 'px';
+            // Kurangi padding transparan di bawah gambar profile.png
+            const offset = window.innerWidth < 768 ? 5 : 14;
+            dropdown.style.top = (btnRect.bottom - offset) + 'px';
             dropdown.style.right = (window.innerWidth - btnRect.right) + 'px';
         }
 
@@ -416,8 +523,13 @@ document.addEventListener('DOMContentLoaded', async function () {
             // Profile Button
             profileBtn = document.createElement('button');
             profileBtn.title = 'Profil Saya';
+            const isMobile = window.innerWidth < 768;
+            const size = isMobile ? '50px' : '90px';
+            const badgeTop = isMobile ? '4px' : '14px';
+            const badgeRight = isMobile ? '4px' : '14px';
+            
             profileBtn.style.cssText = [
-                'width:90px', 'height:90px',
+                `width:${size}`, `height:${size}`,
                 'border:none', 'cursor:pointer',
                 'background:transparent', 'padding:0',
                 'display:flex', 'align-items:center', 'justify-content:center',
@@ -427,8 +539,8 @@ document.addEventListener('DOMContentLoaded', async function () {
 
             const showNavBadge = window.profileBadgeCount > 0 ? 'flex' : 'none';
             profileBtn.innerHTML = `
-                <img src="${basePath}assets/icon/profile.png" alt="Profile" style="width:90px;height:90px;object-fit:contain;display:block;">
-                <span id="profile-nav-badge" style="position:absolute;top:14px;right:14px;background:#BA0000;color:white;font-size:11px;font-weight:900;border-radius:50%;width:22px;height:22px;display:${showNavBadge};align-items:center;justify-content:center;border:2px solid white;box-shadow:0 2px 8px rgba(0,0,0,0.2);z-index:10;">${window.profileBadgeCount}</span>
+                <img src="${basePath}assets/icon/profile.png" alt="Profile" style="width:${size};height:${size};object-fit:contain;display:block;">
+                <span id="profile-nav-badge" style="position:absolute;top:${badgeTop};right:${badgeRight};background:#BA0000;color:white;font-size:11px;font-weight:900;border-radius:50%;width:22px;height:22px;display:${showNavBadge};align-items:center;justify-content:center;border:2px solid white;box-shadow:0 2px 8px rgba(0,0,0,0.2);z-index:10;">${window.profileBadgeCount}</span>
             `;
 
             profileBtn.addEventListener('mouseenter', () => {
