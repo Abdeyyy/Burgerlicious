@@ -65,3 +65,10 @@ $conn->query("CREATE TABLE IF NOT EXISTS `remember_tokens` (
   KEY `fk_remember_user` (`id_user`),
   CONSTRAINT `fk_remember_user` FOREIGN KEY (`id_user`) REFERENCES `user` (`id_user`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+
+// Pastikan kolom id_menu_target pada tabel promo tersedia secara dinamis
+$check_menu_target = $conn->query("SHOW COLUMNS FROM `promo` LIKE 'id_menu_target'");
+if ($check_menu_target && $check_menu_target->num_rows == 0) {
+    $conn->query("ALTER TABLE `promo` ADD COLUMN id_menu_target INT DEFAULT NULL AFTER id_kategori_target");
+    $conn->query("ALTER TABLE `promo` ADD CONSTRAINT fk_promo_menu FOREIGN KEY (id_menu_target) REFERENCES menu(id_menu) ON DELETE SET NULL");
+}
