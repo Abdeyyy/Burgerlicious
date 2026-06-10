@@ -9,15 +9,22 @@ document.addEventListener('DOMContentLoaded', () => {
             if (json.status === 'success' && json.data && json.data.length > 0) {
                 renderDynamicPromos(json.data);
             } else {
-                // Fallback to hardcoded ones if no active promos found
-                initMarquee();
+                showEmptyPromoState();
             }
         })
         .catch(err => {
             console.error('Gagal memuat promo dinamis:', err);
-            // Fallback to hardcoded ones on error
-            initMarquee();
+            showEmptyPromoState();
         });
+
+    function showEmptyPromoState() {
+        marquee.innerHTML = `
+            <div class="w-full text-center py-12 text-white">
+                <span class="text-4xl block mb-2">🎁</span>
+                <p class="text-base font-bold">Nantikan Promo Menarik Selanjutnya!</p>
+            </div>
+        `;
+    }
 
     function renderDynamicPromos(promos) {
         // Build track HTML
