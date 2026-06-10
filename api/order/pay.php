@@ -23,6 +23,11 @@ if ($id_transaksi <= 0) {
 try {
     // 2. Check ownership and current status
     $stmt = $conn->prepare("SELECT id_transaksi, status_pesanan, TIMESTAMPDIFF(SECOND, tanggal_transaksi, NOW()) as elapsed_seconds FROM transaksi WHERE id_transaksi = ? AND id_user = ?");
+    if (!$stmt) {
+        http_response_code(500);
+        echo json_encode(['status' => 'error', 'message' => 'Prepare failed: ' . $conn->error]);
+        exit;
+    }
     $stmt->bind_param("ii", $id_transaksi, $id_user);
     $stmt->execute();
     $order = $stmt->get_result()->fetch_assoc();

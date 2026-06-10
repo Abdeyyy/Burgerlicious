@@ -32,6 +32,11 @@ try {
     }
 
     $stmt = $conn->prepare($query);
+    if (!$stmt) {
+        http_response_code(500);
+        echo json_encode(['status' => 'error', 'message' => 'Prepare failed: ' . $conn->error]);
+        exit;
+    }
     if (!isAdmin()) {
         $stmt->bind_param("ii", $id_transaksi, $id_user);
     } else {
