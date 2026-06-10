@@ -279,32 +279,32 @@
                             pendingControls.classList.remove('hidden');
                             btnBayar.href = `bayar.html?id_transaksi=${order.id_transaksi}`;
                             
-                            // Calculate expiration (10 mins after tanggal_transaksi)
-                            if (order.tanggal_transaksi) {
-                                const transTimeStr = order.tanggal_transaksi.replace(' ', 'T');
-                                const transactionTime = new Date(transTimeStr).getTime();
-                                const expirationTime = transactionTime + 10 * 60 * 1000;
+                            // Calculate expiration (10 mins after tanggal_transaksi) using server elapsed_seconds
+                            if (order.elapsed_seconds !== undefined) {
+                                const elapsedSeconds = parseInt(order.elapsed_seconds || 0);
+                                let remainingSeconds = 600 - elapsedSeconds;
+                                let countdownInterval;
                                 
                                 function updateCountdown() {
-                                    const now = new Date().getTime();
-                                    const distance = expirationTime - now;
-                                    
-                                    if (distance <= 0) {
-                                        clearInterval(countdownInterval);
+                                    if (remainingSeconds <= 0) {
+                                        if (countdownInterval) clearInterval(countdownInterval);
                                         countdownText.textContent = 'Batas waktu pembayaran habis!';
                                         // Refresh page to trigger auto-cancellation via detail.php
                                         window.location.reload();
                                     } else {
-                                        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                                        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                                        const minutes = Math.floor(remainingSeconds / 60);
+                                        const seconds = remainingSeconds % 60;
                                         const formattedMin = minutes < 10 ? '0' + minutes : minutes;
                                         const formattedSec = seconds < 10 ? '0' + seconds : seconds;
                                         countdownText.textContent = `Sisa waktu pembayaran: ${formattedMin}:${formattedSec}`;
+                                        remainingSeconds--;
                                     }
                                 }
                                 
                                 updateCountdown();
-                                const countdownInterval = setInterval(updateCountdown, 1000);
+                                if (remainingSeconds > 0) {
+                                    countdownInterval = setInterval(updateCountdown, 1000);
+                                }
                             }
                         }
                     } else {
