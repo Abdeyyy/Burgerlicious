@@ -95,8 +95,6 @@
             <div class="lg:col-span-1 flex flex-col gap-6">
                 <!-- User Profile Summary Card -->
                 <div class="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 flex flex-col items-center relative overflow-hidden">
-                    <!-- Accent color header bar -->
-                    <div class="absolute top-0 left-0 right-0 h-2 bg-[#5D0303]"></div>
                     
                     <!-- Avatar Image Wrapper with Hover Effect -->
                     <div class="relative group mt-4 mb-4 cursor-pointer" id="avatarContainer" title="Ubah Foto Profil">
@@ -110,12 +108,12 @@
                         <!-- Hidden input file -->
                         <input type="file" id="avatarInput" accept="image/*" class="hidden">
                     </div>
-
+ 
                     <h2 id="userNameHeader" class="text-xl font-bold text-gray-800 text-center line-clamp-1">Memuat...</h2>
                     <p id="userEmailHeader" class="text-xs text-gray-500 text-center mb-4 truncate w-full px-2">Memuat...</p>
-
+ 
                     <!-- Membership Badge Card -->
-                    <div id="loyaltyBadge" class="w-full py-2.5 px-4 rounded-2xl bg-gradient-to-r from-gray-100 to-gray-200 border border-gray-200/50 flex items-center justify-center gap-2 mb-2">
+                    <div id="loyaltyBadge" class="hidden w-full py-2.5 px-4 rounded-2xl bg-gradient-to-r from-gray-100 to-gray-200 border border-gray-200/50 flex items-center justify-center gap-2 mb-2">
                         <i class="fas fa-medal text-gray-400 text-lg"></i>
                         <span class="text-xs font-bold uppercase tracking-wider text-gray-600">Bronze Member</span>
                     </div>

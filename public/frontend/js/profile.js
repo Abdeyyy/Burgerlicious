@@ -202,7 +202,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function renderLoyaltyBadge(tier) {
-        loyaltyBadge.className = 'w-full py-2.5 px-4 rounded-2xl border flex items-center justify-center gap-2 mb-2 ';
+        loyaltyBadge.className = 'hidden w-full py-2.5 px-4 rounded-2xl border flex items-center justify-center gap-2 mb-2 ';
         let iconHtml = '';
         if (tier === 'Gold Member') {
             loyaltyBadge.className += 'bg-yellow-400 border-yellow-500/30 text-yellow-950';
