@@ -538,18 +538,25 @@ function autoApplyPromo() {
     }
 
     // Check manual selection first
-    if (userSelectedPromo && promoList[userSelectedPromo]) {
-        const promo = promoList[userSelectedPromo];
-        const isVal = checkPromoEligibility(promo, subtotal);
-        if (isVal.eligible) {
-            diskonAktif = promo;
-            updatePromoSelectionUI(promo);
+    if (userSelectedPromo) {
+        const upperCode = userSelectedPromo.toUpperCase();
+        if (promoList[upperCode]) {
+            const promo = promoList[upperCode];
+            const isVal = checkPromoEligibility(promo, subtotal);
+            if (isVal.eligible) {
+                diskonAktif = promo;
+                updatePromoSelectionUI(promo);
+            } else {
+                // Selected promo no longer eligible
+                userSelectedPromo = null;
+                diskonAktif = null;
+                updatePromoSelectionUI(null);
+                showToast('Promo Dilepas', 'Promo pilihan Anda tidak lagi memenuhi syarat belanja.', 'warning');
+            }
         } else {
-            // Selected promo no longer eligible
             userSelectedPromo = null;
             diskonAktif = null;
             updatePromoSelectionUI(null);
-            showToast('Promo Dilepas', 'Promo pilihan Anda tidak lagi memenuhi syarat belanja.', 'warning');
         }
     } else {
         diskonAktif = null;
@@ -610,7 +617,7 @@ function openPromoModal() {
     promos.forEach(promo => {
         const check = checkPromoEligibility(promo, subtotal);
         const discountAmount = check.eligible ? calculateDiscountAmount(promo, subtotal) : 0;
-        const isCurrent = diskonAktif && diskonAktif.nama === promo.nama;
+        const isCurrent = diskonAktif && diskonAktif.nama.toUpperCase() === promo.nama.toUpperCase();
 
         let promoCardHtml = '';
         if (check.eligible) {
@@ -725,12 +732,13 @@ function closePromoModal() {
 }
 
 function togglePromoSelection(kode) {
-    if (userSelectedPromo === kode) {
+    const upperKode = kode.toUpperCase();
+    if (userSelectedPromo && userSelectedPromo.toUpperCase() === upperKode) {
         userSelectedPromo = null;
         showToast('Promo Dilepas', 'Voucher promo dilepaskan.', 'success');
     } else {
-        userSelectedPromo = kode;
-        showToast('Promo Terpasang', `Voucher promo ${kode} berhasil digunakan!`, 'success');
+        userSelectedPromo = upperKode;
+        showToast('Promo Terpasang', `Voucher promo ${upperKode} berhasil digunakan!`, 'success');
     }
     autoApplyPromo();
     updateSummary();
