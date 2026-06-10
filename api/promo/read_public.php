@@ -6,9 +6,10 @@ $today = date('Y-m-d');
 
 $sql = "SELECT p.id_promo, p.nama_promo, p.deskripsi, p.tipe_promo, p.nilai_diskon, 
                p.kode_promo, p.min_order, p.gambar_url, p.tanggal_mulai, p.tanggal_selesai,
-               p.hari_aktif, p.id_kategori_target, km.nama_kategori
+               p.hari_aktif, p.id_kategori_target, p.id_menu_target, km.nama_kategori, m.nama_menu AS nama_menu_target
         FROM promo p
         LEFT JOIN kategori_menu km ON p.id_kategori_target = km.id_kategori
+        LEFT JOIN menu m ON p.id_menu_target = m.id_menu
         WHERE p.is_active = 1 
           AND p.tanggal_mulai <= ? 
           AND p.tanggal_selesai >= ?

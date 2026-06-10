@@ -114,60 +114,79 @@ $id_kategori_target = $promo['id_kategori_target'];
 
 if ($promo['tipe_promo'] === 'percentage') {
     if ($id_kategori_target !== null) {
-        // Diskon persen hanya untuk kategori target
-        $jumlah_kategori_target = 0;
+        $id_menu_target = $promo['id_menu_target'];
+        $jumlah_target = 0;
         foreach ($items as $item) {
             if ((int)$item['id_kategori'] === (int)$id_kategori_target) {
-                $jumlah_kategori_target += (float)$item['harga'] * (int)$item['jumlah'];
+                if ($id_menu_target === null || (int)$item['id_menu'] === (int)$id_menu_target) {
+                    $jumlah_target += (float)$item['harga'] * (int)$item['jumlah'];
+                }
             }
         }
         
-        if ($jumlah_kategori_target <= 0) {
-            echo json_encode(['status' => 'error', 'message' => 'Promo hanya berlaku untuk kategori tertentu yang tidak ada di keranjang Anda']);
+        if ($jumlah_target <= 0) {
+            $msg = $id_menu_target !== null 
+                ? 'Promo hanya berlaku untuk menu tertentu yang tidak ada di keranjang Anda' 
+                : 'Promo hanya berlaku untuk kategori tertentu yang tidak ada di keranjang Anda';
+            echo json_encode(['status' => 'error', 'message' => $msg]);
             exit;
         }
         
-        $nilai_potongan = $jumlah_kategori_target * ($promo['nilai_diskon'] / 100);
+        $nilai_potongan = $jumlah_target * ($promo['nilai_diskon'] / 100);
     } else {
         // Diskon persen untuk total belanja
         $nilai_potongan = $total_belanja * ($promo['nilai_diskon'] / 100);
     }
 } else if ($promo['tipe_promo'] === 'fixed') {
     if ($id_kategori_target !== null) {
-        // Cek apakah ada menu dari kategori target
-        $ada_kategori_target = false;
+        $id_menu_target = $promo['id_menu_target'];
+        $ada_target = false;
+        $total_target_value = 0;
         foreach ($items as $item) {
             if ((int)$item['id_kategori'] === (int)$id_kategori_target) {
-                $ada_kategori_target = true;
-                break;
+                if ($id_menu_target === null || (int)$item['id_menu'] === (int)$id_menu_target) {
+                    $ada_target = true;
+                    $total_target_value += (float)$item['harga'] * (int)$item['jumlah'];
+                }
             }
         }
         
-        if (!$ada_kategori_target) {
-            echo json_encode(['status' => 'error', 'message' => 'Promo hanya berlaku untuk kategori tertentu yang tidak ada di keranjang Anda']);
+        if (!$ada_target) {
+            $msg = $id_menu_target !== null 
+                ? 'Promo hanya berlaku untuk menu tertentu yang tidak ada di keranjang Anda' 
+                : 'Promo hanya berlaku untuk kategori tertentu yang tidak ada di keranjang Anda';
+            echo json_encode(['status' => 'error', 'message' => $msg]);
             exit;
         }
+        
+        // Capped at the value of targeted items
+        $nilai_potongan = min((float)$promo['nilai_diskon'], $total_target_value);
+    } else {
+        // Potongan harga tetap (tidak boleh melebihi total belanja)
+        $nilai_potongan = min((float)$promo['nilai_diskon'], $total_belanja);
     }
-    
-    // Potongan harga tetap (tidak boleh melebihi total belanja)
-    $nilai_potongan = min((float)$promo['nilai_diskon'], $total_belanja);
 } else if ($promo['tipe_promo'] === 'bogo') {
     // Buy One Get One (BOGO)
-    // Syarat: minimal 2 item dalam keranjang. Gratis 1 item termurah dari kategori target (jika diset) atau seluruh keranjang
+    // Syarat: minimal 2 item dalam keranjang. Gratis 1 item termurah dari menu/kategori target (jika diset) atau seluruh keranjang
+    $id_menu_target = $promo['id_menu_target'];
     $eligible_items = [];
     foreach ($items as $item) {
         if ($id_kategori_target === null || (int)$item['id_kategori'] === (int)$id_kategori_target) {
-            // Expand item berdasarkan jumlah
-            for ($i = 0; $i < (int)$item['jumlah']; $i++) {
-                $eligible_items[] = (float)$item['harga'];
+            if ($id_menu_target === null || (int)$item['id_menu'] === (int)$id_menu_target) {
+                // Expand item berdasarkan jumlah
+                for ($i = 0; $i < (int)$item['jumlah']; $i++) {
+                    $eligible_items[] = (float)$item['harga'];
+                }
             }
         }
     }
     
     if (count($eligible_items) < 2) {
-        $msg = $id_kategori_target !== null 
-            ? 'BOGO membutuhkan minimal 2 item dari kategori target' 
-            : 'BOGO membutuhkan minimal 2 item di keranjang';
+        $msg = $id_menu_target !== null 
+            ? 'BOGO membutuhkan minimal 2 item dari menu target' 
+            : ($id_kategori_target !== null 
+                ? 'BOGO membutuhkan minimal 2 item dari kategori target' 
+                : 'BOGO membutuhkan minimal 2 item di keranjang');
         echo json_encode(['status' => 'error', 'message' => $msg]);
         exit;
     }
@@ -175,8 +194,7 @@ if ($promo['tipe_promo'] === 'percentage') {
     // Urutkan eligible items dari paling murah ke paling mahal
     sort($eligible_items);
     
-    // Berapa banyak item gratis? Setiap kelipatan 2 dapat 1 gratis (maksimal 1 gratis per kelipatan)
-    // Misal: beli 2 gratis 1 (bayar 1), beli 4 gratis 2 (bayar 2), beli 3 gratis 1 (bayar 2)
+    // Berapa banyak item gratis? Setiap kelipatan 2 dapat 1 gratis
     $free_count = floor(count($eligible_items) / 2);
     
     for ($i = 0; $i < $free_count; $i++) {

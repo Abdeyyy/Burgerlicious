@@ -11,9 +11,10 @@ if (!isAdmin()) {
 
 $status_filter = $_GET['status'] ?? 'all';
 
-$sql = "SELECT p.*, km.nama_kategori 
+$sql = "SELECT p.*, km.nama_kategori, m.nama_menu AS nama_menu_target 
         FROM promo p 
-        LEFT JOIN kategori_menu km ON p.id_kategori_target = km.id_kategori";
+        LEFT JOIN kategori_menu km ON p.id_kategori_target = km.id_kategori
+        LEFT JOIN menu m ON p.id_menu_target = m.id_menu";
 
 $conditions = [];
 $today = date('Y-m-d');

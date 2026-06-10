@@ -16,6 +16,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const discountValContainer = document.getElementById('discount-val-container');
     const discountValLabel = document.getElementById('discount-val-label');
     const promoTargetCategory = document.getElementById('promo-target-category');
+    const promoTargetMenu = document.getElementById('promo-target-menu');
+    const targetMenuContainer = document.getElementById('target-menu-container');
     
     // Bundling Elements
     const bundlingContainer = document.getElementById('bundling-container');
@@ -38,13 +40,15 @@ document.addEventListener('DOMContentLoaded', () => {
     promoType.addEventListener('change', () => {
         const val = promoType.value;
         
-        // Hide target category if bundling
+        // Hide target category and menu if bundling
         const targetCategoryContainer = promoTargetCategory.closest('.space-y-1');
         if (val === 'bundling') {
             if (targetCategoryContainer) targetCategoryContainer.style.display = 'none';
+            if (targetMenuContainer) targetMenuContainer.style.display = 'none';
             if (bundlingContainer) bundlingContainer.classList.remove('hidden');
         } else {
             if (targetCategoryContainer) targetCategoryContainer.style.display = 'block';
+            if (targetMenuContainer) targetMenuContainer.style.display = 'block';
             if (bundlingContainer) bundlingContainer.classList.add('hidden');
         }
 
@@ -97,6 +101,39 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         } catch (error) {
             console.error('Failed to load menus:', error);
+        }
+    }
+
+    // Update target menu options when target category changes
+    promoTargetCategory.addEventListener('change', () => {
+        updateTargetMenuOptions();
+    });
+
+    function updateTargetMenuOptions(selectedMenuId = '') {
+        const catVal = promoTargetCategory.value;
+        if (!catVal) {
+            promoTargetMenu.innerHTML = '<option value="">All Menus (Default)</option>';
+            promoTargetMenu.value = '';
+            promoTargetMenu.disabled = true;
+        } else {
+            promoTargetMenu.disabled = false;
+            // Filter menus belonging to this category
+            const filtered = menusList.filter(m => String(m.id_kategori) === String(catVal));
+            promoTargetMenu.innerHTML = '<option value="">All Menus (Default)</option>';
+            filtered.forEach(m => {
+                const opt = document.createElement('option');
+                opt.value = m.id_menu;
+                opt.textContent = m.nama_menu;
+                if (String(m.id_menu) === String(selectedMenuId)) {
+                    opt.selected = true;
+                }
+                promoTargetMenu.appendChild(opt);
+            });
+            if (selectedMenuId) {
+                promoTargetMenu.value = selectedMenuId;
+            } else {
+                promoTargetMenu.value = '';
+            }
         }
     }
 
@@ -279,7 +316,11 @@ document.addEventListener('DOMContentLoaded', () => {
             // Target Category / Bundling Details
             let catTarget = '';
             if (promo.nama_kategori) {
-                catTarget = `<p class="text-[10px] text-primary font-bold uppercase mt-0.5">Target: ${promo.nama_kategori}</p>`;
+                if (promo.nama_menu_target) {
+                    catTarget = `<p class="text-[10px] text-primary font-bold uppercase mt-0.5">Target: ${promo.nama_kategori} — ${promo.nama_menu_target}</p>`;
+                } else {
+                    catTarget = `<p class="text-[10px] text-primary font-bold uppercase mt-0.5">Target: Kategori ${promo.nama_kategori}</p>`;
+                }
             } else if (promo.tipe_promo === 'bundling' && promo.bundling_items && promo.bundling_items.length > 0) {
                 const reqStrings = promo.bundling_items.map(item => {
                     const name = item.nama_menu || item.nama_kategori;
@@ -497,6 +538,10 @@ document.addEventListener('DOMContentLoaded', () => {
         promoType.value = 'percentage';
         promoType.dispatchEvent(new Event('change'));
 
+        // Reset target menu
+        promoTargetCategory.value = '';
+        updateTargetMenuOptions();
+
         promoModal.classList.remove('hidden');
         promoModal.classList.add('flex');
     });
@@ -533,6 +578,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('promo-min-order').value = parseFloat(promo.min_order);
         document.getElementById('promo-max-usage').value = promo.max_usage || '';
         document.getElementById('promo-target-category').value = promo.id_kategori_target || '';
+        updateTargetMenuOptions(promo.id_menu_target || '');
         document.getElementById('promo-start-date').value = promo.tanggal_mulai;
         document.getElementById('promo-end-date').value = promo.tanggal_selesai;
         document.getElementById('promo-description').value = promo.deskripsi || '';

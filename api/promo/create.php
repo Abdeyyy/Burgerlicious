@@ -17,6 +17,7 @@ $kode_promo = $_POST['kode_promo'] ?? null;
 $min_order = $_POST['min_order'] ?? 0;
 $max_usage = $_POST['max_usage'] ?? null;
 $id_kategori_target = $_POST['id_kategori_target'] ?? null;
+$id_menu_target = $_POST['id_menu_target'] ?? null;
 $tanggal_mulai = $_POST['tanggal_mulai'] ?? '';
 $tanggal_selesai = $_POST['tanggal_selesai'] ?? '';
 $hari_aktif_input = $_POST['hari_aktif'] ?? null;
@@ -69,6 +70,7 @@ if (!empty($kode_promo)) {
 // Handle empty optional fields
 $max_usage = !empty($max_usage) ? (int)$max_usage : null;
 $id_kategori_target = !empty($id_kategori_target) ? (int)$id_kategori_target : null;
+$id_menu_target = !empty($id_menu_target) ? (int)$id_menu_target : null;
 $min_order = (float)$min_order;
 $nilai_diskon = (float)$nilai_diskon;
 
@@ -126,8 +128,8 @@ if (isset($_FILES['gambar']) && $_FILES['gambar']['error'] === UPLOAD_ERR_OK) {
     }
 }
 
-$stmt = $conn->prepare("INSERT INTO promo (nama_promo, deskripsi, tipe_promo, nilai_diskon, kode_promo, min_order, max_usage, id_kategori_target, gambar_url, tanggal_mulai, tanggal_selesai, hari_aktif) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-$stmt->bind_param("sssdsdiissss", $nama_promo, $deskripsi, $tipe_promo, $nilai_diskon, $kode_promo, $min_order, $max_usage, $id_kategori_target, $gambar_url, $tanggal_mulai, $tanggal_selesai, $hari_aktif);
+$stmt = $conn->prepare("INSERT INTO promo (nama_promo, deskripsi, tipe_promo, nilai_diskon, kode_promo, min_order, max_usage, id_kategori_target, id_menu_target, gambar_url, tanggal_mulai, tanggal_selesai, hari_aktif) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+$stmt->bind_param("sssdsdiiissss", $nama_promo, $deskripsi, $tipe_promo, $nilai_diskon, $kode_promo, $min_order, $max_usage, $id_kategori_target, $id_menu_target, $gambar_url, $tanggal_mulai, $tanggal_selesai, $hari_aktif);
 
 if ($stmt->execute()) {
     $id_promo = $stmt->insert_id;
