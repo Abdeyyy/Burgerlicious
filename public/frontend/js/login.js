@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', function () {
     for (let i = 0; i < btnLogins.length; i++) {
         setupForm(
             emails[i], passwords[i], showPasses[i], rememberMes[i], btnLogins[i], 
-            emailErrs[i], passErrs[i], formMsgs[i]
+            emailErrs[i], passErrs[i], formMsgs[i], i
         );
     }
 
@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    function setupForm(emailInput, passwordInput, showPassCheck, rememberMeCheck, submitBtn, emailError, passwordError, formMessage) {
+    function setupForm(emailInput, passwordInput, showPassCheck, rememberMeCheck, submitBtn, emailError, passwordError, formMessage, formIndex) {
         if (!submitBtn || !emailInput || !passwordInput) return;
         
         showPassCheck.addEventListener('change', function () {
@@ -110,7 +110,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (!validate()) return;
 
             // Memeriksa Google reCAPTCHA
-            const recaptchaResponse = typeof grecaptcha !== 'undefined' ? grecaptcha.getResponse() : '';
+            const recaptchaResponse = typeof grecaptcha !== 'undefined' ? grecaptcha.getResponse(formIndex) : '';
             if (!recaptchaResponse) {
                 showFormMessage('Silakan centang reCAPTCHA terlebih dahulu.');
                 return;
@@ -153,13 +153,13 @@ document.addEventListener('DOMContentLoaded', function () {
                     showFormMessage(result.message || 'Login gagal.');
                     submitBtn.disabled = false;
                     submitBtn.textContent = 'SIGN IN';
-                    if (typeof grecaptcha !== 'undefined') grecaptcha.reset();
+                    if (typeof grecaptcha !== 'undefined') grecaptcha.reset(formIndex);
                 }
             } catch (error) {
                 showFormMessage('Terjadi kesalahan pada server saat login.');
                 submitBtn.disabled = false;
                 submitBtn.textContent = 'SIGN IN';
-                if (typeof grecaptcha !== 'undefined') grecaptcha.reset();
+                if (typeof grecaptcha !== 'undefined') grecaptcha.reset(formIndex);
             }
         });
     }
