@@ -42,9 +42,8 @@
         
         <!-- Header Banner -->
         <div class="bg-[#5D0303] p-6 text-center text-white relative">
-            <span class="text-4xl block mb-2">💳</span>
-            <h1 class="font-bold text-lg">Burgerlicious Payment Gateway</h1>
-            <p class="text-xs text-orange-200 mt-0.5">Simulasi Autentikasi Pembayaran</p>
+            <span class="text-4xl block mb-2"></span>
+            <h1 class="font-bold text-lg">Konfirmasi Pembayaran Pesanan</h1>
         </div>
 
         <!-- Details Area -->
@@ -71,7 +70,6 @@
 
             <div class="text-center space-y-2">
                 <h3 class="font-bold text-gray-800 text-sm">Apakah Anda sudah melakukan transfer/pembayaran?</h3>
-                <p class="text-xs text-gray-500 leading-relaxed">Pilih <strong>YES</strong> untuk menyelesaikan proses pembayaran pesanan Anda, atau <strong>NO</strong> jika ingin menunda.</p>
             </div>
             
             <div class="bg-red-50 border border-red-100 rounded-xl p-3 text-[11px] text-red-600 flex items-start gap-2">
@@ -83,13 +81,25 @@
         <!-- Action Buttons -->
         <div class="p-6 border-t border-gray-100 bg-gray-50 flex gap-3">
             <button onclick="confirmPayment(false)" class="flex-1 bg-white border border-[#5D0303] text-[#5D0303] py-3.5 rounded-2xl font-bold text-sm text-center hover:bg-[#FFF8EE] transition shadow-xs cursor-pointer">
-                ❌ No (Belum)
+                Belum
             </button>
             <button onclick="confirmPayment(true)" class="flex-1 bg-[#5D0303] text-white py-3.5 rounded-2xl font-bold text-sm text-center hover:bg-[#8F0919] transition shadow-md cursor-pointer">
-                ✅ Yes (Sudah)
+                Sudah
             </button>
         </div>
 
+    </div>
+
+    <!-- Custom Modal Container -->
+    <div id="customModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 transition-all duration-300">
+        <div class="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl text-center transform scale-90 opacity-0 transition-all duration-300 ease-out" id="modalContent">
+            <span id="modalIcon" class="text-5xl block mb-4"></span>
+            <h2 id="modalTitle" class="text-xl font-bold text-gray-800 mb-2"></h2>
+            <p id="modalMessage" class="text-sm text-gray-500 mb-6 leading-relaxed"></p>
+            <button id="modalBtn" class="w-full bg-[#5D0303] hover:bg-[#8F0919] text-white py-3 rounded-xl font-bold text-sm transition shadow-md shadow-red-900/10 cursor-pointer">
+                OK
+            </button>
+        </div>
     </div>
 
     <!-- JS Logic -->
@@ -98,6 +108,42 @@
 
         function formatRupiah(angka) {
             return 'Rp ' + Number(angka).toLocaleString('id-ID');
+        }
+
+        function getCsrfToken() {
+            const xsrfToken = document.cookie
+                .split('; ')
+                .find(row => row.startsWith('XSRF-TOKEN='))
+                ?.split('=')[1];
+            return xsrfToken ? decodeURIComponent(xsrfToken) : '';
+        }
+
+        function showModal(title, message, icon, buttonAction = null) {
+            const modal = document.getElementById('customModal');
+            const content = document.getElementById('modalContent');
+            const iconEl = document.getElementById('modalIcon');
+            const titleEl = document.getElementById('modalTitle');
+            const messageEl = document.getElementById('modalMessage');
+            const btnEl = document.getElementById('modalBtn');
+            
+            iconEl.textContent = icon;
+            titleEl.textContent = title;
+            messageEl.textContent = message;
+            
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                content.classList.remove('scale-90', 'opacity-0');
+                content.classList.add('scale-100', 'opacity-100');
+            }, 10);
+            
+            btnEl.onclick = function() {
+                content.classList.remove('scale-100', 'opacity-100');
+                content.classList.add('scale-90', 'opacity-0');
+                setTimeout(() => {
+                    modal.classList.add('hidden');
+                    if (buttonAction) buttonAction();
+                }, 300);
+            };
         }
 
         document.addEventListener('DOMContentLoaded', async function () {
@@ -126,8 +172,9 @@
 
                     if (order.status_pesanan !== 'pending') {
                         // Order is already paid/cancelled, direct back
-                        alert('Pesanan ini sudah diproses atau dibatalkan.');
-                        window.location.href = `hasil_pesan.html?id_transaksi=${transactionId}`;
+                        showModal('Transaksi Selesai', 'Pesanan ini sudah diproses atau dibatalkan.', 'ℹ️', () => {
+                            window.location.href = `hasil_pesan.html?id_transaksi=${transactionId}`;
+                        });
                         return;
                     }
 
@@ -151,11 +198,13 @@
 
             if (hasPaid) {
                 try {
+                    const xsrfToken = getCsrfToken();
                     // Call confirmation API
                     const res = await fetch('../../api/order/pay.php', {
                         method: 'POST',
                         headers: {
-                            'Content-Type': 'application/json'
+                            'Content-Type': 'application/json',
+                            'X-XSRF-TOKEN': xsrfToken
                         },
                         body: JSON.stringify({ id_transaksi: parseInt(transactionId) })
                     });
@@ -163,18 +212,20 @@
                     const result = await res.json();
 
                     if (result.status === 'success') {
-                        alert('Pembayaran berhasil dikonfirmasi! Pesanan Anda sedang disiapkan.');
-                        window.location.href = `hasil_pesan.html?id_transaksi=${transactionId}`;
+                        showModal('Sukses!', 'Pembayaran berhasil dikonfirmasi! Pesanan Anda sedang disiapkan.', '✅', () => {
+                            window.location.href = `hasil_pesan.html?id_transaksi=${transactionId}`;
+                        });
                     } else {
-                        alert('Gagal mengonfirmasi pembayaran: ' + result.message);
+                        showModal('Gagal', 'Gagal mengonfirmasi pembayaran: ' + result.message, '❌');
                     }
                 } catch (err) {
                     console.error(err);
-                    alert('Terjadi kesalahan koneksi saat mengonfirmasi pembayaran.');
+                    showModal('Gagal', 'Terjadi kesalahan koneksi saat mengonfirmasi pembayaran.', '❌');
                 }
             } else {
-                alert('Konfirmasi ditunda. Silakan selesaikan pembayaran sebelum batas waktu 10 menit habis agar pesanan tidak hangus.');
-                window.location.href = `hasil_pesan.html?id_transaksi=${transactionId}`;
+                showModal('Ditunda', 'Konfirmasi ditunda. Silakan selesaikan pembayaran sebelum batas waktu 10 menit habis agar pesanan tidak hangus.', '⏳', () => {
+                    window.location.href = `hasil_pesan.html?id_transaksi=${transactionId}`;
+                });
             }
         }
     </script>
