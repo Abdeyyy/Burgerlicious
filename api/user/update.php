@@ -97,6 +97,7 @@ try {
     if ($stmt_upd->execute()) {
         // Perbarui data nama di Session agar sinkron dengan sapaan di header
         $_SESSION['nama'] = $nama;
+        $_SESSION['foto_profil'] = $foto_profil;
 
         echo json_encode([
             'status' => 'success',

@@ -91,10 +91,11 @@ if (isset($user['is_verified']) && $user['is_verified'] == 0) {
 }
 
 // Set Sesi
-$_SESSION['user_id'] = $user['id_user'];
-$_SESSION['nama']    = $user['nama'];
-$_SESSION['email']   = $user['email'];
-$_SESSION['role']    = $user['role'] ?? 'customer';
+$_SESSION['user_id']     = $user['id_user'];
+$_SESSION['nama']        = $user['nama'];
+$_SESSION['email']       = $user['email'];
+$_SESSION['role']        = $user['role'] ?? 'customer';
+$_SESSION['foto_profil'] = $user['foto_profil'] ?? '';
 
 // TOken Remember Me
 $remember = isset($_POST['remember']) && $_POST['remember'] === '1';
