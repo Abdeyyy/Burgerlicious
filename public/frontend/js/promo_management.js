@@ -486,8 +486,8 @@ document.addEventListener('DOMContentLoaded', () => {
         // Edit Promo Action
         document.querySelectorAll('.edit-btn').forEach(btn => {
             btn.addEventListener('click', () => {
-                const id = parseInt(btn.getAttribute('data-id'));
-                const promo = promosList.find(p => p.id_promo === id);
+                const id = btn.getAttribute('data-id');
+                const promo = promosList.find(p => String(p.id_promo) === String(id));
                 if (promo) {
                     openEditModal(promo);
                 }

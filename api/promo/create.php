@@ -35,7 +35,7 @@ if (empty($nama_promo) || empty($tipe_promo) || empty($tanggal_mulai) || empty($
 }
 
 // Validasi tipe promo
-$valid_types = ['percentage', 'fixed', 'bogo'];
+$valid_types = ['percentage', 'fixed', 'bogo', 'bundling'];
 if (!in_array($tipe_promo, $valid_types)) {
     echo json_encode(['status' => 'error', 'message' => 'Tipe promo tidak valid']);
     exit;
