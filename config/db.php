@@ -18,10 +18,11 @@ if (empty($http_host) || in_array($http_host, ['localhost', '127.0.0.1']) || str
 }
 
 if (!$is_local) {
-    $db_host = 'localhost'; 
-    $db_user = 'abdazi60_burgerlicious';
-    $db_pass = 'Abdiaziz14';
-    $db_name = 'abdazi60_burgerlicious';
+    $db_host = $_ENV['MYSQL_ADDON_HOST'] ?? getenv('MYSQL_ADDON_HOST') ?: 'localhost'; 
+    $db_user = $_ENV['MYSQL_ADDON_USER'] ?? getenv('MYSQL_ADDON_USER');
+    $db_pass = $_ENV['MYSQL_ADDON_PASSWORD'] ?? getenv('MYSQL_ADDON_PASSWORD');
+    $db_name = $_ENV['MYSQL_ADDON_DB'] ?? getenv('MYSQL_ADDON_DB');
+    $db_port = $_ENV['MYSQL_ADDON_PORT'] ?? getenv('MYSQL_ADDON_PORT') ?: 3306;
 } else {
     $db_host = 'db';
     $db_user = 'root';
@@ -40,7 +41,8 @@ if (!$is_local) {
 }
 
 // Lakukan koneksi final
-$conn = @new mysqli($db_host, $db_user, $db_pass, $db_name);
+$db_port = $is_local ? 3306 : ($db_port ?? 3306);
+$conn = @new mysqli($db_host, $db_user, $db_pass, $db_name, $db_port);
 
 if (!$conn || $conn->connect_error) {
     http_response_code(500);

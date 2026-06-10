@@ -16,11 +16,11 @@ jobs:
     - name: Sync files to Freehostia
       uses: SamKirkland/FTP-Deploy-Action@v4.3.4
       with:
-        server: ftps4.us.freehostia.com
+        server: cloud3.googiehost.com
         username: ${{ secrets.FTP_USERNAME }}
         password: ${{ secrets.FTP_PASSWORD }}
-        # TODO: Ubah 'NAMA_FOLDER_SUBDOMAIN_ANDA' sesuai dengan nama folder subdomain Anda di Freehostia
-        server-dir: /burgerlicious.com/ 
+        # Folder default untuk DirectAdmin adalah public_html
+        server-dir: /public_html/ 
         exclude: |
           **/.git*
           **/.git*/**
