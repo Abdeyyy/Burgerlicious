@@ -31,7 +31,7 @@ function formatRupiah(angka) {
     return 'Rp ' + (angka ? Number(angka).toLocaleString('id-ID') : '0');
 }
 
-function initializePublicMobileMenu() {
+function initializePublicMobileMenu(basePath) {
     const header = document.querySelector('header');
     if (!header) return;
 
@@ -99,17 +99,69 @@ function initializePublicMobileMenu() {
     if (!mobileMenu) {
         mobileMenu = document.createElement('div');
         mobileMenu.id = 'pub-menu-drawer';
-        mobileMenu.className = 'fixed inset-y-0 right-0 w-64 bg-[#8F0919] shadow-2xl z-40 flex flex-col pt-24 px-6 gap-6 font-semibold';
+        mobileMenu.className = 'shadow-2xl flex flex-col font-semibold';
+        mobileMenu.style.position = 'fixed';
+        mobileMenu.style.top = '0';
+        mobileMenu.style.bottom = '0';
+        mobileMenu.style.right = '0';
+        mobileMenu.style.width = '280px';
+        mobileMenu.style.zIndex = '99999';
+        mobileMenu.style.background = 'linear-gradient(to bottom, #8F0919, #5D0303)';
         mobileMenu.style.transition = 'transform 0.3s ease-in-out';
         mobileMenu.style.transform = 'translateX(100%)';
+        mobileMenu.style.boxShadow = '-10px 0 30px rgba(0,0,0,0.3)';
         
-        // Populate links
-        mobileMenu.innerHTML = links.map(l => {
-            const activeClass = l.isActive ? 'text-yellow-400 font-extrabold border-b-2 border-yellow-400 pb-1' : 'text-white hover:text-yellow-300';
-            return `
-                <a href="${l.href}" class="text-xl uppercase tracking-wider transition-colors ${activeClass}">${l.text}</a>
-            `;
-        }).join('');
+        // Populate layout with beautiful elements and close button
+        mobileMenu.innerHTML = `
+            <!-- Header -->
+            <div style="display: flex; align-items: center; justify-content: space-between; padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <img src="${basePath}assets/icon/Logo_Burgerlicious_square.png" alt="Logo" style="width: 36px; height: 36px; border-radius: 50%;">
+                    <span style="color: #FEBB19; font-weight: 800; font-size: 20px; font-family: 'Baloo Bhaijaan 2', sans-serif; letter-spacing: 0.5px;">Burgerlicious</span>
+                </div>
+                <button id="pub-menu-close-btn" style="background: none; border: none; color: white; font-size: 20px; cursor: pointer; padding: 4px; display: flex; align-items: center; justify-content: center; transition: color 0.2s;" onmouseover="this.style.color='#FEBB19'" onmouseout="this.style.color='white'">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <!-- Navigation Links -->
+            <div style="flex: 1; padding: 20px; display: flex; flex-direction: column; gap: 8px;">
+                ${links.map(l => {
+                    let icon = 'fa-link';
+                    if (l.text.toLowerCase().includes('home')) icon = 'fa-home';
+                    else if (l.text.toLowerCase().includes('promo')) icon = 'fa-tags';
+                    else if (l.text.toLowerCase().includes('menu')) icon = 'fa-hamburger';
+                    else if (l.text.toLowerCase().includes('about')) icon = 'fa-info-circle';
+
+                    const activeStyle = l.isActive 
+                        ? 'background: rgba(254,187,25,0.15); color: #FEBB19; font-weight: 700; border-left: 4px solid #FEBB19; padding-left: 12px;' 
+                        : 'color: white; border-left: 4px solid transparent;';
+                    return `
+                        <a href="${l.href}" style="display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 8px; text-decoration: none; font-size: 16px; transition: all 0.2s; ${activeStyle}"
+                           onmouseover="if(!${l.isActive}){this.style.background='rgba(255,255,255,0.08)'; this.style.color='#FEBB19';}"
+                           onmouseout="if(!${l.isActive}){this.style.background='transparent'; this.style.color='white';}">
+                            <i class="fas ${icon}" style="width: 20px; font-size: 16px; text-align: center;"></i>
+                            <span style="font-family: 'Baloo Bhaijaan 2', sans-serif;">${l.text}</span>
+                        </a>
+                    `;
+                }).join('')}
+                
+                <!-- Dynamic User Section Container -->
+                <div id="pub-drawer-user-section" style="margin-top: 16px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px;">
+                    <!-- Will be updated by session script -->
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div style="padding: 20px; border-top: 1px solid rgba(255,255,255,0.1); text-align: center; display: flex; flex-direction: column; gap: 12px; background: rgba(0,0,0,0.15);">
+                <div style="display: flex; justify-content: center; gap: 16px; font-size: 18px;">
+                    <a href="https://wa.me/6285701067886" style="color: white; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#FEBB19'" onmouseout="this.style.color='white'" target="_blank"><i class="fab fa-whatsapp"></i></a>
+                    <a href="https://www.instagram.com/burgerliciously" style="color: white; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#FEBB19'" onmouseout="this.style.color='white'" target="_blank"><i class="fab fa-instagram"></i></a>
+                    <a href="https://x.com/burgerliciously" style="color: white; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#FEBB19'" onmouseout="this.style.color='white'" target="_blank"><i class="fab fa-x-twitter"></i></a>
+                </div>
+                <span style="font-size: 10px; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 1px; font-family: 'Baloo Bhaijaan 2', sans-serif;">© 2026 Burgerlicious</span>
+            </div>
+        `;
         
         document.body.appendChild(mobileMenu);
     }
@@ -139,11 +191,22 @@ function initializePublicMobileMenu() {
         toggleMenu();
     });
     backdrop.addEventListener('click', toggleMenu);
+
+    // Bind click event for close button inside drawer
+    setTimeout(() => {
+        const closeBtn = document.getElementById('pub-menu-close-btn');
+        if (closeBtn) {
+            closeBtn.onclick = (e) => {
+                e.preventDefault();
+                toggleMenu();
+            };
+        }
+    }, 100);
 }
 
 document.addEventListener('DOMContentLoaded', async function () {
     const basePath = window.location.pathname.includes('/public/pages/') ? '../../' : './';
-    initializePublicMobileMenu();
+    initializePublicMobileMenu(basePath);
 
     const currentPage = window.location.pathname.split('/').pop();
     const adminPages = ['dashboard.html', 'menu_management.html', 'order_queue.html', 'analytics.html', 'promo_management.html', 'pos.html'];
@@ -163,6 +226,20 @@ document.addEventListener('DOMContentLoaded', async function () {
 
         if (!data.loggedIn) {
             loginBtns.forEach(btn => { btn.style.visibility = ''; });
+            
+            // Update user section inside mobile drawer for guests
+            const drawerUserSection = document.getElementById('pub-drawer-user-section');
+            if (drawerUserSection) {
+                drawerUserSection.innerHTML = `
+                    <a href="${basePath}public/pages/login.html" style="display: flex; align-items: center; justify-content: center; gap: 8px; padding: 12px; border-radius: 12px; background: #FEBB19; color: #8F0919; text-decoration: none; font-weight: 800; font-size: 14px; transition: all 0.2s; text-align: center; box-shadow: 0 4px 12px rgba(254,187,25,0.2); font-family: 'Baloo Bhaijaan 2', sans-serif;"
+                       onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 16px rgba(254,187,25,0.3)';"
+                       onmouseout="this.style.transform='none'; this.style.boxShadow='0 4px 12px rgba(254,187,25,0.2)';">
+                        <i class="fas fa-sign-in-alt"></i>
+                        <span>Login / Sign In</span>
+                    </a>
+                `;
+            }
+            
             if (isCurrentPageAdmin) {
                 window.location.href = basePath + 'public/pages/login.html';
             }
@@ -177,6 +254,37 @@ document.addEventListener('DOMContentLoaded', async function () {
 
         window.currentUserId = data.user_id;
         const profileImgUrl = data.foto_profil ? (basePath + data.foto_profil) : (basePath + 'assets/icon/profile.png');
+
+        // Update user section inside mobile drawer for logged in users
+        const drawerUserSection = document.getElementById('pub-drawer-user-section');
+        if (drawerUserSection) {
+            drawerUserSection.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px; background: rgba(255,255,255,0.05); padding: 12px; border-radius: 12px;">
+                    <img src="${profileImgUrl}" alt="Profile" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid #FEBB19;">
+                    <div style="flex: 1; min-width: 0; text-align: left;">
+                        <div style="color: white; font-weight: 700; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-family: 'Baloo Bhaijaan 2', sans-serif;">${data.nama}</div>
+                        <div style="color: rgba(255,255,255,0.6); font-size: 11px; font-family: 'Baloo Bhaijaan 2', sans-serif;">${data.role === 'admin' ? 'Admin' : 'Customer'}</div>
+                    </div>
+                </div>
+                
+                ${data.role === 'admin' ? `
+                    <a href="${basePath}public/pages/dashboard.html" style="display: flex; align-items: center; gap: 12px; padding: 10px 16px; border-radius: 8px; color: white; text-decoration: none; font-size: 14px; transition: background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.08)'" onmouseout="this.style.background='transparent'">
+                        <i class="fas fa-tachometer-alt" style="width: 20px; color: #FEBB19;"></i>
+                        <span style="font-family: 'Baloo Bhaijaan 2', sans-serif;">Dashboard Admin</span>
+                    </a>
+                ` : `
+                    <a href="${basePath}public/pages/profile.html?tab=history" style="display: flex; align-items: center; gap: 12px; padding: 10px 16px; border-radius: 8px; color: white; text-decoration: none; font-size: 14px; transition: background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.08)'" onmouseout="this.style.background='transparent'">
+                        <i class="far fa-calendar-alt" style="width: 20px; color: #FEBB19;"></i>
+                        <span style="font-family: 'Baloo Bhaijaan 2', sans-serif;">Aktivitas</span>
+                    </a>
+                `}
+                
+                <a href="${basePath}auth/logout.php" style="display: flex; align-items: center; gap: 12px; padding: 10px 16px; border-radius: 8px; color: #FFD2D2; text-decoration: none; font-size: 14px; transition: background 0.2s; margin-top: 4px;" onmouseover="this.style.background='rgba(255,240,240,0.08)'" onmouseout="this.style.background='transparent'">
+                    <i class="fas fa-sign-out-alt" style="width: 20px; color: #FF4D4D;"></i>
+                    <span style="font-weight: 700; font-family: 'Baloo Bhaijaan 2', sans-serif;">Logout</span>
+                </a>
+            `;
+        }
 
         // Fetch order history to compute status update notifications
         let badgeCount = 0;
@@ -573,5 +681,18 @@ document.addEventListener('DOMContentLoaded', async function () {
     } catch (error) {
         loginBtns.forEach(btn => { btn.style.visibility = ''; });
         console.error('Gagal memverifikasi status login:', error);
+        
+        // Fallback for user section
+        const drawerUserSection = document.getElementById('pub-drawer-user-section');
+        if (drawerUserSection) {
+            drawerUserSection.innerHTML = `
+                <a href="${basePath}public/pages/login.html" style="display: flex; align-items: center; justify-content: center; gap: 8px; padding: 12px; border-radius: 12px; background: #FEBB19; color: #8F0919; text-decoration: none; font-weight: 800; font-size: 14px; transition: all 0.2s; text-align: center; box-shadow: 0 4px 12px rgba(254,187,25,0.2); font-family: 'Baloo Bhaijaan 2', sans-serif;"
+                   onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 16px rgba(254,187,25,0.3)';"
+                   onmouseout="this.style.transform='none'; this.style.boxShadow='0 4px 12px rgba(254,187,25,0.2)';">
+                    <i class="fas fa-sign-in-alt"></i>
+                    <span>Login / Sign In</span>
+                </a>
+            `;
+        }
     }
 });
