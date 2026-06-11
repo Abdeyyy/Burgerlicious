@@ -71,9 +71,9 @@ function initializePublicMobileMenu() {
         hamburger.id = 'public-hamburger';
         hamburger.className = 'md:hidden flex flex-col justify-center items-center gap-1.5 w-10 h-10 border border-[#FEBB19] rounded-full bg-white text-black hover:text-white hover:bg-[#8F0919] transition-colors focus:outline-none cursor-pointer';
         hamburger.innerHTML = `
-            <span class="w-5 h-0.5 bg-current transition-transform duration-300" id="pub-ham-line-1"></span>
-            <span class="w-5 h-0.5 bg-current transition-opacity duration-300" id="pub-ham-line-2"></span>
-            <span class="w-5 h-0.5 bg-current transition-transform duration-300" id="pub-ham-line-3"></span>
+            <span class="transition-transform duration-300" style="width: 20px; height: 2px; background-color: currentColor;" id="pub-ham-line-1"></span>
+            <span class="transition-opacity duration-300" style="width: 20px; height: 2px; background-color: currentColor;" id="pub-ham-line-2"></span>
+            <span class="transition-transform duration-300" style="width: 20px; height: 2px; background-color: currentColor;" id="pub-ham-line-3"></span>
         `;
         if (actionsWrapper) {
             actionsWrapper.appendChild(hamburger);
@@ -87,7 +87,10 @@ function initializePublicMobileMenu() {
     if (!backdrop) {
         backdrop = document.createElement('div');
         backdrop.id = 'pub-menu-backdrop';
-        backdrop.className = 'fixed inset-0 bg-black/40 backdrop-blur-sm z-30 opacity-0 pointer-events-none transition-opacity duration-300';
+        backdrop.className = 'fixed inset-0 bg-black/40 backdrop-blur-sm z-30';
+        backdrop.style.transition = 'opacity 0.3s ease-in-out';
+        backdrop.style.opacity = '0';
+        backdrop.style.pointerEvents = 'none';
         document.body.appendChild(backdrop);
     }
 
@@ -96,7 +99,9 @@ function initializePublicMobileMenu() {
     if (!mobileMenu) {
         mobileMenu = document.createElement('div');
         mobileMenu.id = 'pub-menu-drawer';
-        mobileMenu.className = 'fixed inset-y-0 right-0 w-64 bg-[#8F0919] shadow-2xl z-40 transform translate-x-full transition-transform duration-300 ease-in-out flex flex-col pt-24 px-6 gap-6 font-semibold';
+        mobileMenu.className = 'fixed inset-y-0 right-0 w-64 bg-[#8F0919] shadow-2xl z-40 flex flex-col pt-24 px-6 gap-6 font-semibold';
+        mobileMenu.style.transition = 'transform 0.3s ease-in-out';
+        mobileMenu.style.transform = 'translateX(100%)';
         
         // Populate links
         mobileMenu.innerHTML = links.map(l => {
@@ -113,16 +118,16 @@ function initializePublicMobileMenu() {
     function toggleMenu() {
         isOpen = !isOpen;
         if (isOpen) {
-            mobileMenu.classList.remove('translate-x-full');
-            backdrop.classList.add('opacity-100');
-            backdrop.classList.remove('pointer-events-none');
+            mobileMenu.style.transform = 'translateX(0)';
+            backdrop.style.opacity = '1';
+            backdrop.style.pointerEvents = 'auto';
             document.getElementById('pub-ham-line-1').style.transform = 'translateY(8px) rotate(45deg)';
             document.getElementById('pub-ham-line-2').style.opacity = '0';
             document.getElementById('pub-ham-line-3').style.transform = 'translateY(-8px) rotate(-45deg)';
         } else {
-            mobileMenu.classList.add('translate-x-full');
-            backdrop.classList.remove('opacity-100');
-            backdrop.classList.add('pointer-events-none');
+            mobileMenu.style.transform = 'translateX(100%)';
+            backdrop.style.opacity = '0';
+            backdrop.style.pointerEvents = 'none';
             document.getElementById('pub-ham-line-1').style.transform = '';
             document.getElementById('pub-ham-line-2').style.opacity = '1';
             document.getElementById('pub-ham-line-3').style.transform = '';
