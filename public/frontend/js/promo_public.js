@@ -165,49 +165,8 @@ document.addEventListener('DOMContentLoaded', () => {
                             <span>Min. ${formatRupiah(promo.min_order)}</span>
                         </div>` : ''}
                     </div>
-
-                    <!-- Voucher code -->
-                    ${promo.kode_promo ? (
-                        isActiveToday ? `
-                        <div class="mt-3.5 inline-flex items-center gap-2.5 bg-white/15 backdrop-blur-md hover:bg-white/25 border border-white/20 px-3.5 py-1.5 rounded-xl cursor-pointer transition-all duration-300 group/code"
-                             onclick="event.stopPropagation(); copyPromoCode('${promo.kode_promo}', this)" title="Klik untuk menyalin kode">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-[#FEBB19]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" />
-                            </svg>
-                            <span class="text-white font-bold tracking-widest text-xs md:text-sm">${promo.kode_promo}</span>
-                            <div class="h-3 w-px bg-white/30"></div>
-                            <span class="text-white/70 text-xs font-semibold group-hover/code:text-white transition-colors copy-label">Salin</span>
-                        </div>` : `
-                        <div class="mt-3.5 inline-flex items-center gap-2.5 bg-white/5 border border-white/10 px-3.5 py-1.5 rounded-xl cursor-not-allowed transition-all duration-300" title="Promo tidak aktif hari ini">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white/40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                            <span class="text-white/40 font-bold tracking-widest text-xs md:text-sm">${promo.kode_promo}</span>
-                            <div class="h-3 w-px bg-white/20"></div>
-                            <span class="text-white/40 text-xs font-semibold">Tidak Aktif Hari Ini</span>
-                        </div>`
-                    ) : ''}
                 </div>
             </div>`;
-    };
-
-    // Copy promo code to clipboard
-    window.copyPromoCode = async (code, el) => {
-        try {
-            await navigator.clipboard.writeText(code);
-            const label = el.querySelector('.copy-label');
-            const originalHTML = label.innerHTML;
-            label.innerHTML = `<span class="text-green-400">Tersalin!</span>`;
-            setTimeout(() => { label.innerHTML = originalHTML; }, 2000);
-        } catch (err) {
-            // Fallback for older browsers
-            const input = document.createElement('input');
-            input.value = code;
-            document.body.appendChild(input);
-            input.select();
-            document.execCommand('copy');
-            document.body.removeChild(input);
-        }
     };
 
     // Initialize carousel slider behavior
